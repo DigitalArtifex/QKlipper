@@ -1,3 +1,4 @@
+![alt text](https://github.com/DigitalArtifex/QKlipper/blob/main/qklipper_wallpaper_1080p.jpg)
 # QKlipper
 Qt based Klipper/Moonraker library (ALPHA - convenience methods still being ported over the next couple of days as well as QML compatability) 
 
