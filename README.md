@@ -1,5 +1,5 @@
 # QKlipper
-Qt based Klipper/Moonraker library (ALPHA - convenience methods still being ported over the next couple of days) 
+Qt based Klipper/Moonraker library (ALPHA - convenience methods still being ported over the next couple of days as well as QML compatability) 
 
 
 ## Usage
