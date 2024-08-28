@@ -30,3 +30,9 @@
 *.exe
 *.out
 *.app
+
+#Build dirs
+build/*
+
+#User profiles
+*.user*
