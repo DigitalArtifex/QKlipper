@@ -79,7 +79,16 @@ public:
         Error =                0b10000000  /*!< Error detected with the connection */
     };
 
+    /*
+     * Constructor
+     *
+     * \param parent The parent object
+     */
     explicit QKlipperConsole(QObject *parent = nullptr);
+
+    /*
+     * Destructor
+     */
     ~QKlipperConsole();
 
     void connect();

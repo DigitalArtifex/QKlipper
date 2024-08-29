@@ -82,6 +82,16 @@ void QKlipperFan::resetIsControllable()
     setIsControllable({}); // TODO: Adapt to use your actual default value
 }
 
+QKlipperConsole *QKlipperFan::console() const
+{
+    return m_console;
+}
+
+void QKlipperFan::setConsole(QKlipperConsole *console)
+{
+    m_console = console;
+}
+
 void QKlipperFan::setNameData(const QString &name)
 {
     if (m_name == name)

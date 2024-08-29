@@ -32,6 +32,11 @@ typedef QPair<qint32,qint32> QKlipperGearRatio;
 class QKlipperConsole;
 class QKlipperToolHead;
 
+//!  QKlipperExtruder class
+/*!
+  This class provides various methods for monitoring and controlling the state of an extruder
+  registered in the klipper instance.
+*/
 class QKlipperExtruder : public QObject
 {
     Q_OBJECT
@@ -39,114 +44,393 @@ class QKlipperExtruder : public QObject
     friend QKlipperConsole;
     friend QKlipperToolHead;
 public:
+
+    /*
+     * Constructor
+     *
+     * \param parent The parent object
+     */
     explicit QKlipperExtruder(QObject *parent = nullptr);
+
+    /*
+     * Destructor
+     */
     ~QKlipperExtruder();
 
+    /*
+     * The fan object associated with the extruder that is determined during
+     * the QKlipperConsole startup sequence. This object will change at least once,
+     * so be sure to subscribe to it's changed signal.
+     *
+     * \returns The current fan object
+     */
     QKlipperFan *fan() const;
 
+    /*
+     * Toolhead index of the extruder object
+     *
+     * \returns The index of the extruder
+     */
     qint32 extruderNumber() const;
 
+    /*
+     * The gear ratio of the extruder
+     *
+     * \returns A QKlipperGearRatio object
+     */
     QKlipperGearRatio gearRatio() const;
 
+    /*
+     * The number of steps it takes the stepper to complete 1 full 360 degree rotation
+     *
+     * \returns The current steps-per-rotation
+     */
     qint32 fullStepsPerRotation() const;
 
+    /*
+     * Current number of microsteps
+     *
+     * \returns The current console object
+     */
     qint32 microsteps() const;
 
+    /*
+     * Current temperature of the extruder (in Celsius)
+     *
+     * \returns The current temperature
+     */
     qreal currentTemp() const;
 
+    /*
+     * Target temperature of the extruder (in Celsius)
+     *
+     * \returns The target temperature
+     */
     qreal targetTemp() const;
 
+    /*
+     * Current smooth time of the extruder
+     *
+     * \returns The current smooth time
+     */
     qreal smoothTime() const;
 
+    /*
+     * Current pressure advance value
+     *
+     * \returns The current pressure advance
+     */
     qreal pressureAdvance() const;
 
+    /*
+     * Current pressure advance smooth time value
+     *
+     * \returns The current pressure advance smooth time
+     */
     qreal pressureAdvanceSmoothTime() const;
 
+    /*
+     * Current extrusion factor (flow rate) of the extruder
+     *
+     * \returns The current extrusion factor
+     */
     qreal extrusionFactor() const;
 
+    /*
+     * Current filament diameter for the extruder
+     *
+     * \returns The current filament diameter
+     */
     qreal filamentDiameter() const;
 
+    /*
+     * Current nozzle diameter for the extruder
+     *
+     * \returns The current nozzle diameter
+     */
     qreal nozzleDiameter() const;
 
+    /*
+     * Current power level (0.0-1.0) of the extruder's heater
+     *
+     * \returns The current power level
+     */
     qreal power() const;
 
+    /*
+     * Calculated watts of the extruders heater, based on current
+     * power level and maxWatts.
+     *
+     * \returns The current calculated watt value (0-maxWatts)
+     */
     qreal watts() const;
 
+    /*
+     * Maximum watts of the extruders heater. Used to calculate
+     * current watts.
+     *
+     * \returns The maximum watts of the heater
+     */
     qreal maxWatts() const;
 
+    /*
+     * Inline resistor value set in the configuration
+     *
+     * \returns The current inline resistor value
+     */
     qreal inlineResistor() const;
 
+    /*
+     * Pullup resistor value set in the configuration
+     *
+     * \returns The current pullup resistor value
+     */
     qreal pullupResistor() const;
 
+    /*
+     * PWM Cycle value set in the configuration
+     *
+     * \returns The current PWM Cycle value
+     */
     qreal pwmCycle() const;
 
+    /*
+     * Rotation distance value set in the configuration
+     *
+     * \returns The current Rotation distance value
+     */
     qreal rotationDistance() const;
 
+    /*
+     * Rotation distance value set in the configuration
+     *
+     * \returns The current Rotation distance value
+     */
     qreal instantCornerVelocity() const;
 
+    /*
+     * PID KD value set in the configuration
+     *
+     * \returns The current PID KD value
+     */
     qreal pidKD() const;
 
+    /*
+     * PID KI value set in the configuration
+     *
+     * \returns The current PID KI value
+     */
     qreal pidKI() const;
 
+    /*
+     * PID KP value set in the configuration
+     *
+     * \returns The current PID KP value
+     */
     qreal pidKP() const;
 
+    /*
+     * Max extrude cross section value set in the configuration
+     *
+     * \returns The current Max extrude cross section value
+     */
     qreal maxExtrudeCrossSection() const;
 
+    /*
+     * Max extrude only acceleration value set in the configuration
+     *
+     * \returns The current Max extrude only acceleration value
+     */
     qreal maxExtrudeOnlyAcceleration() const;
 
+    /*
+     * Max extrude only distance value set in the configuration
+     *
+     * \returns The current Max extrude only distance value
+     */
     qreal maxExtrudeOnlyDistance() const;
 
+    /*
+     * Max extrude only velocity value set in the configuration
+     *
+     * \returns The current Max extrude only velocity value
+     */
     qreal maxExtrudeOnlyVelocity() const;
 
+    /*
+     * Maximum temperature for the extruder, set in the configuration
+     *
+     * \returns The maximum temperature of the extruder
+     */
     qreal maxTemp() const;
 
+    /*
+     * Maximum power of the extruder heater
+     *
+     * \returns The maximum temperature of the extruder
+     */
     qreal maxPower() const;
 
+    /*
+     * Minimum temperature the extruder can extrude at
+     *
+     * \returns The minimum extrusion temperature
+     */
     qreal minExtrudeTemp() const;
 
+    /*
+     * Minimum temperature for the extruder, set in the configuration
+     *
+     * \returns The minimum temperature of the extruder
+     */
     qreal minTemp() const;
 
+    /*
+     * If the extruder can extrude material or not
+     *
+     * \returns True if the extruder is ready to extrude
+     */
     bool canExtrude() const;
 
+    /*
+     * Name for the extruder (extruder, extruder1, etc)
+     *
+     * \returns The name of the extruder
+     */
     QString name() const;
 
+    /*
+     * Control pin for the extruder, set in the configuration
+     *
+     * \returns The control pin label of the extruder
+     */
     QString control() const;
 
+    /*
+     * Direction pin for the extruder, set in the configuration
+     *
+     * \returns The direction pin label of the extruder
+     */
     QString dirPin() const;
 
+    /*
+     * Enable pin for the extruder, set in the configuration
+     *
+     * \returns The enable pin label of the extruder
+     */
     QString enablePin() const;
 
+    /*
+     * Heater pin for the extruder, set in the configuration
+     *
+     * \returns The heater pin label of the extruder
+     */
     QString heaterPin() const;
 
+    /*
+     * Sensor pin for the extruder, set in the configuration
+     *
+     * \returns The sensor pin label of the extruder
+     */
     QString sensorPin() const;
 
+    /*
+     * Sensor type for the extruder, set in the configuration
+     *
+     * \returns The sensor type of the extruder
+     */
     QString sensorType() const;
 
+    /*
+     * Step pin for the extruder, set in the configuration
+     *
+     * \returns The step pin label of the extruder
+     */
     QString stepPin() const;
 
+    /*
+     * The temperature store provides a history of the sampled
+     * temperatures.
+     *
+     * \returns The temperature store object
+     */
     QKlipperTemperatureStore temperatureStore() const;
 
-    QKlipperPrinter *printer() const;
-
+    /*
+     * Offset value for the extruder as set in the configuration
+     *
+     * \returns The current offset value
+     */
     QKlipperPosition offset() const;
 
+    /*
+     * The console object being used to send
+     *
+     * \returns The console object
+     */
     QKlipperConsole *console() const;
 
 public slots:
 
-    void setGearRatio(const QKlipperGearRatio &gearRatio);
-    void setFullStepsPerRotation(qint32 fullStepsPerRotation);
-    void setMicrosteps(qint32 microsteps);
+    /*
+     * Sends a gcode script to set the requested temperature
+     *
+     * \param targetTemp The value (in Celsius) to set (0-maxTemp)
+     */
     void setTargetTemp(qreal targetTemp);
+
+    /*
+     * Sends a gcode script to set the requested smooth time. Also sends
+     * the currently configured pressure advance value.
+     *
+     * \param smoothTime The smoothing time (in seconds)
+     */
     void setSmoothTime(qreal smoothTime);
+
+    /*
+     * Sends a gcode script to set the requested pressure advance. Also sends
+     * the currently configured smooth time value.
+     *
+     * \param pressureAdvance The pressure advance value to set
+     */
     void setPressureAdvance(qreal pressureAdvance);
+
+    /*
+     * Sends a gcode script to set the requested pressure advance smooth time.
+     *
+     * \param pressureAdvanceSmoothTime The value to set
+     */
     void setPressureAdvanceSmoothTime(qreal pressureAdvanceSmoothTime);
+
+    /*
+     * Sends a gcode script to set the requested extrusion factor (flow rate)
+     *
+     * \param extrusionFactor The value to set (0.5 is 50%)
+     */
     void setExtrusionFactor(qreal extrusionFactor);
+
+    /*
+     * Sends a gcode script to extrude the requested length of material
+     * at the requested speed
+     *
+     * \param amount The amount to extrude (in mm)
+     * \param speed The speed of the extrusion
+     */
     void extrude(qreal amount, qreal speed);
-    void pidTune(qreal target);
+
+    /*
+     * Sends a gcode script to calibrate the extruder at the target temperature.
+     *
+     * \param target The temperature to use in the PID calibration
+     */
+    void pidCalibration(qreal target);
 
 private slots:
 
+    //TODO: rename all functions here to end with Data
+    void setGearRatio(const QKlipperGearRatio &gearRatio);
+    void setFullStepsPerRotation(qint32 fullStepsPerRotation);
+    void setMicrosteps(qint32 microsteps);
     void setFan(QKlipperFan *fan);
 
     void setExtruderNumber(qint32 extruderNumber);

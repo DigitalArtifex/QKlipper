@@ -22,10 +22,22 @@
 #include <QObject>
 #include <QMap>
 
+//!  QKlipperEndstopStatus class
+/*!
+  This class provides methods to read the status of all
+  end stops sent by klipper in printer.query_endstops
+*/
 class QKlipperEndstopStatus
 {
     Q_GADGET
 public:
+    /*
+     * Subscript operator
+     *
+     * \param name The name of the endstop (eg "x")
+     *
+     * \returns QKlipperEndstopStatus reference
+     */
     bool &operator[](const QString &name)
     {
         return m_endstops[name];
@@ -51,26 +63,55 @@ public:
         return !(this == &value);
     }
 
+    /*
+     * Convenience function to return the 'x' endstop status
+     *
+     * \returns QKlipperEndstopStatus reference
+     */
     bool x() const
     {
         return m_endstops["x"];
     }
 
+    /*
+     * Convenience function to return the 'y' endstop status
+     *
+     * \returns QKlipperEndstopStatus reference
+     */
     bool y() const
     {
         return m_endstops["y"];
     }
 
+    /*
+     * Convenience function to return the 'z' endstop status
+     *
+     * \returns QKlipperEndstopStatus reference
+     */
     bool z() const
     {
         return m_endstops["z"];
     }
 
+    /*
+     * Convenience function to return the endstop status by name
+     *
+     * \param name The name of the endstop
+     *
+     * \returns QKlipperEndstopStatus reference
+     */
     bool endStop(const QString &name) const
     {
         return m_endstops[name];
     }
 
+    /*
+     * Checks to see if there is a stored reference for the endstop name
+     *
+     * \param name The name of the endstop
+     *
+     * \returns True if the reference exists
+     */
     bool contains(const QString &name) const
     {
         return m_endstops.contains(name);

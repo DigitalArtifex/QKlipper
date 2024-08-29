@@ -24,6 +24,13 @@
 class QKlipperSystem;
 class QKlipperConsole;
 
+//TODO This will likely become a Q_GADGET since it doesn't control anything
+
+//!  QKlipperMCU class
+/*!
+  This class is responsible for holding the data related to the current MCU. There are no methods
+  to change any of the parameters and all changes must be done in the configuration files
+*/
 class QKlipperMCU : public QObject
 {
     Q_OBJECT
@@ -31,6 +38,11 @@ class QKlipperMCU : public QObject
     friend QKlipperSystem;
     friend QKlipperConsole;
 public:
+    /*
+     * Constructor
+     *
+     * \param parent The parent object
+     */
     explicit QKlipperMCU(QObject *parent = nullptr);
 
     QKlipperMCU(const QKlipperMCU &value);
@@ -78,8 +90,9 @@ public:
 
     qreal maxStepperError() const;
 
-public slots:
+private slots:
 
+    //TODO: rename all functions here to end with Data
     void setBaudRate(qint64 baudRate);
 
     void setSequenceRecieved(qint64 sequenceRecieved);

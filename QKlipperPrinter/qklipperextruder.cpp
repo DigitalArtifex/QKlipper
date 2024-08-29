@@ -193,7 +193,7 @@ void QKlipperExtruder::extrude(qreal amount, qreal speed)
     }
 }
 
-void QKlipperExtruder::pidTune(qreal target)
+void QKlipperExtruder::pidCalibration(qreal target)
 {
     //set to relative movement
     QString gcode = QString("PID_CALIBRATE HEATER=%1 TARGET=%2").arg(m_name, QString::number(target));

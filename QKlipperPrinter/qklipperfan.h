@@ -24,56 +24,156 @@
 class QKlipperPrinter;
 class QKlipperConsole;
 
+//!  QKlipperFan class
+/*!
+  This class is responsible for monitoring and controlling fan objects.
+
+  Not all fans are controllable.
+*/
 class QKlipperFan : public QObject
 {
     Q_OBJECT
 
     friend QKlipperConsole;
 public:
+    //!  State enum
+    /*!
+      This enum provides flags for the on/off states
+    */
     enum State
     {
-        Off = 0,
-        On = 1
+        Off = 0, /*!< Fan is off */
+        On = 1 /*!< Fan is on */
     };
 
+    /*
+     * Constructor
+     *
+     * \param parent The parent object
+     */
     explicit QKlipperFan(QObject *parent = nullptr);
 
+    /*
+     * Name of the fan object
+     *
+     * \returns The current name of the fan
+     */
     QString name() const;
 
+    /*
+     * Current speed of the fan
+     *
+     * \returns The current speed of the fan
+     */
     qreal speed() const;
 
+    /*
+     * Current RPM
+     *
+     * \returns The current RPM of the fan (if available)
+     */
     qreal rpm() const;
 
+    /*
+     * Controllable state of the fan object
+     *
+     * \returns True if the fan can be controlled
+     */
     bool isControllable() const;
 
-    QKlipperPrinter *printer() const;
+    /*
+     * Current console object
+     *
+     * \returns The current console object
+     */
+    QKlipperConsole *console() const;
 
 public slots:
+    /*
+     * Sends a gcode script to set the requested speed
+     *
+     * \param speed The value to set (0-100)
+     */
     void setSpeed(qreal speed);
 
+
 private slots:
+    /*
+     * Sets the name value of the fan object ONLY. It does not
+     * send any klipper commands. Primarily used by QKlipperConsole
+     *
+     * \param name Name of the fan object
+     */
     void setNameData(const QString &name);
+
+    /*
+     * Resets the name value of the fan object ONLY. It does not
+     * send any klipper commands. Primarily used by QKlipperConsole
+     */
     void resetName();
 
+    /*
+     * Sets the speed value of the fan object ONLY. It does not
+     * send any klipper commands. Primarily used by QKlipperConsole
+     *
+     * \param speed Speed of the fan object
+     */
     void setSpeedData(qreal speed);
+
+    /*
+     * Resets the speed value of the fan object ONLY. It does not
+     * send any klipper commands. Primarily used by QKlipperConsole
+     */
     void resetSpeed();
 
+    /*
+     * Sets the rpm value of the fan object ONLY. It does not
+     * send any klipper commands. Primarily used by QKlipperConsole
+     *
+     * \param rpm RPM of the fan object
+     */
     void setRpmData(qreal rpm);
+
+    /*
+     * Resets the rpm value of the fan object ONLY. It does not
+     * send any klipper commands. Primarily used by QKlipperConsole
+     */
     void resetRpm();
 
-    void setPrinter(QKlipperPrinter *printer);
-
+    /*
+     * Sets the controllable value of the fan object ONLY. It does not
+     * send any klipper commands. Primarily used by QKlipperConsole
+     *
+     * \param isControllable State of controllability
+     */
     void setIsControllable(bool isControllable);
+
+    /*
+     * Resets the controllable value of the fan object ONLY. It does not
+     * send any klipper commands. Primarily used by QKlipperConsole
+     */
     void resetIsControllable();
+
+    /*
+     * Sets the console object of the fan. This is used to send commands
+     * for the fan to klipper
+     *
+     * \param console Console of the current object
+     */
+    void setConsole(QKlipperConsole *console);
 
 signals:
 
+    //Signal fired when setNameData has been called with new data
     void nameChanged();
 
+    //Signal fired when setSpeedData has been called with new data
     void speedChanged();
 
+    //Signal fired when setRpmData has been called with new data
     void rpmChanged();
 
+    //Signal fired when setIsControllableData has been called with new data
     void isControllableChanged();
 
 private:
@@ -82,7 +182,6 @@ private:
     qreal m_rpm = 0;
     bool m_isControllable = 0;
 
-    QKlipperPrinter *m_printer = nullptr;
     QKlipperConsole *m_console = nullptr;
 
     Q_PROPERTY(QString name READ name RESET resetName NOTIFY nameChanged FINAL)
