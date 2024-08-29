@@ -1,4 +1,5 @@
 #include "qklipperextruder.h"
+#include "QKlipperConsole/qklipperconsole.h"
 
 QKlipperExtruder::QKlipperExtruder(QObject *parent)
     : QObject{parent}
@@ -97,10 +98,13 @@ qreal QKlipperExtruder::targetTemp() const
 
 void QKlipperExtruder::setTargetTemp(qreal targetTemp)
 {
-    if (qFuzzyCompare(m_targetTemp, targetTemp))
-        return;
-    m_targetTemp = targetTemp;
-    emit targetTempChanged();
+    //construct the gcode
+    QString gcode("M104 T");
+    gcode += QString::number(m_extruderNumber);
+    gcode += QString(" S") + QString::number(targetTemp);
+
+    //send the gcode
+    m_console->printerGcodeScript(gcode);
 }
 
 qreal QKlipperExtruder::smoothTime() const
@@ -110,10 +114,12 @@ qreal QKlipperExtruder::smoothTime() const
 
 void QKlipperExtruder::setSmoothTime(qreal smoothTime)
 {
-    if (qFuzzyCompare(m_smoothTime, smoothTime))
-        return;
-    m_smoothTime = smoothTime;
-    emit smoothTimeChanged();
+    //set to relative movement
+    QString gcode("SET_PRESSURE_ADVANCE EXTRUDER=");
+    gcode += m_name + QString(" ADVANCE=") + QString::number(m_pressureAdvance);
+    gcode += QString(" SMOOTH_TIME=") + QString::number(smoothTime);
+
+    m_console->printerGcodeScript(gcode);
 }
 
 qreal QKlipperExtruder::pressureAdvance() const
@@ -123,10 +129,12 @@ qreal QKlipperExtruder::pressureAdvance() const
 
 void QKlipperExtruder::setPressureAdvance(qreal pressureAdvance)
 {
-    if (qFuzzyCompare(m_pressureAdvance, pressureAdvance))
-        return;
-    m_pressureAdvance = pressureAdvance;
-    emit pressureAdvanceChanged();
+    //set to relative movement
+    QString gcode("SET_PRESSURE_ADVANCE EXTRUDER=");
+    gcode += m_name + QString(" ADVANCE=") + QString::number(pressureAdvance);
+    gcode += QString(" SMOOTH_TIME=") + QString::number(m_smoothTime);
+
+    m_console->printerGcodeScript(gcode);
 }
 
 qreal QKlipperExtruder::pressureAdvanceSmoothTime() const
@@ -150,8 +158,55 @@ qreal QKlipperExtruder::extrusionFactor() const
 
 void QKlipperExtruder::setExtrusionFactor(qreal extrusionFactor)
 {
+    //convert to percentage
+    extrusionFactor *= 100;
+
+    //M221 to set extrusion factor
+    QString gcode("M221 S");
+
+    //add the value as S
+    gcode += QString::number(extrusionFactor);
+
+    //set the extruder number as T
+    gcode += QString(" T") + QString::number(m_extruderNumber);
+
+    //send the gcode
+    m_console->printerGcodeScript(gcode);
+}
+
+void QKlipperExtruder::extrude(qreal amount, qreal speed)
+{
+    if(m_canExtrude)
+    {
+        //set to relative movement
+        QString gcode("G91");
+        m_console->printerGcodeScript(gcode);
+
+        //set active extruder
+        gcode = QString("M6 T") + QString::number(m_extruderNumber);
+        m_console->printerGcodeScript(gcode);
+
+        //extrude the requested amount
+        gcode = QString("G1 E") + QString::number(amount);
+        gcode += QString(" F") + QString::number(speed);
+        m_console->printerGcodeScript(gcode);
+    }
+}
+
+void QKlipperExtruder::pidTune(qreal target)
+{
+    //set to relative movement
+    QString gcode = QString("PID_CALIBRATE HEATER=%1 TARGET=%2").arg(m_name, QString::number(target));
+
+    //run calibration
+    m_console->printerGcodeScript(gcode);
+}
+
+void QKlipperExtruder::setExtrusionFactorData(qreal extrusionFactor)
+{
     if (qFuzzyCompare(m_extrusionFactor, extrusionFactor))
         return;
+
     m_extrusionFactor = extrusionFactor;
     emit extrusionFactorChanged();
 }

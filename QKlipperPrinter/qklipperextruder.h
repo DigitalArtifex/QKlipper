@@ -30,12 +30,14 @@
 typedef QPair<qint32,qint32> QKlipperGearRatio;
 
 class QKlipperConsole;
+class QKlipperToolHead;
 
 class QKlipperExtruder : public QObject
 {
     Q_OBJECT
 
     friend QKlipperConsole;
+    friend QKlipperToolHead;
 public:
     explicit QKlipperExtruder(QObject *parent = nullptr);
     ~QKlipperExtruder();
@@ -132,27 +134,29 @@ public:
 
 public slots:
 
+    void setGearRatio(const QKlipperGearRatio &gearRatio);
+    void setFullStepsPerRotation(qint32 fullStepsPerRotation);
+    void setMicrosteps(qint32 microsteps);
+    void setTargetTemp(qreal targetTemp);
+    void setSmoothTime(qreal smoothTime);
+    void setPressureAdvance(qreal pressureAdvance);
+    void setPressureAdvanceSmoothTime(qreal pressureAdvanceSmoothTime);
+    void setExtrusionFactor(qreal extrusionFactor);
+    void extrude(qreal amount, qreal speed);
+    void pidTune(qreal target);
+
+private slots:
+
     void setFan(QKlipperFan *fan);
 
     void setExtruderNumber(qint32 extruderNumber);
 
-    void setGearRatio(const QKlipperGearRatio &gearRatio);
-
-    void setFullStepsPerRotation(qint32 fullStepsPerRotation);
-
-    void setMicrosteps(qint32 microsteps);
-
     void setCurrentTemp(qreal currentTemp);
-
-    void setTargetTemp(qreal targetTemp);
-
-    void setSmoothTime(qreal smoothTime);
-
-    void setPressureAdvance(qreal pressureAdvance);
-
-    void setPressureAdvanceSmoothTime(qreal pressureAdvanceSmoothTime);
-
-    void setExtrusionFactor(qreal extrusionFactor);
+    void setPressureAdvanceData(qreal pressureAdvance);
+    void setSmoothTimeData(qreal smoothTime);
+    void setPressureAdvanceSmoothTimeData(qreal pressureAdvanceSmoothTime);
+    void setTargetTempData(qreal targetTemp);
+    void setExtrusionFactorData(qreal extrusionFactor);
 
     void setFilamentDiameter(qreal filamentDiameter);
 
@@ -222,12 +226,6 @@ public slots:
     void setOffset(const QKlipperPosition &offset);
 
     void setConsole(QKlipperConsole *console);
-
-private slots:
-    void setPressureAdvanceData(qreal pressureAdvance);
-    void setSmoothTimeData(qreal smoothTime);
-    void setPressureAdvanceSmoothTimeData(qreal pressureAdvanceSmoothTime);
-    void setTargetTempData(qreal targetTemp);
 
 signals:
 
