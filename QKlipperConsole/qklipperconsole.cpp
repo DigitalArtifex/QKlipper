@@ -5182,7 +5182,7 @@ void QKlipperConsole::printerSubscribeParser(QKlipperMessage *message)
                 for(int i = 4; i < positionArray.count(); i++)
                 {
                     QString name = QString("e%1").arg(QString::number(i - 4));
-                    position[name] = positionArray[3].toDouble();
+                    position[name] = positionArray[i].toDouble();
                 }
 
                 m_printer->toolhead()->setMaxPosition(position);
@@ -5204,7 +5204,7 @@ void QKlipperConsole::printerSubscribeParser(QKlipperMessage *message)
                 for(int i = 4; i < positionArray.count(); i++)
                 {
                     QString name = QString("e%1").arg(QString::number(i - 4));
-                    position[name] = positionArray[3].toDouble();
+                    position[name] = positionArray[i].toDouble();
                 }
 
                 m_printer->toolhead()->setMinPosition(position);
@@ -5227,7 +5227,7 @@ void QKlipperConsole::printerSubscribeParser(QKlipperMessage *message)
                 for(int i = 4; i < positionArray.count(); i++)
                 {
                     QString name = QString("e%1").arg(QString::number(i - 4));
-                    position[name] = positionArray[3].toDouble();
+                    position[name] = positionArray[i].toDouble();
                 }
 
                 m_printer->toolhead()->setDestination(position);
@@ -5322,7 +5322,7 @@ void QKlipperConsole::printerSubscribeParser(QKlipperMessage *message)
                 for(int i = 4; i < positionArray.count(); i++)
                 {
                     QString name = QString("e%1").arg(QString::number(i - 4));
-                    position[name] = positionArray[3].toDouble();
+                    position[name] = positionArray[i].toDouble();
                 }
 
                 m_printer->toolhead()->setPosition(position);
