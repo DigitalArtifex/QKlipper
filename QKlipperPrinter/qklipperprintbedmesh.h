@@ -1,4 +1,4 @@
-/*
+/*!
  * QKlipper - A Qt library for the Klipper/Moonraker API
  * Copyright (C) 2024 James Dudeck
  *
@@ -43,7 +43,7 @@ public:
         qreal y;
     };
 
-    /*
+    /*!
      * Constructor
      *
      * \param parent The parent object

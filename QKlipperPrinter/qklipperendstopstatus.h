@@ -1,4 +1,4 @@
-/*
+/*!
  * QKlipper - A Qt library for the Klipper/Moonraker API
  * Copyright (C) 2024 James Dudeck
  *
@@ -31,7 +31,7 @@ class QKlipperEndstopStatus
 {
     Q_GADGET
 public:
-    /*
+    /*!
      * Subscript operator
      *
      * \param name The name of the endstop (eg "x")
@@ -63,7 +63,7 @@ public:
         return !(this == &value);
     }
 
-    /*
+    /*!
      * Convenience function to return the 'x' endstop status
      *
      * \returns QKlipperEndstopStatus reference
@@ -73,7 +73,7 @@ public:
         return m_endstops["x"];
     }
 
-    /*
+    /*!
      * Convenience function to return the 'y' endstop status
      *
      * \returns QKlipperEndstopStatus reference
@@ -83,7 +83,7 @@ public:
         return m_endstops["y"];
     }
 
-    /*
+    /*!
      * Convenience function to return the 'z' endstop status
      *
      * \returns QKlipperEndstopStatus reference
@@ -93,7 +93,7 @@ public:
         return m_endstops["z"];
     }
 
-    /*
+    /*!
      * Convenience function to return the endstop status by name
      *
      * \param name The name of the endstop
@@ -105,7 +105,7 @@ public:
         return m_endstops[name];
     }
 
-    /*
+    /*!
      * Checks to see if there is a stored reference for the endstop name
      *
      * \param name The name of the endstop

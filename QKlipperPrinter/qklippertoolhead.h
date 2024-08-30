@@ -1,4 +1,4 @@
-/*
+/*!
  * QKlipper - A Qt library for the Klipper/Moonraker API
  * Copyright (C) 2024 James Dudeck
  *
@@ -41,14 +41,14 @@ class QKlipperToolHead : public QObject
 
 public:
 
-    /*
+    /*!
      * Constructor
      *
      * \param parent The parent object
      */
     explicit QKlipperToolHead(QObject *parent = nullptr);
 
-    /*
+    /*!
      * Destructor
      */
     ~QKlipperToolHead();
@@ -95,7 +95,7 @@ public:
 
 public slots:
 
-    /*
+    /*!
      * Sets the absolute position of the toolhead
      *
      * \param position The position to move to
@@ -104,7 +104,7 @@ public slots:
      */
     void setPosition(const QKlipperPosition &position, qreal speed = 0);
 
-    /*
+    /*!
      * Sets the absolute position of the toolhead
      *
      * \param x The value to move the x axis to
@@ -116,7 +116,7 @@ public slots:
     void setPosition(qreal x = 0, qreal y = 0, qreal z = 0, qreal speed = 0);
 
 
-    /*
+    /*!
      * Sets the absolute position of the X Axis
      *
      * \param position The position to move to
@@ -125,7 +125,7 @@ public slots:
      */
     void setPositionX(qreal position, qreal speed);
 
-    /*
+    /*!
      * Sets the absolute position of the Y Axis
      *
      * \param position The position to move to
@@ -134,7 +134,7 @@ public slots:
      */
     void setPositionY(qreal position, qreal speed);
 
-    /*
+    /*!
      * Sets the absolute position of the Z Axis
      *
      * \param position The position to move to
@@ -143,12 +143,12 @@ public slots:
      */
     void setPositionZ(qreal position, qreal speed);
 
-    /*
+    /*!
      * Runs the homing script (G28)
      */
     void home();
 
-    /*
+    /*!
      * Move the toolhead by the x, y and z values, relative to the current position
      *
      * \param x The value to move the x axis by
@@ -159,14 +159,14 @@ public slots:
      */
     void move(qreal x = 0, qreal y = 0, qreal z = 0, qreal speed = 0);
 
-    /*
+    /*!
      * Move the toolhead by the position value, relative to the current position
      *
      * \param position The position to move to
      */
     void move(const QKlipperPosition &position, qreal speed = 0);
 
-    /*
+    /*!
      * Sets the absolute position of the X Axis
      *
      * \param amount The amount to move the X Axis
@@ -175,7 +175,7 @@ public slots:
      */
     void moveX(qreal amount, qreal speed);
 
-    /*
+    /*!
      * Sets the absolute position of the Y Axis
      *
      * \param amount The amount to move the Y Axis
@@ -184,7 +184,7 @@ public slots:
      */
     void moveY(qreal amount, qreal speed);
 
-    /*
+    /*!
      * Sets the absolute position of the Z Axis
      *
      * \param amount The amount to move the Z Axis

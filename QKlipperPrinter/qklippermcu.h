@@ -1,4 +1,4 @@
-/*
+/*!
  * QKlipper - A Qt library for the Klipper/Moonraker API
  * Copyright (C) 2024 James Dudeck
  *
@@ -38,7 +38,7 @@ class QKlipperMCU : public QObject
     friend QKlipperSystem;
     friend QKlipperConsole;
 public:
-    /*
+    /*!
      * Constructor
      *
      * \param parent The parent object
@@ -54,126 +54,126 @@ public:
     bool operator!=(const QKlipperMCU &value);
     bool operator!=(QKlipperMCU &&value);
 
-    /*
+    /*!
      * Baud rate of the MCU's serial device
      *
      * \returns The baud rate
      */
     qint64 baudRate() const;
 
-    /*
+    /*!
      * Number of sequences received
      *
      * \returns The number of sequences received
      */
     qint64 sequenceRecieved() const;
 
-    /*
+    /*!
      * Number of sequences sent
      *
      * \returns The number of sequences sent
      */
     qint64 sequenceSent() const;
 
-    /*
+    /*!
      * Number of sequences re-sent after failure
      *
      * \returns The number of sequences re-sent
      */
     qint64 sequenceRetransmitted() const;
 
-    /*
+    /*!
      * Number of bytes received that were invalid
      *
      * \returns The number of bytes that were invalid
      */
     qint64 bytesInvalid() const;
 
-    /*
+    /*!
      * Number of bytes received that were read
      *
      * \returns The number of bytes that were read
      */
     qint64 bytesRead() const;
 
-    /*
+    /*!
      * Number of bytes received that were retransmitted
      *
      * \returns The number of bytes that were retransmitted
      */
     qint64 bytesRetransmitted() const;
 
-    /*
+    /*!
      * Number of bytes sent that were actually written
      *
      * \returns The number of bytes that were written
      */
     qint64 bytesWritten() const;
 
-    /*
+    /*!
      * Number of bytes that are going to be received
      *
      * \returns The number of bytes that are going to be received
      */
     qint64 bytesUpcoming() const;
 
-    /*
+    /*!
      * Number of bytes that are available to be read
      *
      * \returns The number of bytes that are available to be read
      */
     qint64 bytesAvailable() const;
 
-    /*
+    /*!
      * Frequency of the MCU (Hz)
      *
      * \returns Frequency of the MCU (Hz)
      */
     qint64 frequency() const;
 
-    /*
+    /*!
      * Serial ID of the MCU
      *
      * \returns Serial ID of the MCU
      */
     QString serial() const;
 
-    /*
+    /*!
      * Firmware version of the MCU
      *
      * \returns Firmware version of the MCU
      */
     QString firmwareVersion() const;
 
-    /*
+    /*!
      * Hardware version of the MCU
      *
      * \returns Hardware version of the MCU
      */
     QString hardwareVersion() const;
 
-    /*
+    /*!
      * Uptime of the MCU
      *
      * \returns Uptime of the MCU
      */
     qreal awake() const;
 
-    /*
+    /*!
      * Average task time of the MCU
      *
      * \returns Average task time of the MCU
      */
     qreal taskAverage() const;
 
-    /*
+    /*!
      * Average dev time of the MCU
      *
      * \returns Average task dev of the MCU
      */
     qreal devAverage() const;
 
-    /*
+    /*!
      * Max stepper error setting of the MCU
      *
      * \returns Max stepper error setting of the MCU

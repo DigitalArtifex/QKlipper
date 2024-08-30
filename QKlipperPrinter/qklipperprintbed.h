@@ -1,4 +1,4 @@
-/*
+/*!
  * QKlipper - A Qt library for the Klipper/Moonraker API
  * Copyright (C) 2024 James Dudeck
  *
@@ -50,14 +50,14 @@ public:
         NonHeated
     };
 
-    /*
+    /*!
      * Constructor
      *
      * \param parent The parent object
      */
     explicit QKlipperPrintBed(QObject *parent = nullptr);
 
-    /*
+    /*!
      * Destructor
      */
     ~QKlipperPrintBed();
@@ -128,26 +128,26 @@ public:
     QString sensorType() const;
 
 public slots:
-    /*
+    /*!
      * Sends a gcode script to set the requested temperature
      *
      * \param targetTemp The value (in Celsius) to set (0-maxTemp)
      */
     void setTargetTemp(qreal targetTemp);
 
-    /*
+    /*!
      * Sends a gcode script to calibrate the extruder at the target temperature.
      *
      * \param target The temperature to use in the PID calibration
      */
     void calibratePid(qreal target);
 
-    /*
+    /*!
      * Sends a gcode script to probe the bed corners to determine adjustment values
      */
     void calibrateAdjustmentScrews();
 
-    /*
+    /*!
      * Sends a gcode script to probe the entire bed to generate the bed mesh
      */
     void calibrateBedMesh();

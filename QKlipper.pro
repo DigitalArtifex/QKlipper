@@ -125,6 +125,7 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
+#this will be removed in the final release once I fix some of the operators
 *-g++* {
     QMAKE_CXXFLAGS += -fpermissive
 }

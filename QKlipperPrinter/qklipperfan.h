@@ -1,4 +1,4 @@
-/*
+/*!
  * QKlipper - A Qt library for the Klipper/Moonraker API
  * Copyright (C) 2024 James Dudeck
  *
@@ -43,46 +43,46 @@ public:
     */
     enum State
     {
-        Off = 0, /*!< Fan is off */
-        On = 1 /*!< Fan is on */
+        Off = 0, /*!!< Fan is off */
+        On = 1 /*!!< Fan is on */
     };
 
-    /*
+    /*!
      * Constructor
      *
      * \param parent The parent object
      */
     explicit QKlipperFan(QObject *parent = nullptr);
 
-    /*
+    /*!
      * Name of the fan object
      *
      * \returns The current name of the fan
      */
     QString name() const;
 
-    /*
+    /*!
      * Current speed of the fan
      *
      * \returns The current speed of the fan
      */
     qreal speed() const;
 
-    /*
+    /*!
      * Current RPM
      *
      * \returns The current RPM of the fan (if available)
      */
     qreal rpm() const;
 
-    /*
+    /*!
      * Controllable state of the fan object
      *
      * \returns True if the fan can be controlled
      */
     bool isControllable() const;
 
-    /*
+    /*!
      * Current console object
      *
      * \returns The current console object
@@ -90,7 +90,7 @@ public:
     QKlipperConsole *console() const;
 
 public slots:
-    /*
+    /*!
      * Sends a gcode script to set the requested speed
      *
      * \param speed The value to set (0-100)
@@ -99,7 +99,7 @@ public slots:
 
 
 private slots:
-    /*
+    /*!
      * Sets the name value of the fan object ONLY. It does not
      * send any klipper commands. Primarily used by QKlipperConsole
      *
@@ -107,13 +107,13 @@ private slots:
      */
     void setNameData(const QString &name);
 
-    /*
+    /*!
      * Resets the name value of the fan object ONLY. It does not
      * send any klipper commands. Primarily used by QKlipperConsole
      */
     void resetName();
 
-    /*
+    /*!
      * Sets the speed value of the fan object ONLY. It does not
      * send any klipper commands. Primarily used by QKlipperConsole
      *
@@ -121,13 +121,13 @@ private slots:
      */
     void setSpeedData(qreal speed);
 
-    /*
+    /*!
      * Resets the speed value of the fan object ONLY. It does not
      * send any klipper commands. Primarily used by QKlipperConsole
      */
     void resetSpeed();
 
-    /*
+    /*!
      * Sets the rpm value of the fan object ONLY. It does not
      * send any klipper commands. Primarily used by QKlipperConsole
      *
@@ -135,13 +135,13 @@ private slots:
      */
     void setRpmData(qreal rpm);
 
-    /*
+    /*!
      * Resets the rpm value of the fan object ONLY. It does not
      * send any klipper commands. Primarily used by QKlipperConsole
      */
     void resetRpm();
 
-    /*
+    /*!
      * Sets the controllable value of the fan object ONLY. It does not
      * send any klipper commands. Primarily used by QKlipperConsole
      *
@@ -149,13 +149,13 @@ private slots:
      */
     void setIsControllable(bool isControllable);
 
-    /*
+    /*!
      * Resets the controllable value of the fan object ONLY. It does not
      * send any klipper commands. Primarily used by QKlipperConsole
      */
     void resetIsControllable();
 
-    /*
+    /*!
      * Sets the console object of the fan. This is used to send commands
      * for the fan to klipper
      *
