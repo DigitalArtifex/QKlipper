@@ -1,0 +1,13 @@
+<map id="/home/parametheus/repo/QKlipper/QKlipperSystem/qklippercanbus.h" name="/home/parametheus/repo/QKlipper/QKlipperSystem/qklippercanbus.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="24,5,214,60"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="82,181,156,207"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="58,62,35,77,17,94,9,112,13,132,24,146,38,158,70,176,68,180,35,162,20,150,9,134,4,112,13,91,32,73,56,58"/>
+<area shape="rect" id="Node000003" href="$d3/d90/qklippercanbusdevice_8h.html" title=" " alt="" coords="239,108,415,133"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="184,58,287,100,285,105,182,63"/>
+<area shape="rect" id="Node000005" href="$de/db7/qklippercanbusinterface_8h.html" title=" " alt="" coords="24,108,214,133"/>
+<area shape="poly" id="edge5_Node000001_Node000005" title=" " alt="" coords="122,60,122,94,116,94,116,60"/>
+<area shape="poly" id="edge3_Node000003_Node000002" title=" " alt="" coords="294,136,167,179,165,174,293,131"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="297,181,357,207"/>
+<area shape="poly" id="edge4_Node000003_Node000004" title=" " alt="" coords="330,134,330,168,324,168,324,134"/>
+<area shape="poly" id="edge6_Node000005_Node000002" title=" " alt="" coords="122,134,122,168,116,168,116,134"/>
+</map>

@@ -1,0 +1,19 @@
+<map id="/home/parametheus/repo/QKlipper/QKlipperFile/qklipperfile.cpp" name="/home/parametheus/repo/QKlipper/QKlipperFile/qklipperfile.cpp">
+<area shape="rect" id="Node000001" title=" " alt="" coords="6,5,193,60"/>
+<area shape="rect" id="Node000002" href="$d2/dac/qklipperfile_8h.html" title=" " alt="" coords="46,108,153,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="102,60,102,94,97,94,97,60"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="101,328,176,353"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="69,136,37,154,23,167,11,183,8,194,12,206,31,240,57,271,111,318,107,322,53,275,27,244,7,208,3,194,7,180,19,164,34,150,67,131"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="22,181,92,207"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="95,135,73,171,69,168,90,132"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="117,181,168,207"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="109,132,131,168,126,171,105,135"/>
+<area shape="rect" id="Node000006" href="$d9/d2f/qklippermetadata_8h.html" title=" " alt="" coords="192,181,343,207"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="128,131,229,173,227,178,126,136"/>
+<area shape="poly" id="edge6_Node000006_Node000003" title=" " alt="" coords="235,209,199,228,181,241,166,256,151,285,144,315,138,313,146,283,162,253,177,237,196,223,233,204"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="176,255,231,280"/>
+<area shape="poly" id="edge7_Node000006_Node000007" title=" " alt="" coords="259,209,225,246,221,243,255,205"/>
+<area shape="rect" id="Node000008" href="$d2/db6/qklipperthumbnail_8h.html" title=" " alt="" coords="255,255,408,280"/>
+<area shape="poly" id="edge8_Node000006_Node000008" title=" " alt="" coords="280,205,314,243,310,246,276,209"/>
+<area shape="poly" id="edge9_Node000008_Node000003" title=" " alt="" coords="302,283,184,326,182,321,300,278"/>
+</map>

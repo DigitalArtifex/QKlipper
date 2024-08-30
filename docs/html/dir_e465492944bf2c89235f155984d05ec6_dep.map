@@ -1,0 +1,15 @@
+<map id="/home/parametheus/repo/QKlipper/QKlipperPrinter" name="/home/parametheus/repo/QKlipper/QKlipperPrinter">
+<area shape="rect" id="node1" href="dir_e465492944bf2c89235f155984d05ec6.html" title="QKlipperPrinter" alt="" coords="216,5,337,31"/>
+<area shape="rect" id="node2" href="dir_2a960ac97fb96c14f2245d9531eca669.html" title="QKlipperSystem" alt="" coords="5,79,132,104"/>
+<area shape="poly" id="edge1" href="dir_000004_000006.html" alt="" coords="244,33,116,77,115,72,242,28"/>
+<area shape="rect" id="edge1-headlabel" href="dir_000004_000006.html" title="1" alt="" coords="118,73,127,88"/>
+<area shape="rect" id="node3" href="dir_40d436e53d0026942b8250a5450fb444.html" title="QKlipperFile" alt="" coords="157,79,258,104"/>
+<area shape="poly" id="edge2" href="dir_000004_000001.html" alt="" coords="267,33,230,71,226,67,263,29"/>
+<area shape="rect" id="edge2-headlabel" href="dir_000004_000001.html" title="1" alt="" coords="233,64,242,79"/>
+<area shape="rect" id="node4" href="dir_477eaa5fd7df6bec3393fb41e6048d3c.html" title="QKlipperConsole" alt="" coords="282,79,413,104"/>
+<area shape="poly" id="edge3" href="dir_000004_000000.html" alt="" coords="290,29,328,67,324,71,286,33"/>
+<area shape="rect" id="edge3-headlabel" href="dir_000004_000000.html" title="4" alt="" coords="324,52,334,67"/>
+<area shape="rect" id="node5" href="dir_7d64cea633fa22423246eca4ff5544b9.html" title="QKlipperServer" alt="" coords="437,79,557,104"/>
+<area shape="poly" id="edge4" href="dir_000004_000005.html" alt="" coords="313,28,449,72,448,77,311,33"/>
+<area shape="rect" id="edge4-headlabel" href="dir_000004_000005.html" title="1" alt="" coords="442,58,451,72"/>
+</map>

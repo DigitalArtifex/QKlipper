@@ -1,0 +1,132 @@
+.TH "QKlipperJobQueue" 3 "Version 0.2" "QKlipper" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+QKlipperJobQueue
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <qklipperjobqueue\&.h>\fP
+.PP
+Inherits QObject\&.
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum \fBState\fP { \fBReady\fP, \fBPaused\fP, \fBLoading\fP, \fBStarting\fP, \fBError\fP }"
+.br
+.in -1c
+.SS "Public Slots"
+
+.in +1c
+.ti -1c
+.RI "void \fBsetQueue\fP (const QList< \fBQKlipperPrintJob\fP * > &\fBqueue\fP)"
+.br
+.ti -1c
+.RI "void \fBaddJob\fP (\fBQKlipperPrintJob\fP *\fBjob\fP)"
+.br
+.ti -1c
+.RI "void \fBremoveJob\fP (\fBQKlipperPrintJob\fP *\fBjob\fP)"
+.br
+.ti -1c
+.RI "void \fBremoveJob\fP (const QString &jobId)"
+.br
+.ti -1c
+.RI "void \fBclearJobs\fP ()"
+.br
+.ti -1c
+.RI "void \fBsetState\fP (\fBState\fP \fBstate\fP)"
+.br
+.in -1c
+.SS "Signals"
+
+.in +1c
+.ti -1c
+.RI "void \fBqueueChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBstateChanged\fP ()"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBQKlipperJobQueue\fP (QObject *parent=nullptr)"
+.br
+.ti -1c
+.RI "QList< \fBQKlipperPrintJob\fP * > \fBqueue\fP () const"
+.br
+.ti -1c
+.RI "\fBState\fP \fBstate\fP () const"
+.br
+.ti -1c
+.RI "\fBQKlipperPrintJob\fP * \fBjob\fP (QString id)"
+.br
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "QList< \fBQKlipperPrintJob\fP * > \fBqueue\fP"
+.br
+.ti -1c
+.RI "\fBState\fP \fBstate\fP"
+.br
+.in -1c
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum \fBQKlipperJobQueue::State\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIReady \fP\fP
+.TP
+\fB\fIPaused \fP\fP
+.TP
+\fB\fILoading \fP\fP
+.TP
+\fB\fIStarting \fP\fP
+.TP
+\fB\fIError \fP\fP
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "QKlipperJobQueue::QKlipperJobQueue (QObject * parent = \fCnullptr\fP)\fC [explicit]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "void QKlipperJobQueue::addJob (\fBQKlipperPrintJob\fP * job)\fC [slot]\fP"
+
+.SS "void QKlipperJobQueue::clearJobs ()\fC [slot]\fP"
+
+.SS "\fBQKlipperPrintJob\fP * QKlipperJobQueue::job (QString id)"
+
+.SS "QList< \fBQKlipperPrintJob\fP * > QKlipperJobQueue::queue () const"
+
+.SS "void QKlipperJobQueue::queueChanged ()\fC [signal]\fP"
+
+.SS "void QKlipperJobQueue::removeJob (const QString & jobId)\fC [slot]\fP"
+
+.SS "void QKlipperJobQueue::removeJob (\fBQKlipperPrintJob\fP * job)\fC [slot]\fP"
+
+.SS "void QKlipperJobQueue::setQueue (const QList< \fBQKlipperPrintJob\fP * > & queue)\fC [slot]\fP"
+
+.SS "void QKlipperJobQueue::setState (\fBState\fP state)\fC [slot]\fP"
+
+.SS "\fBQKlipperJobQueue::State\fP QKlipperJobQueue::state () const"
+
+.SS "void QKlipperJobQueue::stateChanged ()\fC [signal]\fP"
+
+.SH "Property Documentation"
+.PP 
+.SS "QList<\fBQKlipperPrintJob\fP*> QKlipperJobQueue::queue\fC [read]\fP, \fC [write]\fP"
+
+.SS "\fBState\fP QKlipperJobQueue::state\fC [read]\fP, \fC [write]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for QKlipper from the source code\&.

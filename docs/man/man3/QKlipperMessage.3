@@ -1,0 +1,340 @@
+.TH "QKlipperMessage" 3 "Version 0.2" "QKlipper" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+QKlipperMessage
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <qklippermessage\&.h>\fP
+.PP
+Inherits QObject\&.
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum \fBProtocol\fP { \fBRpcProtocol\fP = 1, \fBHttpProtocol\fP = 2 }"
+.br
+.ti -1c
+.RI "enum \fBState\fP { \fBNone\fP = 0, \fBSending\fP = 1, \fBComplete\fP = 2, \fBError\fP = 3, \fBTimeout\fP = 4 }"
+.br
+.ti -1c
+.RI "enum \fBOrigin\fP { \fBSystem\fP = 1, \fBUser\fP = 2 }"
+.br
+.in -1c
+.SS "Public Slots"
+
+.in +1c
+.ti -1c
+.RI "void \fBsetId\fP (qint32 \fBid\fP)"
+.br
+.ti -1c
+.RI "void \fBresetId\fP ()"
+.br
+.ti -1c
+.RI "void \fBsetProtocol\fP (\fBProtocol\fP \fBprotocol\fP)"
+.br
+.ti -1c
+.RI "void \fBresetProtocol\fP ()"
+.br
+.ti -1c
+.RI "void \fBsetParams\fP (const QMap< QString, QVariant > &\fBparams\fP)"
+.br
+.ti -1c
+.RI "void \fBsetParam\fP (QString key, QVariant value)"
+.br
+.ti -1c
+.RI "void \fBresetParams\fP ()"
+.br
+.ti -1c
+.RI "void \fBsetMethod\fP (const QString &\fBmethod\fP)"
+.br
+.ti -1c
+.RI "void \fBresetMethod\fP ()"
+.br
+.ti -1c
+.RI "void \fBsetState\fP (\fBState\fP \fBstate\fP)"
+.br
+.ti -1c
+.RI "void \fBresetState\fP ()"
+.br
+.ti -1c
+.RI "void \fBsetResponse\fP (const QJsonValue &\fBresponse\fP)"
+.br
+.ti -1c
+.RI "void \fBsetResponse\fP (const QByteArray &\fBresponse\fP)"
+.br
+.ti -1c
+.RI "void \fBresetResponse\fP ()"
+.br
+.ti -1c
+.RI "void \fBsetErrorString\fP (const QString &\fBerrorString\fP)"
+.br
+.ti -1c
+.RI "void \fBresetErrorString\fP ()"
+.br
+.ti -1c
+.RI "void \fBstartTimer\fP ()"
+.br
+.ti -1c
+.RI "void \fBsetOrigin\fP (\fBOrigin\fP \fBorigin\fP)"
+.br
+.ti -1c
+.RI "void \fBresetOrigin\fP ()"
+.br
+.in -1c
+.SS "Signals"
+
+.in +1c
+.ti -1c
+.RI "void \fBprotocolChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBmethodChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBparamsChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBidChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBstateChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBresponseChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBerrorStringChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBresponseTimeout\fP ()"
+.br
+.ti -1c
+.RI "void \fBoriginChanged\fP ()"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBQKlipperMessage\fP (QObject *parent=nullptr)"
+.br
+.ti -1c
+.RI "\fB~QKlipperMessage\fP ()"
+.br
+.ti -1c
+.RI "qint32 \fBid\fP () const"
+.br
+.ti -1c
+.RI "\fBProtocol\fP \fBprotocol\fP () const"
+.br
+.ti -1c
+.RI "QMap< QString, QVariant > \fBparams\fP () const"
+.br
+.ti -1c
+.RI "QVariant \fBparam\fP (QString key) const"
+.br
+.ti -1c
+.RI "QString \fBmethod\fP () const"
+.br
+.ti -1c
+.RI "QString \fBtoUri\fP (bool parameterEncoded=true) const"
+.br
+.ti -1c
+.RI "QByteArray \fBtoRpc\fP () const"
+.br
+.ti -1c
+.RI "\fBState\fP \fBstate\fP () const"
+.br
+.ti -1c
+.RI "QJsonValue \fBresponse\fP () const"
+.br
+.ti -1c
+.RI "QString \fBerrorString\fP () const"
+.br
+.ti -1c
+.RI "\fBOrigin\fP \fBorigin\fP () const"
+.br
+.in -1c
+.SS "Protected Slots"
+
+.in +1c
+.ti -1c
+.RI "void \fBon_responseTimerTimeout\fP ()"
+.br
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "qint32 \fBid\fP"
+.br
+.ti -1c
+.RI "\fBProtocol\fP \fBprotocol\fP"
+.br
+.ti -1c
+.RI "QMap< QString, QVariant > \fBparams\fP"
+.br
+.ti -1c
+.RI "QString \fBmethod\fP"
+.br
+.ti -1c
+.RI "\fBState\fP \fBstate\fP"
+.br
+.ti -1c
+.RI "QJsonValue \fBresponse\fP"
+.br
+.ti -1c
+.RI "QString \fBerrorString\fP"
+.br
+.ti -1c
+.RI "\fBOrigin\fP \fBorigin\fP"
+.br
+.in -1c
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum \fBQKlipperMessage::Origin\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fISystem \fP\fP
+.TP
+\fB\fIUser \fP\fP
+.SS "enum \fBQKlipperMessage::Protocol\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIRpcProtocol \fP\fP
+.TP
+\fB\fIHttpProtocol \fP\fP
+.SS "enum \fBQKlipperMessage::State\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fINone \fP\fP
+.TP
+\fB\fISending \fP\fP
+.TP
+\fB\fIComplete \fP\fP
+.TP
+\fB\fIError \fP\fP
+.TP
+\fB\fITimeout \fP\fP
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "QKlipperMessage::QKlipperMessage (QObject * parent = \fCnullptr\fP)\fC [explicit]\fP"
+
+.SS "QKlipperMessage::~QKlipperMessage ()"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "QString QKlipperMessage::errorString () const"
+
+.SS "void QKlipperMessage::errorStringChanged ()\fC [signal]\fP"
+
+.SS "qint32 QKlipperMessage::id () const"
+
+.SS "void QKlipperMessage::idChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperMessage::method () const"
+
+.SS "void QKlipperMessage::methodChanged ()\fC [signal]\fP"
+
+.SS "void QKlipperMessage::on_responseTimerTimeout ()\fC [protected]\fP, \fC [slot]\fP"
+
+.SS "\fBQKlipperMessage::Origin\fP QKlipperMessage::origin () const"
+
+.SS "void QKlipperMessage::originChanged ()\fC [signal]\fP"
+
+.SS "QVariant QKlipperMessage::param (QString key) const"
+
+.SS "QMap< QString, QVariant > QKlipperMessage::params () const"
+
+.SS "void QKlipperMessage::paramsChanged ()\fC [signal]\fP"
+
+.SS "\fBQKlipperMessage::Protocol\fP QKlipperMessage::protocol () const"
+
+.SS "void QKlipperMessage::protocolChanged ()\fC [signal]\fP"
+
+.SS "void QKlipperMessage::resetErrorString ()\fC [slot]\fP"
+
+.SS "void QKlipperMessage::resetId ()\fC [slot]\fP"
+
+.SS "void QKlipperMessage::resetMethod ()\fC [slot]\fP"
+
+.SS "void QKlipperMessage::resetOrigin ()\fC [slot]\fP"
+
+.SS "void QKlipperMessage::resetParams ()\fC [slot]\fP"
+
+.SS "void QKlipperMessage::resetProtocol ()\fC [slot]\fP"
+
+.SS "void QKlipperMessage::resetResponse ()\fC [slot]\fP"
+
+.SS "void QKlipperMessage::resetState ()\fC [slot]\fP"
+
+.SS "QJsonValue QKlipperMessage::response () const"
+
+.SS "void QKlipperMessage::responseChanged ()\fC [signal]\fP"
+
+.SS "void QKlipperMessage::responseTimeout ()\fC [signal]\fP"
+
+.SS "void QKlipperMessage::setErrorString (const QString & errorString)\fC [slot]\fP"
+
+.SS "void QKlipperMessage::setId (qint32 id)\fC [slot]\fP"
+
+.SS "void QKlipperMessage::setMethod (const QString & method)\fC [slot]\fP"
+
+.SS "void QKlipperMessage::setOrigin (\fBOrigin\fP origin)\fC [slot]\fP"
+
+.SS "void QKlipperMessage::setParam (QString key, QVariant value)\fC [slot]\fP"
+
+.SS "void QKlipperMessage::setParams (const QMap< QString, QVariant > & params)\fC [slot]\fP"
+
+.SS "void QKlipperMessage::setProtocol (\fBProtocol\fP protocol)\fC [slot]\fP"
+
+.SS "void QKlipperMessage::setResponse (const QByteArray & response)\fC [slot]\fP"
+
+.SS "void QKlipperMessage::setResponse (const QJsonValue & response)\fC [slot]\fP"
+
+.SS "void QKlipperMessage::setState (\fBState\fP state)\fC [slot]\fP"
+
+.SS "void QKlipperMessage::startTimer ()\fC [slot]\fP"
+
+.SS "\fBQKlipperMessage::State\fP QKlipperMessage::state () const"
+
+.SS "void QKlipperMessage::stateChanged ()\fC [signal]\fP"
+
+.SS "QByteArray QKlipperMessage::toRpc () const"
+
+.SS "QString QKlipperMessage::toUri (bool parameterEncoded = \fCtrue\fP) const"
+
+.SH "Property Documentation"
+.PP 
+.SS "QString QKlipperMessage::errorString\fC [read]\fP, \fC [write]\fP"
+
+.SS "qint32 QKlipperMessage::id\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperMessage::method\fC [read]\fP, \fC [write]\fP"
+
+.SS "\fBOrigin\fP QKlipperMessage::origin\fC [read]\fP, \fC [write]\fP"
+
+.SS "QMap<QString, QVariant> QKlipperMessage::params\fC [read]\fP, \fC [write]\fP"
+
+.SS "\fBProtocol\fP QKlipperMessage::protocol\fC [read]\fP, \fC [write]\fP"
+
+.SS "QJsonValue QKlipperMessage::response\fC [read]\fP, \fC [write]\fP"
+
+.SS "\fBState\fP QKlipperMessage::state\fC [read]\fP, \fC [write]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for QKlipper from the source code\&.

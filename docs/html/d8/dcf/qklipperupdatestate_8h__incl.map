@@ -1,0 +1,13 @@
+<map id="/home/parametheus/repo/QKlipper/QKlipperSystem/qklipperupdatestate.h" name="/home/parametheus/repo/QKlipper/QKlipperSystem/qklipperupdatestate.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,5,196,60"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="98,255,173,280"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="72,62,48,95,43,114,45,133,58,165,77,195,116,243,112,246,72,198,54,167,39,134,38,113,44,93,68,59"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="54,108,147,133"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="103,60,103,94,98,94,98,60"/>
+<area shape="rect" id="Node000004" href="$d5/d97/qklipperupdatepackage_8h.html" title=" " alt="" coords="171,108,358,133"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="152,58,232,99,229,104,150,62"/>
+<area shape="poly" id="edge4_Node000004_Node000002" title=" " alt="" coords="232,136,195,155,178,168,163,183,148,212,140,241,135,240,143,210,159,180,174,164,193,150,230,131"/>
+<area shape="rect" id="Node000005" href="$d8/d33/qklipperupdatecommit_8h.html" title=" " alt="" coords="173,181,356,207"/>
+<area shape="poly" id="edge5_Node000004_Node000005" title=" " alt="" coords="267,134,267,168,262,168,262,134"/>
+<area shape="poly" id="edge6_Node000005_Node000002" title=" " alt="" coords="245,209,170,250,168,245,243,204"/>
+</map>

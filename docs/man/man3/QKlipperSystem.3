@@ -1,0 +1,588 @@
+.TH "QKlipperSystem" 3 "Version 0.2" "QKlipper" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+QKlipperSystem
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <qklippersystem\&.h>\fP
+.PP
+Inherits QObject\&.
+.SS "Public Slots"
+
+.in +1c
+.ti -1c
+.RI "void \fBsetDriveCapacity\fP (qint64 \fBdriveCapacity\fP)"
+.br
+.ti -1c
+.RI "void \fBsetDriveUsage\fP (qint64 \fBdriveUsage\fP)"
+.br
+.ti -1c
+.RI "void \fBsetDriveFree\fP (qint64 \fBdriveFree\fP)"
+.br
+.ti -1c
+.RI "void \fBsetHostname\fP (const QString &\fBhostname\fP)"
+.br
+.ti -1c
+.RI "void \fBsetMoonrakerStats\fP (const QList< \fBQKlipperMoonrakerStatsEntry\fP > &\fBmoonrakerStats\fP)"
+.br
+.ti -1c
+.RI "void \fBsetNetworkStats\fP (const QMap< QString, \fBQKlipperNetworkStatsEntry\fP > &\fBnetworkStats\fP)"
+.br
+.ti -1c
+.RI "void \fBsetThrottleState\fP (\fBQKlipperThrottleState\fP *\fBthrottleState\fP)"
+.br
+.ti -1c
+.RI "void \fBsetMemoryStats\fP (\fBQKlipperMemoryStats\fP *\fBmemoryStats\fP)"
+.br
+.ti -1c
+.RI "void \fBsetUptime\fP (qreal \fBuptime\fP)"
+.br
+.ti -1c
+.RI "void \fBsetConnectionCount\fP (qint32 \fBconnectionCount\fP)"
+.br
+.ti -1c
+.RI "void \fBsetCpuInfo\fP (const \fBQKlipperCpuInfo\fP &\fBcpuInfo\fP)"
+.br
+.ti -1c
+.RI "void \fBsetSdInfo\fP (const \fBQKlipperSdInfo\fP &\fBsdInfo\fP)"
+.br
+.ti -1c
+.RI "void \fBsetDistributionInfo\fP (const \fBQKlipperDistributionInfo\fP &\fBdistributionInfo\fP)"
+.br
+.ti -1c
+.RI "void \fBsetVirtualizationState\fP (\fBQKlipperVirtualizationState\fP *\fBvirtualizationState\fP)"
+.br
+.ti -1c
+.RI "void \fBsetNetworkInterfaces\fP (const QMap< QString, \fBQKlipperNetworkInterface\fP > &\fBnetworkInterfaces\fP)"
+.br
+.ti -1c
+.RI "void \fBsetCanBus\fP (\fBQKlipperCanBus\fP *\fBcanBus\fP)"
+.br
+.ti -1c
+.RI "void \fBsetAvailableServices\fP (const QStringList &\fBavailableServices\fP)"
+.br
+.ti -1c
+.RI "void \fBsetServiceStates\fP (const QMap< QString, \fBQKlipperServiceState\fP > &\fBserviceStates\fP)"
+.br
+.ti -1c
+.RI "void \fBsetUsbPeripherals\fP (const QList< \fBQKlipperUsbPeripheral\fP > &\fBusbPeripherals\fP)"
+.br
+.ti -1c
+.RI "void \fBsetSerialPeripherals\fP (const QList< \fBQKlipperSerialPeripheral\fP > &\fBserialPeripherals\fP)"
+.br
+.ti -1c
+.RI "void \fBsetV412Devices\fP (const QList< \fBQKlipperV412Device\fP > &\fBv412Devices\fP)"
+.br
+.ti -1c
+.RI "void \fBsetLibcameraDevices\fP (const QList< \fBQKlipperLibcameraDevice\fP > &\fBlibcameraDevices\fP)"
+.br
+.ti -1c
+.RI "void \fBsetWebcams\fP (const QList< \fBQKlipperWebcam\fP > &\fBwebcams\fP)"
+.br
+.ti -1c
+.RI "void \fBsetCanBusses\fP (const QMap< qint32, \fBQKlipperCanBus\fP * > &\fBcanBusses\fP)"
+.br
+.ti -1c
+.RI "void \fBsetUpdateState\fP (\fBQKlipperUpdateState\fP *\fBupdateState\fP)"
+.br
+.ti -1c
+.RI "void \fBsetVirtualSDCard\fP (\fBQKlipperVirtualSDCard\fP *\fBvirtualSDCard\fP)"
+.br
+.ti -1c
+.RI "void \fBsetPythonVersion\fP (const QString &\fBpythonVersion\fP)"
+.br
+.in -1c
+.SS "Signals"
+
+.in +1c
+.ti -1c
+.RI "void \fBdriveCapacityChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBdriveUsageChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBdriveFreeChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBhostnameChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBmoonrakerStatsChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBnetworkStatsChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBthrottleStateChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBmemoryStatsChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBuptimeChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBconnectionCountChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBcpuInfoChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBsdInfoChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBdistributionInfoChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBvirtualizationStateChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBnetworkInterfacesChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBcanBusChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBavailableServicesChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBserviceStatesChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBusbPeripheralsChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBserialPeripheralsChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBv412DevicesChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBlibcameraDevicesChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBwebcamsChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBcanBussesChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBupdateStateChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBvirtualSDCardChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBpythonVersionChanged\fP ()"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBQKlipperSystem\fP (QObject *parent=nullptr)"
+.br
+.ti -1c
+.RI "\fB~QKlipperSystem\fP ()"
+.br
+.ti -1c
+.RI "qint64 \fBdriveCapacity\fP () const"
+.br
+.ti -1c
+.RI "qint64 \fBdriveUsage\fP () const"
+.br
+.ti -1c
+.RI "qint64 \fBdriveFree\fP () const"
+.br
+.ti -1c
+.RI "QString \fBhostname\fP () const"
+.br
+.ti -1c
+.RI "QList< \fBQKlipperMoonrakerStatsEntry\fP > \fBmoonrakerStats\fP () const"
+.br
+.ti -1c
+.RI "QMap< QString, \fBQKlipperNetworkStatsEntry\fP > \fBnetworkStats\fP () const"
+.br
+.ti -1c
+.RI "\fBQKlipperThrottleState\fP * \fBthrottleState\fP () const"
+.br
+.ti -1c
+.RI "\fBQKlipperMemoryStats\fP * \fBmemoryStats\fP () const"
+.br
+.ti -1c
+.RI "qreal \fBuptime\fP () const"
+.br
+.ti -1c
+.RI "qint32 \fBconnectionCount\fP () const"
+.br
+.ti -1c
+.RI "\fBQKlipperCpuInfo\fP \fBcpuInfo\fP () const"
+.br
+.ti -1c
+.RI "\fBQKlipperSdInfo\fP \fBsdInfo\fP () const"
+.br
+.ti -1c
+.RI "\fBQKlipperDistributionInfo\fP \fBdistributionInfo\fP () const"
+.br
+.ti -1c
+.RI "\fBQKlipperVirtualizationState\fP * \fBvirtualizationState\fP () const"
+.br
+.ti -1c
+.RI "QMap< QString, \fBQKlipperNetworkInterface\fP > \fBnetworkInterfaces\fP () const"
+.br
+.ti -1c
+.RI "\fBQKlipperCanBus\fP * \fBcanBus\fP () const"
+.br
+.ti -1c
+.RI "QStringList \fBavailableServices\fP () const"
+.br
+.ti -1c
+.RI "QMap< QString, \fBQKlipperServiceState\fP > \fBserviceStates\fP () const"
+.br
+.ti -1c
+.RI "QList< \fBQKlipperUsbPeripheral\fP > \fBusbPeripherals\fP () const"
+.br
+.ti -1c
+.RI "QList< \fBQKlipperSerialPeripheral\fP > \fBserialPeripherals\fP () const"
+.br
+.ti -1c
+.RI "QList< \fBQKlipperV412Device\fP > \fBv412Devices\fP () const"
+.br
+.ti -1c
+.RI "QList< \fBQKlipperLibcameraDevice\fP > \fBlibcameraDevices\fP () const"
+.br
+.ti -1c
+.RI "QList< \fBQKlipperWebcam\fP > \fBwebcams\fP () const"
+.br
+.ti -1c
+.RI "QMap< qint32, \fBQKlipperCanBus\fP * > \fBcanBusses\fP () const"
+.br
+.ti -1c
+.RI "\fBQKlipperUpdateState\fP * \fBupdateState\fP () const"
+.br
+.ti -1c
+.RI "\fBQKlipperVirtualSDCard\fP * \fBvirtualSDCard\fP () const"
+.br
+.ti -1c
+.RI "QString \fBpythonVersion\fP () const"
+.br
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "qint64 \fBdriveCapacity\fP"
+.br
+.ti -1c
+.RI "qint64 \fBdriveUsage\fP"
+.br
+.ti -1c
+.RI "qint64 \fBdriveFree\fP"
+.br
+.ti -1c
+.RI "QString \fBhostname\fP"
+.br
+.ti -1c
+.RI "QList< \fBQKlipperMoonrakerStatsEntry\fP > \fBmoonrakerStats\fP"
+.br
+.ti -1c
+.RI "QMap< QString, \fBQKlipperNetworkStatsEntry\fP > \fBnetworkStats\fP"
+.br
+.ti -1c
+.RI "\fBQKlipperThrottleState\fP * \fBthrottleState\fP"
+.br
+.ti -1c
+.RI "\fBQKlipperMemoryStats\fP * \fBmemoryStats\fP"
+.br
+.ti -1c
+.RI "qreal \fBuptime\fP"
+.br
+.ti -1c
+.RI "qint32 \fBconnectionCount\fP"
+.br
+.ti -1c
+.RI "\fBQKlipperCpuInfo\fP \fBcpuInfo\fP"
+.br
+.ti -1c
+.RI "\fBQKlipperSdInfo\fP \fBsdInfo\fP"
+.br
+.ti -1c
+.RI "\fBQKlipperDistributionInfo\fP \fBdistributionInfo\fP"
+.br
+.ti -1c
+.RI "\fBQKlipperVirtualizationState\fP * \fBvirtualizationState\fP"
+.br
+.ti -1c
+.RI "QMap< QString, \fBQKlipperNetworkInterface\fP > \fBnetworkInterfaces\fP"
+.br
+.ti -1c
+.RI "\fBQKlipperCanBus\fP * \fBcanBus\fP"
+.br
+.ti -1c
+.RI "QStringList \fBavailableServices\fP"
+.br
+.ti -1c
+.RI "QMap< QString, \fBQKlipperServiceState\fP > \fBserviceStates\fP"
+.br
+.ti -1c
+.RI "QList< \fBQKlipperUsbPeripheral\fP > \fBusbPeripherals\fP"
+.br
+.ti -1c
+.RI "QList< \fBQKlipperSerialPeripheral\fP > \fBserialPeripherals\fP"
+.br
+.ti -1c
+.RI "QList< \fBQKlipperV412Device\fP > \fBv412Devices\fP"
+.br
+.ti -1c
+.RI "QList< \fBQKlipperLibcameraDevice\fP > \fBlibcameraDevices\fP"
+.br
+.ti -1c
+.RI "QList< \fBQKlipperWebcam\fP > \fBwebcams\fP"
+.br
+.ti -1c
+.RI "QMap< qint32, \fBQKlipperCanBus\fP * > \fBcanBusses\fP"
+.br
+.ti -1c
+.RI "\fBQKlipperUpdateState\fP * \fBupdateState\fP"
+.br
+.ti -1c
+.RI "\fBQKlipperVirtualSDCard\fP * \fBvirtualSDCard\fP"
+.br
+.ti -1c
+.RI "QString \fBpythonVersion\fP"
+.br
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "QKlipperSystem::QKlipperSystem (QObject * parent = \fCnullptr\fP)\fC [explicit]\fP"
+
+.SS "QKlipperSystem::~QKlipperSystem ()"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "QStringList QKlipperSystem::availableServices () const"
+
+.SS "void QKlipperSystem::availableServicesChanged ()\fC [signal]\fP"
+
+.SS "\fBQKlipperCanBus\fP * QKlipperSystem::canBus () const"
+
+.SS "void QKlipperSystem::canBusChanged ()\fC [signal]\fP"
+
+.SS "QMap< qint32, \fBQKlipperCanBus\fP * > QKlipperSystem::canBusses () const"
+
+.SS "void QKlipperSystem::canBussesChanged ()\fC [signal]\fP"
+
+.SS "qint32 QKlipperSystem::connectionCount () const"
+
+.SS "void QKlipperSystem::connectionCountChanged ()\fC [signal]\fP"
+
+.SS "\fBQKlipperCpuInfo\fP QKlipperSystem::cpuInfo () const"
+
+.SS "void QKlipperSystem::cpuInfoChanged ()\fC [signal]\fP"
+
+.SS "\fBQKlipperDistributionInfo\fP QKlipperSystem::distributionInfo () const"
+
+.SS "void QKlipperSystem::distributionInfoChanged ()\fC [signal]\fP"
+
+.SS "qint64 QKlipperSystem::driveCapacity () const"
+
+.SS "void QKlipperSystem::driveCapacityChanged ()\fC [signal]\fP"
+
+.SS "qint64 QKlipperSystem::driveFree () const"
+
+.SS "void QKlipperSystem::driveFreeChanged ()\fC [signal]\fP"
+
+.SS "qint64 QKlipperSystem::driveUsage () const"
+
+.SS "void QKlipperSystem::driveUsageChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperSystem::hostname () const"
+
+.SS "void QKlipperSystem::hostnameChanged ()\fC [signal]\fP"
+
+.SS "QList< \fBQKlipperLibcameraDevice\fP > QKlipperSystem::libcameraDevices () const"
+
+.SS "void QKlipperSystem::libcameraDevicesChanged ()\fC [signal]\fP"
+
+.SS "\fBQKlipperMemoryStats\fP * QKlipperSystem::memoryStats () const"
+
+.SS "void QKlipperSystem::memoryStatsChanged ()\fC [signal]\fP"
+
+.SS "QList< \fBQKlipperMoonrakerStatsEntry\fP > QKlipperSystem::moonrakerStats () const"
+
+.SS "void QKlipperSystem::moonrakerStatsChanged ()\fC [signal]\fP"
+
+.SS "QMap< QString, \fBQKlipperNetworkInterface\fP > QKlipperSystem::networkInterfaces () const"
+
+.SS "void QKlipperSystem::networkInterfacesChanged ()\fC [signal]\fP"
+
+.SS "QMap< QString, \fBQKlipperNetworkStatsEntry\fP > QKlipperSystem::networkStats () const"
+
+.SS "void QKlipperSystem::networkStatsChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperSystem::pythonVersion () const"
+
+.SS "void QKlipperSystem::pythonVersionChanged ()\fC [signal]\fP"
+
+.SS "\fBQKlipperSdInfo\fP QKlipperSystem::sdInfo () const"
+
+.SS "void QKlipperSystem::sdInfoChanged ()\fC [signal]\fP"
+
+.SS "QList< \fBQKlipperSerialPeripheral\fP > QKlipperSystem::serialPeripherals () const"
+
+.SS "void QKlipperSystem::serialPeripheralsChanged ()\fC [signal]\fP"
+
+.SS "QMap< QString, \fBQKlipperServiceState\fP > QKlipperSystem::serviceStates () const"
+
+.SS "void QKlipperSystem::serviceStatesChanged ()\fC [signal]\fP"
+
+.SS "void QKlipperSystem::setAvailableServices (const QStringList & availableServices)\fC [slot]\fP"
+
+.SS "void QKlipperSystem::setCanBus (\fBQKlipperCanBus\fP * canBus)\fC [slot]\fP"
+
+.SS "void QKlipperSystem::setCanBusses (const QMap< qint32, \fBQKlipperCanBus\fP * > & canBusses)\fC [slot]\fP"
+
+.SS "void QKlipperSystem::setConnectionCount (qint32 connectionCount)\fC [slot]\fP"
+
+.SS "void QKlipperSystem::setCpuInfo (const \fBQKlipperCpuInfo\fP & cpuInfo)\fC [slot]\fP"
+
+.SS "void QKlipperSystem::setDistributionInfo (const \fBQKlipperDistributionInfo\fP & distributionInfo)\fC [slot]\fP"
+
+.SS "void QKlipperSystem::setDriveCapacity (qint64 driveCapacity)\fC [slot]\fP"
+
+.SS "void QKlipperSystem::setDriveFree (qint64 driveFree)\fC [slot]\fP"
+
+.SS "void QKlipperSystem::setDriveUsage (qint64 driveUsage)\fC [slot]\fP"
+
+.SS "void QKlipperSystem::setHostname (const QString & hostname)\fC [slot]\fP"
+
+.SS "void QKlipperSystem::setLibcameraDevices (const QList< \fBQKlipperLibcameraDevice\fP > & libcameraDevices)\fC [slot]\fP"
+
+.SS "void QKlipperSystem::setMemoryStats (\fBQKlipperMemoryStats\fP * memoryStats)\fC [slot]\fP"
+
+.SS "void QKlipperSystem::setMoonrakerStats (const QList< \fBQKlipperMoonrakerStatsEntry\fP > & moonrakerStats)\fC [slot]\fP"
+
+.SS "void QKlipperSystem::setNetworkInterfaces (const QMap< QString, \fBQKlipperNetworkInterface\fP > & networkInterfaces)\fC [slot]\fP"
+
+.SS "void QKlipperSystem::setNetworkStats (const QMap< QString, \fBQKlipperNetworkStatsEntry\fP > & networkStats)\fC [slot]\fP"
+
+.SS "void QKlipperSystem::setPythonVersion (const QString & pythonVersion)\fC [slot]\fP"
+
+.SS "void QKlipperSystem::setSdInfo (const \fBQKlipperSdInfo\fP & sdInfo)\fC [slot]\fP"
+
+.SS "void QKlipperSystem::setSerialPeripherals (const QList< \fBQKlipperSerialPeripheral\fP > & serialPeripherals)\fC [slot]\fP"
+
+.SS "void QKlipperSystem::setServiceStates (const QMap< QString, \fBQKlipperServiceState\fP > & serviceStates)\fC [slot]\fP"
+
+.SS "void QKlipperSystem::setThrottleState (\fBQKlipperThrottleState\fP * throttleState)\fC [slot]\fP"
+
+.SS "void QKlipperSystem::setUpdateState (\fBQKlipperUpdateState\fP * updateState)\fC [slot]\fP"
+
+.SS "void QKlipperSystem::setUptime (qreal uptime)\fC [slot]\fP"
+
+.SS "void QKlipperSystem::setUsbPeripherals (const QList< \fBQKlipperUsbPeripheral\fP > & usbPeripherals)\fC [slot]\fP"
+
+.SS "void QKlipperSystem::setV412Devices (const QList< \fBQKlipperV412Device\fP > & v412Devices)\fC [slot]\fP"
+
+.SS "void QKlipperSystem::setVirtualizationState (\fBQKlipperVirtualizationState\fP * virtualizationState)\fC [slot]\fP"
+
+.SS "void QKlipperSystem::setVirtualSDCard (\fBQKlipperVirtualSDCard\fP * virtualSDCard)\fC [slot]\fP"
+
+.SS "void QKlipperSystem::setWebcams (const QList< \fBQKlipperWebcam\fP > & webcams)\fC [slot]\fP"
+
+.SS "\fBQKlipperThrottleState\fP * QKlipperSystem::throttleState () const"
+
+.SS "void QKlipperSystem::throttleStateChanged ()\fC [signal]\fP"
+
+.SS "\fBQKlipperUpdateState\fP * QKlipperSystem::updateState () const"
+
+.SS "void QKlipperSystem::updateStateChanged ()\fC [signal]\fP"
+
+.SS "qreal QKlipperSystem::uptime () const"
+
+.SS "void QKlipperSystem::uptimeChanged ()\fC [signal]\fP"
+
+.SS "QList< \fBQKlipperUsbPeripheral\fP > QKlipperSystem::usbPeripherals () const"
+
+.SS "void QKlipperSystem::usbPeripheralsChanged ()\fC [signal]\fP"
+
+.SS "QList< \fBQKlipperV412Device\fP > QKlipperSystem::v412Devices () const"
+
+.SS "void QKlipperSystem::v412DevicesChanged ()\fC [signal]\fP"
+
+.SS "\fBQKlipperVirtualizationState\fP * QKlipperSystem::virtualizationState () const"
+
+.SS "void QKlipperSystem::virtualizationStateChanged ()\fC [signal]\fP"
+
+.SS "\fBQKlipperVirtualSDCard\fP * QKlipperSystem::virtualSDCard () const"
+
+.SS "void QKlipperSystem::virtualSDCardChanged ()\fC [signal]\fP"
+
+.SS "QList< \fBQKlipperWebcam\fP > QKlipperSystem::webcams () const"
+
+.SS "void QKlipperSystem::webcamsChanged ()\fC [signal]\fP"
+
+.SH "Property Documentation"
+.PP 
+.SS "QStringList QKlipperSystem::availableServices\fC [read]\fP, \fC [write]\fP"
+
+.SS "\fBQKlipperCanBus\fP * QKlipperSystem::canBus\fC [read]\fP, \fC [write]\fP"
+
+.SS "QMap<qint32, \fBQKlipperCanBus\fP *> QKlipperSystem::canBusses\fC [read]\fP, \fC [write]\fP"
+
+.SS "qint32 QKlipperSystem::connectionCount\fC [read]\fP, \fC [write]\fP"
+
+.SS "\fBQKlipperCpuInfo\fP QKlipperSystem::cpuInfo\fC [read]\fP, \fC [write]\fP"
+
+.SS "\fBQKlipperDistributionInfo\fP QKlipperSystem::distributionInfo\fC [read]\fP, \fC [write]\fP"
+
+.SS "qint64 QKlipperSystem::driveCapacity\fC [read]\fP, \fC [write]\fP"
+
+.SS "qint64 QKlipperSystem::driveFree\fC [read]\fP, \fC [write]\fP"
+
+.SS "qint64 QKlipperSystem::driveUsage\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperSystem::hostname\fC [read]\fP, \fC [write]\fP"
+
+.SS "QList<\fBQKlipperLibcameraDevice\fP> QKlipperSystem::libcameraDevices\fC [read]\fP, \fC [write]\fP"
+
+.SS "\fBQKlipperMemoryStats\fP * QKlipperSystem::memoryStats\fC [read]\fP, \fC [write]\fP"
+
+.SS "QList<\fBQKlipperMoonrakerStatsEntry\fP> QKlipperSystem::moonrakerStats\fC [read]\fP, \fC [write]\fP"
+
+.SS "QMap<QString, \fBQKlipperNetworkInterface\fP> QKlipperSystem::networkInterfaces\fC [read]\fP, \fC [write]\fP"
+
+.SS "QMap<QString, \fBQKlipperNetworkStatsEntry\fP> QKlipperSystem::networkStats\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperSystem::pythonVersion\fC [read]\fP, \fC [write]\fP"
+
+.SS "\fBQKlipperSdInfo\fP QKlipperSystem::sdInfo\fC [read]\fP, \fC [write]\fP"
+
+.SS "QList<\fBQKlipperSerialPeripheral\fP> QKlipperSystem::serialPeripherals\fC [read]\fP, \fC [write]\fP"
+
+.SS "QMap<QString, \fBQKlipperServiceState\fP> QKlipperSystem::serviceStates\fC [read]\fP, \fC [write]\fP"
+
+.SS "\fBQKlipperThrottleState\fP * QKlipperSystem::throttleState\fC [read]\fP, \fC [write]\fP"
+
+.SS "\fBQKlipperUpdateState\fP * QKlipperSystem::updateState\fC [read]\fP, \fC [write]\fP"
+
+.SS "qreal QKlipperSystem::uptime\fC [read]\fP, \fC [write]\fP"
+
+.SS "QList<\fBQKlipperUsbPeripheral\fP> QKlipperSystem::usbPeripherals\fC [read]\fP, \fC [write]\fP"
+
+.SS "QList<\fBQKlipperV412Device\fP> QKlipperSystem::v412Devices\fC [read]\fP, \fC [write]\fP"
+
+.SS "\fBQKlipperVirtualizationState\fP * QKlipperSystem::virtualizationState\fC [read]\fP, \fC [write]\fP"
+
+.SS "\fBQKlipperVirtualSDCard\fP * QKlipperSystem::virtualSDCard\fC [read]\fP, \fC [write]\fP"
+
+.SS "QList<\fBQKlipperWebcam\fP> QKlipperSystem::webcams\fC [read]\fP, \fC [write]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for QKlipper from the source code\&.

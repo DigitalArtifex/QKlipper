@@ -1,0 +1,147 @@
+.TH "QKlipperEndstopStatus" 3 "Version 0.2" "QKlipper" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+QKlipperEndstopStatus \- QKlipper - A Qt library for the Klipper/Moonraker API Copyright (C) 2024 James Dudeck\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <qklipperendstopstatus\&.h>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "bool & \fBoperator[]\fP (const QString &name)"
+.br
+.RI "Subscript operator\&. "
+.ti -1c
+.RI "bool \fBoperator==\fP (const \fBQKlipperEndstopStatus\fP &value)"
+.br
+.ti -1c
+.RI "bool \fBoperator!=\fP (const \fBQKlipperEndstopStatus\fP &value)"
+.br
+.ti -1c
+.RI "bool \fBx\fP () const"
+.br
+.RI "Convenience function to return the 'x' endstop status\&. "
+.ti -1c
+.RI "bool \fBy\fP () const"
+.br
+.RI "Convenience function to return the 'y' endstop status\&. "
+.ti -1c
+.RI "bool \fBz\fP () const"
+.br
+.RI "Convenience function to return the 'z' endstop status\&. "
+.ti -1c
+.RI "bool \fBendStop\fP (const QString &name) const"
+.br
+.RI "Convenience function to return the endstop status by name\&. "
+.ti -1c
+.RI "bool \fBcontains\fP (const QString &name) const"
+.br
+.RI "Checks to see if there is a stored reference for the endstop name\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+QKlipper - A Qt library for the Klipper/Moonraker API Copyright (C) 2024 James Dudeck\&. 
+
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version\&.
+.PP
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\&. See the GNU General Public License for more details\&.
+.PP
+You should have received a copy of the GNU General Public License along with this program\&. If not, see http://www.gnu.org/licenses/\&. \fBQKlipperEndstopStatus\fP class
+.PP
+This class provides methods to read the status of all end stops sent by klipper in printer\&.query_endstops 
+.SH "Member Function Documentation"
+.PP 
+.SS "bool QKlipperEndstopStatus::contains (const QString & name) const\fC [inline]\fP"
+
+.PP
+Checks to see if there is a stored reference for the endstop name\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIname\fP The name of the endstop
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+True if the reference exists 
+.RE
+.PP
+
+.SS "bool QKlipperEndstopStatus::endStop (const QString & name) const\fC [inline]\fP"
+
+.PP
+Convenience function to return the endstop status by name\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIname\fP The name of the endstop
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+\fBQKlipperEndstopStatus\fP reference 
+.RE
+.PP
+
+.SS "bool QKlipperEndstopStatus::operator!= (const \fBQKlipperEndstopStatus\fP & value)\fC [inline]\fP"
+
+.SS "bool QKlipperEndstopStatus::operator== (const \fBQKlipperEndstopStatus\fP & value)\fC [inline]\fP"
+
+.SS "bool & QKlipperEndstopStatus::operator[] (const QString & name)\fC [inline]\fP"
+
+.PP
+Subscript operator\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIname\fP The name of the endstop (eg 'x')
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+\fBQKlipperEndstopStatus\fP reference 
+.RE
+.PP
+
+.SS "bool QKlipperEndstopStatus::x () const\fC [inline]\fP"
+
+.PP
+Convenience function to return the 'x' endstop status\&. 
+.PP
+\fBReturns\fP
+.RS 4
+\fBQKlipperEndstopStatus\fP reference 
+.RE
+.PP
+
+.SS "bool QKlipperEndstopStatus::y () const\fC [inline]\fP"
+
+.PP
+Convenience function to return the 'y' endstop status\&. 
+.PP
+\fBReturns\fP
+.RS 4
+\fBQKlipperEndstopStatus\fP reference 
+.RE
+.PP
+
+.SS "bool QKlipperEndstopStatus::z () const\fC [inline]\fP"
+
+.PP
+Convenience function to return the 'z' endstop status\&. 
+.PP
+\fBReturns\fP
+.RS 4
+\fBQKlipperEndstopStatus\fP reference 
+.RE
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for QKlipper from the source code\&.

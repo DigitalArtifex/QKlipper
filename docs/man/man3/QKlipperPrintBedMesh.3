@@ -1,0 +1,318 @@
+.TH "QKlipperPrintBedMesh" 3 "Version 0.2" "QKlipper" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+QKlipperPrintBedMesh \- \fBQKlipperPrintBedMesh\fP class\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <qklipperprintbedmesh\&.h>\fP
+.PP
+Inherits QObject\&.
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBLimit\fP"
+.br
+.RI "\fBLimit\fP struct\&. "
+.in -1c
+.SS "Signals"
+
+.in +1c
+.ti -1c
+.RI "void \fBfadeEndChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBfadeStartChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBfadeTargetChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBhorizontalMoveZChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBadaptiveMarginChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBspeedChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBtensionChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBsplitDeltaZChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBmoveCheckDistanceChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBprofileNameChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBprofilesChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBminimumChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBmaximumChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBprobeCountChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBmatrixChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBprobedChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBalgorithmChanged\fP ()"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBQKlipperPrintBedMesh\fP (QObject *parent=nullptr)"
+.br
+.RI "Constructor\&. "
+.ti -1c
+.RI "qreal \fBfadeEnd\fP () const"
+.br
+.ti -1c
+.RI "qreal \fBfadeStart\fP () const"
+.br
+.ti -1c
+.RI "qreal \fBfadeTarget\fP () const"
+.br
+.ti -1c
+.RI "qreal \fBhorizontalMoveZ\fP () const"
+.br
+.ti -1c
+.RI "qreal \fBadaptiveMargin\fP () const"
+.br
+.ti -1c
+.RI "qreal \fBspeed\fP () const"
+.br
+.ti -1c
+.RI "qreal \fBtension\fP () const"
+.br
+.ti -1c
+.RI "qreal \fBsplitDeltaZ\fP () const"
+.br
+.ti -1c
+.RI "qreal \fBmoveCheckDistance\fP () const"
+.br
+.ti -1c
+.RI "QString \fBprofileName\fP () const"
+.br
+.ti -1c
+.RI "QStringList \fBprofiles\fP () const"
+.br
+.ti -1c
+.RI "\fBLimit\fP \fBminimum\fP () const"
+.br
+.ti -1c
+.RI "\fBLimit\fP \fBmaximum\fP () const"
+.br
+.ti -1c
+.RI "\fBLimit\fP \fBprobeCount\fP () const"
+.br
+.ti -1c
+.RI "QList< QList< qreal > > \fBmatrix\fP () const"
+.br
+.ti -1c
+.RI "QList< QList< qreal > > \fBprobed\fP () const"
+.br
+.ti -1c
+.RI "QString \fBalgorithm\fP () const"
+.br
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "qreal \fBfadeEnd\fP"
+.br
+.ti -1c
+.RI "qreal \fBfadeStart\fP"
+.br
+.ti -1c
+.RI "qreal \fBfadeTarget\fP"
+.br
+.ti -1c
+.RI "qreal \fBhorizontalMoveZ\fP"
+.br
+.ti -1c
+.RI "qreal \fBadaptiveMargin\fP"
+.br
+.ti -1c
+.RI "qreal \fBspeed\fP"
+.br
+.ti -1c
+.RI "qreal \fBtension\fP"
+.br
+.ti -1c
+.RI "qreal \fBsplitDeltaZ\fP"
+.br
+.ti -1c
+.RI "qreal \fBmoveCheckDistance\fP"
+.br
+.ti -1c
+.RI "QString \fBprofileName\fP"
+.br
+.ti -1c
+.RI "QStringList \fBprofiles\fP"
+.br
+.ti -1c
+.RI "\fBLimit\fP \fBminimum\fP"
+.br
+.ti -1c
+.RI "\fBLimit\fP \fBmaximum\fP"
+.br
+.ti -1c
+.RI "\fBLimit\fP \fBprobeCount\fP"
+.br
+.ti -1c
+.RI "QListQList< qreal > \fBmatrix\fP"
+.br
+.ti -1c
+.RI "QListQList< qreal > \fBprobed\fP"
+.br
+.ti -1c
+.RI "QString \fBalgorithm\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+\fBQKlipperPrintBedMesh\fP class\&. 
+
+This class provides the current bed mesh configuration as well as the probed and calculated mesh 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "QKlipperPrintBedMesh::QKlipperPrintBedMesh (QObject * parent = \fCnullptr\fP)\fC [explicit]\fP"
+
+.PP
+Constructor\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIparent\fP The parent object 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "qreal QKlipperPrintBedMesh::adaptiveMargin () const"
+
+.SS "void QKlipperPrintBedMesh::adaptiveMarginChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperPrintBedMesh::algorithm () const"
+
+.SS "void QKlipperPrintBedMesh::algorithmChanged ()\fC [signal]\fP"
+
+.SS "qreal QKlipperPrintBedMesh::fadeEnd () const"
+
+.SS "void QKlipperPrintBedMesh::fadeEndChanged ()\fC [signal]\fP"
+
+.SS "qreal QKlipperPrintBedMesh::fadeStart () const"
+
+.SS "void QKlipperPrintBedMesh::fadeStartChanged ()\fC [signal]\fP"
+
+.SS "qreal QKlipperPrintBedMesh::fadeTarget () const"
+
+.SS "void QKlipperPrintBedMesh::fadeTargetChanged ()\fC [signal]\fP"
+
+.SS "qreal QKlipperPrintBedMesh::horizontalMoveZ () const"
+
+.SS "void QKlipperPrintBedMesh::horizontalMoveZChanged ()\fC [signal]\fP"
+
+.SS "QList< QList< qreal > > QKlipperPrintBedMesh::matrix () const"
+
+.SS "void QKlipperPrintBedMesh::matrixChanged ()\fC [signal]\fP"
+
+.SS "\fBQKlipperPrintBedMesh::Limit\fP QKlipperPrintBedMesh::maximum () const"
+
+.SS "void QKlipperPrintBedMesh::maximumChanged ()\fC [signal]\fP"
+
+.SS "\fBQKlipperPrintBedMesh::Limit\fP QKlipperPrintBedMesh::minimum () const"
+
+.SS "void QKlipperPrintBedMesh::minimumChanged ()\fC [signal]\fP"
+
+.SS "qreal QKlipperPrintBedMesh::moveCheckDistance () const"
+
+.SS "void QKlipperPrintBedMesh::moveCheckDistanceChanged ()\fC [signal]\fP"
+
+.SS "\fBQKlipperPrintBedMesh::Limit\fP QKlipperPrintBedMesh::probeCount () const"
+
+.SS "void QKlipperPrintBedMesh::probeCountChanged ()\fC [signal]\fP"
+
+.SS "QList< QList< qreal > > QKlipperPrintBedMesh::probed () const"
+
+.SS "void QKlipperPrintBedMesh::probedChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperPrintBedMesh::profileName () const"
+
+.SS "void QKlipperPrintBedMesh::profileNameChanged ()\fC [signal]\fP"
+
+.SS "QStringList QKlipperPrintBedMesh::profiles () const"
+
+.SS "void QKlipperPrintBedMesh::profilesChanged ()\fC [signal]\fP"
+
+.SS "qreal QKlipperPrintBedMesh::speed () const"
+
+.SS "void QKlipperPrintBedMesh::speedChanged ()\fC [signal]\fP"
+
+.SS "qreal QKlipperPrintBedMesh::splitDeltaZ () const"
+
+.SS "void QKlipperPrintBedMesh::splitDeltaZChanged ()\fC [signal]\fP"
+
+.SS "qreal QKlipperPrintBedMesh::tension () const"
+
+.SS "void QKlipperPrintBedMesh::tensionChanged ()\fC [signal]\fP"
+
+.SH "Property Documentation"
+.PP 
+.SS "qreal QKlipperPrintBedMesh::adaptiveMargin\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperPrintBedMesh::algorithm\fC [read]\fP, \fC [write]\fP"
+
+.SS "qreal QKlipperPrintBedMesh::fadeEnd\fC [read]\fP, \fC [write]\fP"
+
+.SS "qreal QKlipperPrintBedMesh::fadeStart\fC [read]\fP, \fC [write]\fP"
+
+.SS "qreal QKlipperPrintBedMesh::fadeTarget\fC [read]\fP, \fC [write]\fP"
+
+.SS "qreal QKlipperPrintBedMesh::horizontalMoveZ\fC [read]\fP, \fC [write]\fP"
+
+.SS "QListQList<qreal> QKlipperPrintBedMesh::matrix\fC [read]\fP, \fC [write]\fP"
+
+.SS "\fBLimit\fP QKlipperPrintBedMesh::maximum\fC [read]\fP, \fC [write]\fP"
+
+.SS "\fBLimit\fP QKlipperPrintBedMesh::minimum\fC [read]\fP, \fC [write]\fP"
+
+.SS "qreal QKlipperPrintBedMesh::moveCheckDistance\fC [read]\fP, \fC [write]\fP"
+
+.SS "\fBLimit\fP QKlipperPrintBedMesh::probeCount\fC [read]\fP, \fC [write]\fP"
+
+.SS "QListQList<qreal> QKlipperPrintBedMesh::probed\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperPrintBedMesh::profileName\fC [read]\fP, \fC [write]\fP"
+
+.SS "QStringList QKlipperPrintBedMesh::profiles\fC [read]\fP, \fC [write]\fP"
+
+.SS "qreal QKlipperPrintBedMesh::speed\fC [read]\fP, \fC [write]\fP"
+
+.SS "qreal QKlipperPrintBedMesh::splitDeltaZ\fC [read]\fP, \fC [write]\fP"
+
+.SS "qreal QKlipperPrintBedMesh::tension\fC [read]\fP, \fC [write]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for QKlipper from the source code\&.

@@ -1,0 +1,603 @@
+.TH "QKlipperUpdatePackage" 3 "Version 0.2" "QKlipper" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+QKlipperUpdatePackage
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <qklipperupdatepackage\&.h>\fP
+.PP
+Inherits QObject\&.
+.SS "Public Slots"
+
+.in +1c
+.ti -1c
+.RI "void \fBsetDebugEnabled\fP (bool \fBdebugEnabled\fP)"
+.br
+.ti -1c
+.RI "void \fBsetIsValid\fP (bool \fBisValid\fP)"
+.br
+.ti -1c
+.RI "void \fBsetIsDirty\fP (bool \fBisDirty\fP)"
+.br
+.ti -1c
+.RI "void \fBsetCorrupt\fP (bool \fBcorrupt\fP)"
+.br
+.ti -1c
+.RI "void \fBsetDetached\fP (bool \fBdetached\fP)"
+.br
+.ti -1c
+.RI "void \fBsetPristine\fP (bool \fBpristine\fP)"
+.br
+.ti -1c
+.RI "void \fBsetChannel\fP (const QString &\fBchannel\fP)"
+.br
+.ti -1c
+.RI "void \fBsetConfiguredType\fP (const QString &\fBconfiguredType\fP)"
+.br
+.ti -1c
+.RI "void \fBsetDetectedType\fP (const QString &\fBdetectedType\fP)"
+.br
+.ti -1c
+.RI "void \fBsetRemoteAlias\fP (const QString &\fBremoteAlias\fP)"
+.br
+.ti -1c
+.RI "void \fBsetBranch\fP (const QString &\fBbranch\fP)"
+.br
+.ti -1c
+.RI "void \fBsetOwner\fP (const QString &\fBowner\fP)"
+.br
+.ti -1c
+.RI "void \fBsetRepoName\fP (const QString &\fBrepoName\fP)"
+.br
+.ti -1c
+.RI "void \fBsetVersion\fP (const QString &\fBversion\fP)"
+.br
+.ti -1c
+.RI "void \fBsetRollbackVersion\fP (const QString &\fBrollbackVersion\fP)"
+.br
+.ti -1c
+.RI "void \fBsetRemoteVersion\fP (const QString &\fBremoteVersion\fP)"
+.br
+.ti -1c
+.RI "void \fBsetCurrentHash\fP (const QString &\fBcurrentHash\fP)"
+.br
+.ti -1c
+.RI "void \fBsetRemoteHash\fP (const QString &\fBremoteHash\fP)"
+.br
+.ti -1c
+.RI "void \fBsetFullVersionString\fP (const QString &\fBfullVersionString\fP)"
+.br
+.ti -1c
+.RI "void \fBsetRecoveryUrl\fP (const QString &\fBrecoveryUrl\fP)"
+.br
+.ti -1c
+.RI "void \fBsetRemoteUrl\fP (const QString &\fBremoteUrl\fP)"
+.br
+.ti -1c
+.RI "void \fBsetWarnings\fP (const QStringList &\fBwarnings\fP)"
+.br
+.ti -1c
+.RI "void \fBsetAnomalies\fP (const QStringList &\fBanomalies\fP)"
+.br
+.ti -1c
+.RI "void \fBsetInfoTags\fP (const QStringList &\fBinfoTags\fP)"
+.br
+.ti -1c
+.RI "void \fBsetGitMessages\fP (const QStringList &\fBgitMessages\fP)"
+.br
+.ti -1c
+.RI "void \fBsetCommitsBehind\fP (const QList< \fBQKlipperUpdateCommit\fP > &\fBcommitsBehind\fP)"
+.br
+.in -1c
+.SS "Signals"
+
+.in +1c
+.ti -1c
+.RI "void \fBdebugEnabledChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBisValidChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBisDirtyChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBcorruptChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBdetachedChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBpristineChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBchannelChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBconfiguredTypeChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBdetectedTypeChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBremoteAliasChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBbranchChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBownerChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBrepoNameChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBversionChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBrollbackVersionChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBremoteVersionChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBcurrentHashChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBremoteHashChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBfullVersionStringChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBrecoveryUrlChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBremoteUrlChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBwarningsChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBanomaliesChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBinfoTagsChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBgitMessagesChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBcommitsBehindChanged\fP ()"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBQKlipperUpdatePackage\fP (QObject *parent=nullptr)"
+.br
+.ti -1c
+.RI "\fBQKlipperUpdatePackage\fP (const \fBQKlipperUpdatePackage\fP &value)"
+.br
+.ti -1c
+.RI "\fBQKlipperUpdatePackage\fP (\fBQKlipperUpdatePackage\fP &&value)"
+.br
+.ti -1c
+.RI "\fBQKlipperUpdatePackage\fP & \fBoperator=\fP (const \fBQKlipperUpdatePackage\fP &value)"
+.br
+.ti -1c
+.RI "\fBQKlipperUpdatePackage\fP & \fBoperator=\fP (\fBQKlipperUpdatePackage\fP &&value)"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const \fBQKlipperUpdatePackage\fP &value)"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (\fBQKlipperUpdatePackage\fP &&value)"
+.br
+.ti -1c
+.RI "bool \fBoperator!=\fP (const \fBQKlipperUpdatePackage\fP &value)"
+.br
+.ti -1c
+.RI "bool \fBoperator!=\fP (\fBQKlipperUpdatePackage\fP &&value)"
+.br
+.ti -1c
+.RI "bool \fBdebugEnabled\fP () const"
+.br
+.ti -1c
+.RI "bool \fBisValid\fP () const"
+.br
+.ti -1c
+.RI "bool \fBisDirty\fP () const"
+.br
+.ti -1c
+.RI "bool \fBcorrupt\fP () const"
+.br
+.ti -1c
+.RI "bool \fBdetached\fP () const"
+.br
+.ti -1c
+.RI "bool \fBpristine\fP () const"
+.br
+.ti -1c
+.RI "QString \fBchannel\fP () const"
+.br
+.ti -1c
+.RI "QString \fBconfiguredType\fP () const"
+.br
+.ti -1c
+.RI "QString \fBdetectedType\fP () const"
+.br
+.ti -1c
+.RI "QString \fBremoteAlias\fP () const"
+.br
+.ti -1c
+.RI "QString \fBbranch\fP () const"
+.br
+.ti -1c
+.RI "QString \fBowner\fP () const"
+.br
+.ti -1c
+.RI "QString \fBrepoName\fP () const"
+.br
+.ti -1c
+.RI "QString \fBversion\fP () const"
+.br
+.ti -1c
+.RI "QString \fBrollbackVersion\fP () const"
+.br
+.ti -1c
+.RI "QString \fBremoteVersion\fP () const"
+.br
+.ti -1c
+.RI "QString \fBcurrentHash\fP () const"
+.br
+.ti -1c
+.RI "QString \fBremoteHash\fP () const"
+.br
+.ti -1c
+.RI "QString \fBfullVersionString\fP () const"
+.br
+.ti -1c
+.RI "QString \fBrecoveryUrl\fP () const"
+.br
+.ti -1c
+.RI "QString \fBremoteUrl\fP () const"
+.br
+.ti -1c
+.RI "QStringList \fBwarnings\fP () const"
+.br
+.ti -1c
+.RI "QStringList \fBanomalies\fP () const"
+.br
+.ti -1c
+.RI "QStringList \fBinfoTags\fP () const"
+.br
+.ti -1c
+.RI "QStringList \fBgitMessages\fP () const"
+.br
+.ti -1c
+.RI "QList< \fBQKlipperUpdateCommit\fP > \fBcommitsBehind\fP () const"
+.br
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "bool \fBdebugEnabled\fP"
+.br
+.ti -1c
+.RI "bool \fBisValid\fP"
+.br
+.ti -1c
+.RI "bool \fBisDirty\fP"
+.br
+.ti -1c
+.RI "bool \fBcorrupt\fP"
+.br
+.ti -1c
+.RI "bool \fBdetached\fP"
+.br
+.ti -1c
+.RI "bool \fBpristine\fP"
+.br
+.ti -1c
+.RI "QString \fBchannel\fP"
+.br
+.ti -1c
+.RI "QString \fBconfiguredType\fP"
+.br
+.ti -1c
+.RI "QString \fBdetectedType\fP"
+.br
+.ti -1c
+.RI "QString \fBremoteAlias\fP"
+.br
+.ti -1c
+.RI "QString \fBbranch\fP"
+.br
+.ti -1c
+.RI "QString \fBowner\fP"
+.br
+.ti -1c
+.RI "QString \fBrepoName\fP"
+.br
+.ti -1c
+.RI "QString \fBversion\fP"
+.br
+.ti -1c
+.RI "QString \fBrollbackVersion\fP"
+.br
+.ti -1c
+.RI "QString \fBremoteVersion\fP"
+.br
+.ti -1c
+.RI "QString \fBcurrentHash\fP"
+.br
+.ti -1c
+.RI "QString \fBremoteHash\fP"
+.br
+.ti -1c
+.RI "QString \fBfullVersionString\fP"
+.br
+.ti -1c
+.RI "QString \fBrecoveryUrl\fP"
+.br
+.ti -1c
+.RI "QString \fBremoteUrl\fP"
+.br
+.ti -1c
+.RI "QStringList \fBwarnings\fP"
+.br
+.ti -1c
+.RI "QStringList \fBanomalies\fP"
+.br
+.ti -1c
+.RI "QStringList \fBinfoTags\fP"
+.br
+.ti -1c
+.RI "QStringList \fBgitMessages\fP"
+.br
+.ti -1c
+.RI "QList< \fBQKlipperUpdateCommit\fP > \fBcommitsBehind\fP"
+.br
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "QKlipperUpdatePackage::QKlipperUpdatePackage (QObject * parent = \fCnullptr\fP)\fC [explicit]\fP"
+
+.SS "QKlipperUpdatePackage::QKlipperUpdatePackage (const \fBQKlipperUpdatePackage\fP & value)"
+
+.SS "QKlipperUpdatePackage::QKlipperUpdatePackage (\fBQKlipperUpdatePackage\fP && value)"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "QStringList QKlipperUpdatePackage::anomalies () const"
+
+.SS "void QKlipperUpdatePackage::anomaliesChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperUpdatePackage::branch () const"
+
+.SS "void QKlipperUpdatePackage::branchChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperUpdatePackage::channel () const"
+
+.SS "void QKlipperUpdatePackage::channelChanged ()\fC [signal]\fP"
+
+.SS "QList< \fBQKlipperUpdateCommit\fP > QKlipperUpdatePackage::commitsBehind () const"
+
+.SS "void QKlipperUpdatePackage::commitsBehindChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperUpdatePackage::configuredType () const"
+
+.SS "void QKlipperUpdatePackage::configuredTypeChanged ()\fC [signal]\fP"
+
+.SS "bool QKlipperUpdatePackage::corrupt () const"
+
+.SS "void QKlipperUpdatePackage::corruptChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperUpdatePackage::currentHash () const"
+
+.SS "void QKlipperUpdatePackage::currentHashChanged ()\fC [signal]\fP"
+
+.SS "bool QKlipperUpdatePackage::debugEnabled () const"
+
+.SS "void QKlipperUpdatePackage::debugEnabledChanged ()\fC [signal]\fP"
+
+.SS "bool QKlipperUpdatePackage::detached () const"
+
+.SS "void QKlipperUpdatePackage::detachedChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperUpdatePackage::detectedType () const"
+
+.SS "void QKlipperUpdatePackage::detectedTypeChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperUpdatePackage::fullVersionString () const"
+
+.SS "void QKlipperUpdatePackage::fullVersionStringChanged ()\fC [signal]\fP"
+
+.SS "QStringList QKlipperUpdatePackage::gitMessages () const"
+
+.SS "void QKlipperUpdatePackage::gitMessagesChanged ()\fC [signal]\fP"
+
+.SS "QStringList QKlipperUpdatePackage::infoTags () const"
+
+.SS "void QKlipperUpdatePackage::infoTagsChanged ()\fC [signal]\fP"
+
+.SS "bool QKlipperUpdatePackage::isDirty () const"
+
+.SS "void QKlipperUpdatePackage::isDirtyChanged ()\fC [signal]\fP"
+
+.SS "bool QKlipperUpdatePackage::isValid () const"
+
+.SS "void QKlipperUpdatePackage::isValidChanged ()\fC [signal]\fP"
+
+.SS "bool QKlipperUpdatePackage::operator!= (const \fBQKlipperUpdatePackage\fP & value)"
+
+.SS "bool QKlipperUpdatePackage::operator!= (\fBQKlipperUpdatePackage\fP && value)"
+
+.SS "\fBQKlipperUpdatePackage\fP & QKlipperUpdatePackage::operator= (const \fBQKlipperUpdatePackage\fP & value)"
+
+.SS "\fBQKlipperUpdatePackage\fP & QKlipperUpdatePackage::operator= (\fBQKlipperUpdatePackage\fP && value)"
+
+.SS "bool QKlipperUpdatePackage::operator== (const \fBQKlipperUpdatePackage\fP & value)"
+
+.SS "bool QKlipperUpdatePackage::operator== (\fBQKlipperUpdatePackage\fP && value)"
+
+.SS "QString QKlipperUpdatePackage::owner () const"
+
+.SS "void QKlipperUpdatePackage::ownerChanged ()\fC [signal]\fP"
+
+.SS "bool QKlipperUpdatePackage::pristine () const"
+
+.SS "void QKlipperUpdatePackage::pristineChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperUpdatePackage::recoveryUrl () const"
+
+.SS "void QKlipperUpdatePackage::recoveryUrlChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperUpdatePackage::remoteAlias () const"
+
+.SS "void QKlipperUpdatePackage::remoteAliasChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperUpdatePackage::remoteHash () const"
+
+.SS "void QKlipperUpdatePackage::remoteHashChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperUpdatePackage::remoteUrl () const"
+
+.SS "void QKlipperUpdatePackage::remoteUrlChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperUpdatePackage::remoteVersion () const"
+
+.SS "void QKlipperUpdatePackage::remoteVersionChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperUpdatePackage::repoName () const"
+
+.SS "void QKlipperUpdatePackage::repoNameChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperUpdatePackage::rollbackVersion () const"
+
+.SS "void QKlipperUpdatePackage::rollbackVersionChanged ()\fC [signal]\fP"
+
+.SS "void QKlipperUpdatePackage::setAnomalies (const QStringList & anomalies)\fC [slot]\fP"
+
+.SS "void QKlipperUpdatePackage::setBranch (const QString & branch)\fC [slot]\fP"
+
+.SS "void QKlipperUpdatePackage::setChannel (const QString & channel)\fC [slot]\fP"
+
+.SS "void QKlipperUpdatePackage::setCommitsBehind (const QList< \fBQKlipperUpdateCommit\fP > & commitsBehind)\fC [slot]\fP"
+
+.SS "void QKlipperUpdatePackage::setConfiguredType (const QString & configuredType)\fC [slot]\fP"
+
+.SS "void QKlipperUpdatePackage::setCorrupt (bool corrupt)\fC [slot]\fP"
+
+.SS "void QKlipperUpdatePackage::setCurrentHash (const QString & currentHash)\fC [slot]\fP"
+
+.SS "void QKlipperUpdatePackage::setDebugEnabled (bool debugEnabled)\fC [slot]\fP"
+
+.SS "void QKlipperUpdatePackage::setDetached (bool detached)\fC [slot]\fP"
+
+.SS "void QKlipperUpdatePackage::setDetectedType (const QString & detectedType)\fC [slot]\fP"
+
+.SS "void QKlipperUpdatePackage::setFullVersionString (const QString & fullVersionString)\fC [slot]\fP"
+
+.SS "void QKlipperUpdatePackage::setGitMessages (const QStringList & gitMessages)\fC [slot]\fP"
+
+.SS "void QKlipperUpdatePackage::setInfoTags (const QStringList & infoTags)\fC [slot]\fP"
+
+.SS "void QKlipperUpdatePackage::setIsDirty (bool isDirty)\fC [slot]\fP"
+
+.SS "void QKlipperUpdatePackage::setIsValid (bool isValid)\fC [slot]\fP"
+
+.SS "void QKlipperUpdatePackage::setOwner (const QString & owner)\fC [slot]\fP"
+
+.SS "void QKlipperUpdatePackage::setPristine (bool pristine)\fC [slot]\fP"
+
+.SS "void QKlipperUpdatePackage::setRecoveryUrl (const QString & recoveryUrl)\fC [slot]\fP"
+
+.SS "void QKlipperUpdatePackage::setRemoteAlias (const QString & remoteAlias)\fC [slot]\fP"
+
+.SS "void QKlipperUpdatePackage::setRemoteHash (const QString & remoteHash)\fC [slot]\fP"
+
+.SS "void QKlipperUpdatePackage::setRemoteUrl (const QString & remoteUrl)\fC [slot]\fP"
+
+.SS "void QKlipperUpdatePackage::setRemoteVersion (const QString & remoteVersion)\fC [slot]\fP"
+
+.SS "void QKlipperUpdatePackage::setRepoName (const QString & repoName)\fC [slot]\fP"
+
+.SS "void QKlipperUpdatePackage::setRollbackVersion (const QString & rollbackVersion)\fC [slot]\fP"
+
+.SS "void QKlipperUpdatePackage::setVersion (const QString & version)\fC [slot]\fP"
+
+.SS "void QKlipperUpdatePackage::setWarnings (const QStringList & warnings)\fC [slot]\fP"
+
+.SS "QString QKlipperUpdatePackage::version () const"
+
+.SS "void QKlipperUpdatePackage::versionChanged ()\fC [signal]\fP"
+
+.SS "QStringList QKlipperUpdatePackage::warnings () const"
+
+.SS "void QKlipperUpdatePackage::warningsChanged ()\fC [signal]\fP"
+
+.SH "Property Documentation"
+.PP 
+.SS "QStringList QKlipperUpdatePackage::anomalies\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperUpdatePackage::branch\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperUpdatePackage::channel\fC [read]\fP, \fC [write]\fP"
+
+.SS "QList<\fBQKlipperUpdateCommit\fP> QKlipperUpdatePackage::commitsBehind\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperUpdatePackage::configuredType\fC [read]\fP, \fC [write]\fP"
+
+.SS "bool QKlipperUpdatePackage::corrupt\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperUpdatePackage::currentHash\fC [read]\fP, \fC [write]\fP"
+
+.SS "bool QKlipperUpdatePackage::debugEnabled\fC [read]\fP, \fC [write]\fP"
+
+.SS "bool QKlipperUpdatePackage::detached\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperUpdatePackage::detectedType\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperUpdatePackage::fullVersionString\fC [read]\fP, \fC [write]\fP"
+
+.SS "QStringList QKlipperUpdatePackage::gitMessages\fC [read]\fP, \fC [write]\fP"
+
+.SS "QStringList QKlipperUpdatePackage::infoTags\fC [read]\fP, \fC [write]\fP"
+
+.SS "bool QKlipperUpdatePackage::isDirty\fC [read]\fP, \fC [write]\fP"
+
+.SS "bool QKlipperUpdatePackage::isValid\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperUpdatePackage::owner\fC [read]\fP, \fC [write]\fP"
+
+.SS "bool QKlipperUpdatePackage::pristine\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperUpdatePackage::recoveryUrl\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperUpdatePackage::remoteAlias\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperUpdatePackage::remoteHash\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperUpdatePackage::remoteUrl\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperUpdatePackage::remoteVersion\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperUpdatePackage::repoName\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperUpdatePackage::rollbackVersion\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperUpdatePackage::version\fC [read]\fP, \fC [write]\fP"
+
+.SS "QStringList QKlipperUpdatePackage::warnings\fC [read]\fP, \fC [write]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for QKlipper from the source code\&.

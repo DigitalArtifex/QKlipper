@@ -1,0 +1,633 @@
+.TH "QKlipperServer" 3 "Version 0.2" "QKlipper" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+QKlipperServer
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <qklipperserver\&.h>\fP
+.PP
+Inherits QObject\&.
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum \fBConnectionType\fP { \fBNone\fP = 0, \fBLocal\fP = 1, \fBRemote\fP = 2 }"
+.br
+.in -1c
+.SS "Public Slots"
+
+.in +1c
+.ti -1c
+.RI "void \fBsetMoonrakerLocation\fP (const QString &\fBmoonrakerLocation\fP)"
+.br
+.ti -1c
+.RI "void \fBresetMoonrakerLocation\fP ()"
+.br
+.ti -1c
+.RI "void \fBsetKlipperLocation\fP (const QString &\fBklipperLocation\fP)"
+.br
+.ti -1c
+.RI "void \fBresetKlipperLocation\fP ()"
+.br
+.ti -1c
+.RI "void \fBsetGcodesLocation\fP (const QString &\fBgcodesLocation\fP)"
+.br
+.ti -1c
+.RI "void \fBresetGcodesLocation\fP ()"
+.br
+.ti -1c
+.RI "void \fBsetConfigLocation\fP (const QString &\fBconfigLocation\fP)"
+.br
+.ti -1c
+.RI "void \fBresetConfigLocation\fP ()"
+.br
+.ti -1c
+.RI "void \fBsetInstanceLocation\fP (const QString &\fBinstanceLocation\fP)"
+.br
+.ti -1c
+.RI "void \fBresetInstanceLocation\fP ()"
+.br
+.ti -1c
+.RI "void \fBsetApiKey\fP (const QString &\fBapiKey\fP)"
+.br
+.ti -1c
+.RI "void \fBresetApiKey\fP ()"
+.br
+.ti -1c
+.RI "void \fBsetAddress\fP (const QString &\fBaddress\fP)"
+.br
+.ti -1c
+.RI "void \fBresetAddress\fP ()"
+.br
+.ti -1c
+.RI "void \fBsetGcodeStore\fP (\fBQKlipperGCodeStore\fP *\fBgcodeStore\fP)"
+.br
+.ti -1c
+.RI "void \fBsetGcodeStoreValue\fP (const \fBQKlipperGCodeStoreValue\fP &value)"
+.br
+.ti -1c
+.RI "void \fBresetGcodeStore\fP ()"
+.br
+.ti -1c
+.RI "void \fBsetConnectionType\fP (\fBConnectionType\fP \fBconnectionType\fP)"
+.br
+.ti -1c
+.RI "void \fBresetConnectionType\fP ()"
+.br
+.ti -1c
+.RI "void \fBsetUserList\fP (const QList< \fBQKlipperUser\fP > &\fBuserList\fP)"
+.br
+.ti -1c
+.RI "void \fBsetAccessDetails\fP (\fBQKlipperAccessDetails\fP &\fBaccessDetails\fP)"
+.br
+.ti -1c
+.RI "void \fBsetWebsocketId\fP (const QString &\fBwebsocketId\fP)"
+.br
+.ti -1c
+.RI "void \fBsetConnectionId\fP (const QString &\fBconnectionId\fP)"
+.br
+.ti -1c
+.RI "void \fBsetAvailableObjects\fP (const QStringList &\fBavailableObjects\fP)"
+.br
+.ti -1c
+.RI "void \fBsetGcodeMacroObjects\fP (const QStringList &\fBgcodeMacroObjects\fP)"
+.br
+.ti -1c
+.RI "void \fBsetGcodeMacros\fP (const \fBQKlipperGCodeMacroList\fP &\fBgcodeMacros\fP)"
+.br
+.ti -1c
+.RI "void \fBsetGcodeMacro\fP (const \fBQKlipperGCodeMacro\fP &gcodeMacro)"
+.br
+.ti -1c
+.RI "void \fBsetWarnings\fP (const QStringList &\fBwarnings\fP)"
+.br
+.ti -1c
+.RI "void \fBsetWarning\fP (const QString &warning)"
+.br
+.ti -1c
+.RI "void \fBsetComponents\fP (const QStringList &\fBcomponents\fP)"
+.br
+.ti -1c
+.RI "void \fBsetFailedComponents\fP (const QStringList &\fBfailedComponents\fP)"
+.br
+.ti -1c
+.RI "void \fBsetFile\fP (\fBQKlipperFile\fP *\fBfile\fP)"
+.br
+.ti -1c
+.RI "void \fBsetFileMetadata\fP (QString uri, const \fBQKlipperMetadata\fP &metadata)"
+.br
+.ti -1c
+.RI "void \fBsetAnnouncements\fP (const \fBQKlipperAnnouncementList\fP &\fBannouncements\fP)"
+.br
+.ti -1c
+.RI "void \fBsetJobQueue\fP (\fBQKlipperJobQueue\fP *\fBjobQueue\fP)"
+.br
+.ti -1c
+.RI "void \fBsetFileSystem\fP (const QMap< QString, \fBQKlipperFile\fP * > &\fBfileSystem\fP)"
+.br
+.ti -1c
+.RI "void \fBsetClientIdentifier\fP (const \fBQKlipperClientIdentifier\fP &\fBclientIdentifier\fP)"
+.br
+.ti -1c
+.RI "void \fBsetPort\fP (qint16 \fBport\fP)"
+.br
+.in -1c
+.SS "Signals"
+
+.in +1c
+.ti -1c
+.RI "void \fBmoonrakerLocationChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBklipperLocationChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBgcodesLocationChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBconfigLocationChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBinstanceLocationChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBapiKeyChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBaddressChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBgcodeStoreChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBconnectionTypeChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBuserListChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBaccessDetailsChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBwebsocketIdChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBconnectionIdChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBavailableObjectsChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBgcodeMacroObjectsChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBgcodeMacrosChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBwarningsChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBcomponentsChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBfailedComponentsChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBannouncementsChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBjobQueueChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBfileSystemChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBclientIdentifierChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBportChanged\fP ()"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBQKlipperServer\fP (QObject *parent=nullptr)"
+.br
+.ti -1c
+.RI "\fB~QKlipperServer\fP ()"
+.br
+.ti -1c
+.RI "QString \fBmoonrakerLocation\fP () const"
+.br
+.ti -1c
+.RI "QString \fBklipperLocation\fP () const"
+.br
+.ti -1c
+.RI "QString \fBgcodesLocation\fP () const"
+.br
+.ti -1c
+.RI "QString \fBconfigLocation\fP () const"
+.br
+.ti -1c
+.RI "QString \fBinstanceLocation\fP () const"
+.br
+.ti -1c
+.RI "QString \fBapiKey\fP () const"
+.br
+.ti -1c
+.RI "\fBQKlipperGCodeStore\fP * \fBgcodeStore\fP () const"
+.br
+.ti -1c
+.RI "QString \fBaddress\fP () const"
+.br
+.ti -1c
+.RI "QString \fBwebsocketAddress\fP () const"
+.br
+.ti -1c
+.RI "QString \fBbridgeAddress\fP () const"
+.br
+.ti -1c
+.RI "\fBConnectionType\fP \fBconnectionType\fP () const"
+.br
+.ti -1c
+.RI "QList< \fBQKlipperUser\fP > \fBuserList\fP () const"
+.br
+.ti -1c
+.RI "\fBQKlipperAccessDetails\fP \fBaccessDetails\fP () const"
+.br
+.ti -1c
+.RI "QString \fBwebsocketId\fP () const"
+.br
+.ti -1c
+.RI "QString \fBconnectionId\fP () const"
+.br
+.ti -1c
+.RI "QStringList \fBavailableObjects\fP () const"
+.br
+.ti -1c
+.RI "QStringList \fBgcodeMacroObjects\fP () const"
+.br
+.ti -1c
+.RI "\fBQKlipperGCodeMacroList\fP \fBgcodeMacros\fP () const"
+.br
+.ti -1c
+.RI "QStringList \fBwarnings\fP () const"
+.br
+.ti -1c
+.RI "QStringList \fBcomponents\fP () const"
+.br
+.ti -1c
+.RI "QStringList \fBfailedComponents\fP () const"
+.br
+.ti -1c
+.RI "\fBQKlipperAnnouncementList\fP \fBannouncements\fP () const"
+.br
+.ti -1c
+.RI "\fBQKlipperJobQueue\fP * \fBjobQueue\fP () const"
+.br
+.ti -1c
+.RI "QMap< QString, \fBQKlipperFile\fP * > \fBfileSystem\fP () const"
+.br
+.ti -1c
+.RI "\fBQKlipperFile\fP * \fBfile\fP (QString uri)"
+.br
+.ti -1c
+.RI "\fBQKlipperClientIdentifier\fP \fBclientIdentifier\fP () const"
+.br
+.ti -1c
+.RI "qint16 \fBport\fP () const"
+.br
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "QString \fBmoonrakerLocation\fP"
+.br
+.ti -1c
+.RI "QString \fBklipperLocation\fP"
+.br
+.ti -1c
+.RI "QString \fBgcodesLocation\fP"
+.br
+.ti -1c
+.RI "QString \fBconfigLocation\fP"
+.br
+.ti -1c
+.RI "QString \fBinstanceLocation\fP"
+.br
+.ti -1c
+.RI "QString \fBapiKey\fP"
+.br
+.ti -1c
+.RI "QString \fBaddress\fP"
+.br
+.ti -1c
+.RI "\fBQKlipperGCodeStore\fP * \fBgcodeStore\fP"
+.br
+.ti -1c
+.RI "\fBConnectionType\fP \fBconnectionType\fP"
+.br
+.ti -1c
+.RI "QList< \fBQKlipperUser\fP > \fBuserList\fP"
+.br
+.ti -1c
+.RI "\fBQKlipperAccessDetails\fP \fBaccessDetails\fP"
+.br
+.ti -1c
+.RI "QString \fBwebsocketId\fP"
+.br
+.ti -1c
+.RI "QString \fBconnectionId\fP"
+.br
+.ti -1c
+.RI "QStringList \fBavailableObjects\fP"
+.br
+.ti -1c
+.RI "QStringList \fBgcodeMacroObjects\fP"
+.br
+.ti -1c
+.RI "\fBQKlipperGCodeMacroList\fP \fBgcodeMacros\fP"
+.br
+.ti -1c
+.RI "QStringList \fBwarnings\fP"
+.br
+.ti -1c
+.RI "QStringList \fBcomponents\fP"
+.br
+.ti -1c
+.RI "QStringList \fBfailedComponents\fP"
+.br
+.ti -1c
+.RI "\fBQKlipperAnnouncementList\fP \fBannouncements\fP"
+.br
+.ti -1c
+.RI "\fBQKlipperJobQueue\fP * \fBjobQueue\fP"
+.br
+.ti -1c
+.RI "QMap< QString, \fBQKlipperFile\fP * > \fBfileSystem\fP"
+.br
+.ti -1c
+.RI "\fBQKlipperClientIdentifier\fP \fBclientIdentifier\fP"
+.br
+.ti -1c
+.RI "qint16 \fBport\fP"
+.br
+.in -1c
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum \fBQKlipperServer::ConnectionType\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fINone \fP\fP
+.TP
+\fB\fILocal \fP\fP
+.TP
+\fB\fIRemote \fP\fP
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "QKlipperServer::QKlipperServer (QObject * parent = \fCnullptr\fP)\fC [explicit]\fP"
+
+.SS "QKlipperServer::~QKlipperServer ()"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBQKlipperAccessDetails\fP QKlipperServer::accessDetails () const"
+
+.SS "void QKlipperServer::accessDetailsChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperServer::address () const"
+
+.SS "void QKlipperServer::addressChanged ()\fC [signal]\fP"
+
+.SS "\fBQKlipperAnnouncementList\fP QKlipperServer::announcements () const"
+
+.SS "void QKlipperServer::announcementsChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperServer::apiKey () const"
+
+.SS "void QKlipperServer::apiKeyChanged ()\fC [signal]\fP"
+
+.SS "QStringList QKlipperServer::availableObjects () const"
+
+.SS "void QKlipperServer::availableObjectsChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperServer::bridgeAddress () const"
+
+.SS "\fBQKlipperClientIdentifier\fP QKlipperServer::clientIdentifier () const"
+
+.SS "void QKlipperServer::clientIdentifierChanged ()\fC [signal]\fP"
+
+.SS "QStringList QKlipperServer::components () const"
+
+.SS "void QKlipperServer::componentsChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperServer::configLocation () const"
+
+.SS "void QKlipperServer::configLocationChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperServer::connectionId () const"
+
+.SS "void QKlipperServer::connectionIdChanged ()\fC [signal]\fP"
+
+.SS "\fBQKlipperServer::ConnectionType\fP QKlipperServer::connectionType () const"
+
+.SS "void QKlipperServer::connectionTypeChanged ()\fC [signal]\fP"
+
+.SS "QStringList QKlipperServer::failedComponents () const"
+
+.SS "void QKlipperServer::failedComponentsChanged ()\fC [signal]\fP"
+
+.SS "\fBQKlipperFile\fP * QKlipperServer::file (QString uri)"
+
+.SS "QMap< QString, \fBQKlipperFile\fP * > QKlipperServer::fileSystem () const"
+
+.SS "void QKlipperServer::fileSystemChanged ()\fC [signal]\fP"
+
+.SS "QStringList QKlipperServer::gcodeMacroObjects () const"
+
+.SS "void QKlipperServer::gcodeMacroObjectsChanged ()\fC [signal]\fP"
+
+.SS "\fBQKlipperGCodeMacroList\fP QKlipperServer::gcodeMacros () const"
+
+.SS "void QKlipperServer::gcodeMacrosChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperServer::gcodesLocation () const"
+
+.SS "void QKlipperServer::gcodesLocationChanged ()\fC [signal]\fP"
+
+.SS "\fBQKlipperGCodeStore\fP * QKlipperServer::gcodeStore () const"
+
+.SS "void QKlipperServer::gcodeStoreChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperServer::instanceLocation () const"
+
+.SS "void QKlipperServer::instanceLocationChanged ()\fC [signal]\fP"
+
+.SS "\fBQKlipperJobQueue\fP * QKlipperServer::jobQueue () const"
+
+.SS "void QKlipperServer::jobQueueChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperServer::klipperLocation () const"
+
+.SS "void QKlipperServer::klipperLocationChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperServer::moonrakerLocation () const"
+
+.SS "void QKlipperServer::moonrakerLocationChanged ()\fC [signal]\fP"
+
+.SS "qint16 QKlipperServer::port () const"
+
+.SS "void QKlipperServer::portChanged ()\fC [signal]\fP"
+
+.SS "void QKlipperServer::resetAddress ()\fC [slot]\fP"
+
+.SS "void QKlipperServer::resetApiKey ()\fC [slot]\fP"
+
+.SS "void QKlipperServer::resetConfigLocation ()\fC [slot]\fP"
+
+.SS "void QKlipperServer::resetConnectionType ()\fC [slot]\fP"
+
+.SS "void QKlipperServer::resetGcodesLocation ()\fC [slot]\fP"
+
+.SS "void QKlipperServer::resetGcodeStore ()\fC [slot]\fP"
+
+.SS "void QKlipperServer::resetInstanceLocation ()\fC [slot]\fP"
+
+.SS "void QKlipperServer::resetKlipperLocation ()\fC [slot]\fP"
+
+.SS "void QKlipperServer::resetMoonrakerLocation ()\fC [slot]\fP"
+
+.SS "void QKlipperServer::setAccessDetails (\fBQKlipperAccessDetails\fP & accessDetails)\fC [slot]\fP"
+
+.SS "void QKlipperServer::setAddress (const QString & address)\fC [slot]\fP"
+
+.SS "void QKlipperServer::setAnnouncements (const \fBQKlipperAnnouncementList\fP & announcements)\fC [slot]\fP"
+
+.SS "void QKlipperServer::setApiKey (const QString & apiKey)\fC [slot]\fP"
+
+.SS "void QKlipperServer::setAvailableObjects (const QStringList & availableObjects)\fC [slot]\fP"
+
+.SS "void QKlipperServer::setClientIdentifier (const \fBQKlipperClientIdentifier\fP & clientIdentifier)\fC [slot]\fP"
+
+.SS "void QKlipperServer::setComponents (const QStringList & components)\fC [slot]\fP"
+
+.SS "void QKlipperServer::setConfigLocation (const QString & configLocation)\fC [slot]\fP"
+
+.SS "void QKlipperServer::setConnectionId (const QString & connectionId)\fC [slot]\fP"
+
+.SS "void QKlipperServer::setConnectionType (\fBConnectionType\fP connectionType)\fC [slot]\fP"
+
+.SS "void QKlipperServer::setFailedComponents (const QStringList & failedComponents)\fC [slot]\fP"
+
+.SS "void QKlipperServer::setFile (\fBQKlipperFile\fP * file)\fC [slot]\fP"
+
+.SS "void QKlipperServer::setFileMetadata (QString uri, const \fBQKlipperMetadata\fP & metadata)\fC [slot]\fP"
+
+.SS "void QKlipperServer::setFileSystem (const QMap< QString, \fBQKlipperFile\fP * > & fileSystem)\fC [slot]\fP"
+
+.SS "void QKlipperServer::setGcodeMacro (const \fBQKlipperGCodeMacro\fP & gcodeMacro)\fC [slot]\fP"
+
+.SS "void QKlipperServer::setGcodeMacroObjects (const QStringList & gcodeMacroObjects)\fC [slot]\fP"
+
+.SS "void QKlipperServer::setGcodeMacros (const \fBQKlipperGCodeMacroList\fP & gcodeMacros)\fC [slot]\fP"
+
+.SS "void QKlipperServer::setGcodesLocation (const QString & gcodesLocation)\fC [slot]\fP"
+
+.SS "void QKlipperServer::setGcodeStore (\fBQKlipperGCodeStore\fP * gcodeStore)\fC [slot]\fP"
+
+.SS "void QKlipperServer::setGcodeStoreValue (const \fBQKlipperGCodeStoreValue\fP & value)\fC [slot]\fP"
+
+.SS "void QKlipperServer::setInstanceLocation (const QString & instanceLocation)\fC [slot]\fP"
+
+.SS "void QKlipperServer::setJobQueue (\fBQKlipperJobQueue\fP * jobQueue)\fC [slot]\fP"
+
+.SS "void QKlipperServer::setKlipperLocation (const QString & klipperLocation)\fC [slot]\fP"
+
+.SS "void QKlipperServer::setMoonrakerLocation (const QString & moonrakerLocation)\fC [slot]\fP"
+
+.SS "void QKlipperServer::setPort (qint16 port)\fC [slot]\fP"
+
+.SS "void QKlipperServer::setUserList (const QList< \fBQKlipperUser\fP > & userList)\fC [slot]\fP"
+
+.SS "void QKlipperServer::setWarning (const QString & warning)\fC [slot]\fP"
+
+.SS "void QKlipperServer::setWarnings (const QStringList & warnings)\fC [slot]\fP"
+
+.SS "void QKlipperServer::setWebsocketId (const QString & websocketId)\fC [slot]\fP"
+
+.SS "QList< \fBQKlipperUser\fP > QKlipperServer::userList () const"
+
+.SS "void QKlipperServer::userListChanged ()\fC [signal]\fP"
+
+.SS "QStringList QKlipperServer::warnings () const"
+
+.SS "void QKlipperServer::warningsChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperServer::websocketAddress () const"
+
+.SS "QString QKlipperServer::websocketId () const"
+
+.SS "void QKlipperServer::websocketIdChanged ()\fC [signal]\fP"
+
+.SH "Property Documentation"
+.PP 
+.SS "\fBQKlipperAccessDetails\fP QKlipperServer::accessDetails\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperServer::address\fC [read]\fP, \fC [write]\fP"
+
+.SS "\fBQKlipperAnnouncementList\fP QKlipperServer::announcements\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperServer::apiKey\fC [read]\fP, \fC [write]\fP"
+
+.SS "QStringList QKlipperServer::availableObjects\fC [read]\fP, \fC [write]\fP"
+
+.SS "\fBQKlipperClientIdentifier\fP QKlipperServer::clientIdentifier\fC [read]\fP, \fC [write]\fP"
+
+.SS "QStringList QKlipperServer::components\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperServer::configLocation\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperServer::connectionId\fC [read]\fP, \fC [write]\fP"
+
+.SS "\fBConnectionType\fP QKlipperServer::connectionType\fC [read]\fP, \fC [write]\fP"
+
+.SS "QStringList QKlipperServer::failedComponents\fC [read]\fP, \fC [write]\fP"
+
+.SS "QMap<QString, \fBQKlipperFile\fP *> QKlipperServer::fileSystem\fC [read]\fP, \fC [write]\fP"
+
+.SS "QStringList QKlipperServer::gcodeMacroObjects\fC [read]\fP, \fC [write]\fP"
+
+.SS "\fBQKlipperGCodeMacroList\fP QKlipperServer::gcodeMacros\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperServer::gcodesLocation\fC [read]\fP, \fC [write]\fP"
+
+.SS "\fBQKlipperGCodeStore\fP * QKlipperServer::gcodeStore\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperServer::instanceLocation\fC [read]\fP, \fC [write]\fP"
+
+.SS "\fBQKlipperJobQueue\fP * QKlipperServer::jobQueue\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperServer::klipperLocation\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperServer::moonrakerLocation\fC [read]\fP, \fC [write]\fP"
+
+.SS "qint16 QKlipperServer::port\fC [read]\fP, \fC [write]\fP"
+
+.SS "QList<\fBQKlipperUser\fP> QKlipperServer::userList\fC [read]\fP, \fC [write]\fP"
+
+.SS "QStringList QKlipperServer::warnings\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperServer::websocketId\fC [read]\fP, \fC [write]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for QKlipper from the source code\&.

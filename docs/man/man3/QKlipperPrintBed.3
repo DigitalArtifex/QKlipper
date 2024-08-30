@@ -1,0 +1,462 @@
+.TH "QKlipperPrintBed" 3 "Version 0.2" "QKlipper" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+QKlipperPrintBed \- \fBQKlipperPrintBed\fP class\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <qklipperprintbed\&.h>\fP
+.PP
+Inherits QObject\&.
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum \fBType\fP { \fBHeated\fP, \fBNonHeated\fP }"
+.br
+.in -1c
+.SS "Public Slots"
+
+.in +1c
+.ti -1c
+.RI "void \fBsetTargetTemp\fP (qreal \fBtargetTemp\fP)"
+.br
+.RI "Sends a gcode script to set the requested temperature\&. "
+.ti -1c
+.RI "void \fBcalibratePid\fP (qreal target)"
+.br
+.RI "Sends a gcode script to calibrate the extruder at the target temperature\&. "
+.ti -1c
+.RI "void \fBcalibrateAdjustmentScrews\fP ()"
+.br
+.RI "Sends a gcode script to probe the bed corners to determine adjustment values\&. "
+.ti -1c
+.RI "void \fBcalibrateBedMesh\fP ()"
+.br
+.RI "Sends a gcode script to probe the entire bed to generate the bed mesh\&. "
+.in -1c
+.SS "Signals"
+
+.in +1c
+.ti -1c
+.RI "void \fBcurrentTempChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBtargetTempChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBpowerChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBwattsChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBmaxWattsChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBinlineResistorChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBmaxPowerChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBmaxTempChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBminTempChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBpidKDChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBpidKIChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBpidKPChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBpullupResistorChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBpwmCycleTimeChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBsmoothTimeChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBstartTimeChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBbedMeshChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBadjustmentScrewsChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBadjustmentScrewsErrorChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBhasAdjustmentScrewResultChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBhasBedMeshResultChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBadjustmentScrewsCalibratingChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBbedMeshCalibratingChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBadjustmentScrewsMaxDeviationChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBtiltAdjustErrorChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBprinterChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBconsoleChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBcontrolChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBsensorPinChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBtypeChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBheaterPinChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBsensorTypeChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBadjustmentScrewsCalibrating\fP ()"
+.br
+.ti -1c
+.RI "void \fBbedMeshCalibrating\fP ()"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBQKlipperPrintBed\fP (QObject *parent=nullptr)"
+.br
+.RI "Constructor\&. "
+.ti -1c
+.RI "\fB~QKlipperPrintBed\fP ()"
+.br
+.RI "Destructor\&. "
+.ti -1c
+.RI "qreal \fBcurrentTemp\fP () const"
+.br
+.ti -1c
+.RI "qreal \fBtargetTemp\fP () const"
+.br
+.ti -1c
+.RI "qreal \fBpower\fP () const"
+.br
+.ti -1c
+.RI "qreal \fBwatts\fP () const"
+.br
+.ti -1c
+.RI "qreal \fBmaxWatts\fP () const"
+.br
+.ti -1c
+.RI "qreal \fBinlineResistor\fP () const"
+.br
+.ti -1c
+.RI "qreal \fBmaxPower\fP () const"
+.br
+.ti -1c
+.RI "qreal \fBmaxTemp\fP () const"
+.br
+.ti -1c
+.RI "qreal \fBminTemp\fP () const"
+.br
+.ti -1c
+.RI "qreal \fBpidKD\fP () const"
+.br
+.ti -1c
+.RI "qreal \fBpidKI\fP () const"
+.br
+.ti -1c
+.RI "qreal \fBpidKP\fP () const"
+.br
+.ti -1c
+.RI "qreal \fBpullupResistor\fP () const"
+.br
+.ti -1c
+.RI "qreal \fBpwmCycleTime\fP () const"
+.br
+.ti -1c
+.RI "qreal \fBsmoothTime\fP () const"
+.br
+.ti -1c
+.RI "QDateTime \fBstartTime\fP () const"
+.br
+.ti -1c
+.RI "\fBQKlipperPrintBedMesh\fP * \fBbedMesh\fP () const"
+.br
+.ti -1c
+.RI "QMap< QString, \fBQKlipperAdjustmentScrew\fP * > \fBadjustmentScrews\fP () const"
+.br
+.ti -1c
+.RI "\fBQKlipperAdjustmentScrew\fP * \fBadjustmentScrew\fP (const QString &name)"
+.br
+.ti -1c
+.RI "bool \fBadjustmentScrewsError\fP () const"
+.br
+.ti -1c
+.RI "bool \fBhasAdjustmentScrewResult\fP () const"
+.br
+.ti -1c
+.RI "bool \fBhasBedMeshResult\fP () const"
+.br
+.ti -1c
+.RI "bool \fBadjustmentScrewsCalibrating\fP () const"
+.br
+.ti -1c
+.RI "bool \fBbedMeshCalibrating\fP () const"
+.br
+.ti -1c
+.RI "qreal \fBadjustmentScrewsMaxDeviation\fP () const"
+.br
+.ti -1c
+.RI "bool \fBtiltAdjustError\fP () const"
+.br
+.ti -1c
+.RI "\fBQKlipperPrinter\fP * \fBprinter\fP () const"
+.br
+.ti -1c
+.RI "\fBQKlipperConsole\fP * \fBconsole\fP () const"
+.br
+.ti -1c
+.RI "QString \fBcontrol\fP () const"
+.br
+.ti -1c
+.RI "QString \fBsensorPin\fP () const"
+.br
+.ti -1c
+.RI "\fBType\fP \fBtype\fP () const"
+.br
+.ti -1c
+.RI "QString \fBheaterPin\fP () const"
+.br
+.ti -1c
+.RI "QString \fBsensorType\fP () const"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+\fBQKlipperPrintBed\fP class\&. 
+
+This class is responsible for the actual communication to the klipper instance via moonraker\&. It provides methods for the moonraker API for controlling and querying aspects of the klipper instance\&.
+.PP
+Prior to connecting, it is required to pass instance references to \fBQKlipperPrinter\fP, \fBQKlipperSystem\fP and \fBQKlipperServer\fP that have been setup and configured\&. 
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum \fBQKlipperPrintBed::Type\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIHeated \fP\fP
+.TP
+\fB\fINonHeated \fP\fP
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "QKlipperPrintBed::QKlipperPrintBed (QObject * parent = \fCnullptr\fP)\fC [explicit]\fP"
+
+.PP
+Constructor\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIparent\fP The parent object 
+.RE
+.PP
+
+.SS "QKlipperPrintBed::~QKlipperPrintBed ()"
+
+.PP
+Destructor\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBQKlipperAdjustmentScrew\fP * QKlipperPrintBed::adjustmentScrew (const QString & name)"
+
+.SS "QMap< QString, \fBQKlipperAdjustmentScrew\fP * > QKlipperPrintBed::adjustmentScrews () const"
+
+.SS "void QKlipperPrintBed::adjustmentScrewsCalibrating ()\fC [signal]\fP"
+
+.SS "bool QKlipperPrintBed::adjustmentScrewsCalibrating () const"
+
+.SS "void QKlipperPrintBed::adjustmentScrewsCalibratingChanged ()\fC [signal]\fP"
+
+.SS "void QKlipperPrintBed::adjustmentScrewsChanged ()\fC [signal]\fP"
+
+.SS "bool QKlipperPrintBed::adjustmentScrewsError () const"
+
+.SS "void QKlipperPrintBed::adjustmentScrewsErrorChanged ()\fC [signal]\fP"
+
+.SS "qreal QKlipperPrintBed::adjustmentScrewsMaxDeviation () const"
+
+.SS "void QKlipperPrintBed::adjustmentScrewsMaxDeviationChanged ()\fC [signal]\fP"
+
+.SS "\fBQKlipperPrintBedMesh\fP * QKlipperPrintBed::bedMesh () const"
+
+.SS "void QKlipperPrintBed::bedMeshCalibrating ()\fC [signal]\fP"
+
+.SS "bool QKlipperPrintBed::bedMeshCalibrating () const"
+
+.SS "void QKlipperPrintBed::bedMeshCalibratingChanged ()\fC [signal]\fP"
+
+.SS "void QKlipperPrintBed::bedMeshChanged ()\fC [signal]\fP"
+
+.SS "void QKlipperPrintBed::calibrateAdjustmentScrews ()\fC [slot]\fP"
+
+.PP
+Sends a gcode script to probe the bed corners to determine adjustment values\&. 
+.SS "void QKlipperPrintBed::calibrateBedMesh ()\fC [slot]\fP"
+
+.PP
+Sends a gcode script to probe the entire bed to generate the bed mesh\&. 
+.SS "void QKlipperPrintBed::calibratePid (qreal target)\fC [slot]\fP"
+
+.PP
+Sends a gcode script to calibrate the extruder at the target temperature\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fItarget\fP The temperature to use in the PID calibration 
+.RE
+.PP
+
+.SS "\fBQKlipperConsole\fP * QKlipperPrintBed::console () const"
+
+.SS "void QKlipperPrintBed::consoleChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperPrintBed::control () const"
+
+.SS "void QKlipperPrintBed::controlChanged ()\fC [signal]\fP"
+
+.SS "qreal QKlipperPrintBed::currentTemp () const"
+
+.SS "void QKlipperPrintBed::currentTempChanged ()\fC [signal]\fP"
+
+.SS "bool QKlipperPrintBed::hasAdjustmentScrewResult () const"
+
+.SS "void QKlipperPrintBed::hasAdjustmentScrewResultChanged ()\fC [signal]\fP"
+
+.SS "bool QKlipperPrintBed::hasBedMeshResult () const"
+
+.SS "void QKlipperPrintBed::hasBedMeshResultChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperPrintBed::heaterPin () const"
+
+.SS "void QKlipperPrintBed::heaterPinChanged ()\fC [signal]\fP"
+
+.SS "qreal QKlipperPrintBed::inlineResistor () const"
+
+.SS "void QKlipperPrintBed::inlineResistorChanged ()\fC [signal]\fP"
+
+.SS "qreal QKlipperPrintBed::maxPower () const"
+
+.SS "void QKlipperPrintBed::maxPowerChanged ()\fC [signal]\fP"
+
+.SS "qreal QKlipperPrintBed::maxTemp () const"
+
+.SS "void QKlipperPrintBed::maxTempChanged ()\fC [signal]\fP"
+
+.SS "qreal QKlipperPrintBed::maxWatts () const"
+
+.SS "void QKlipperPrintBed::maxWattsChanged ()\fC [signal]\fP"
+
+.SS "qreal QKlipperPrintBed::minTemp () const"
+
+.SS "void QKlipperPrintBed::minTempChanged ()\fC [signal]\fP"
+
+.SS "qreal QKlipperPrintBed::pidKD () const"
+
+.SS "void QKlipperPrintBed::pidKDChanged ()\fC [signal]\fP"
+
+.SS "qreal QKlipperPrintBed::pidKI () const"
+
+.SS "void QKlipperPrintBed::pidKIChanged ()\fC [signal]\fP"
+
+.SS "qreal QKlipperPrintBed::pidKP () const"
+
+.SS "void QKlipperPrintBed::pidKPChanged ()\fC [signal]\fP"
+
+.SS "qreal QKlipperPrintBed::power () const"
+
+.SS "void QKlipperPrintBed::powerChanged ()\fC [signal]\fP"
+
+.SS "\fBQKlipperPrinter\fP * QKlipperPrintBed::printer () const"
+
+.SS "void QKlipperPrintBed::printerChanged ()\fC [signal]\fP"
+
+.SS "qreal QKlipperPrintBed::pullupResistor () const"
+
+.SS "void QKlipperPrintBed::pullupResistorChanged ()\fC [signal]\fP"
+
+.SS "qreal QKlipperPrintBed::pwmCycleTime () const"
+
+.SS "void QKlipperPrintBed::pwmCycleTimeChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperPrintBed::sensorPin () const"
+
+.SS "void QKlipperPrintBed::sensorPinChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperPrintBed::sensorType () const"
+
+.SS "void QKlipperPrintBed::sensorTypeChanged ()\fC [signal]\fP"
+
+.SS "void QKlipperPrintBed::setTargetTemp (qreal targetTemp)\fC [slot]\fP"
+
+.PP
+Sends a gcode script to set the requested temperature\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fItargetTemp\fP The value (in Celsius) to set (0-maxTemp) 
+.RE
+.PP
+
+.SS "qreal QKlipperPrintBed::smoothTime () const"
+
+.SS "void QKlipperPrintBed::smoothTimeChanged ()\fC [signal]\fP"
+
+.SS "QDateTime QKlipperPrintBed::startTime () const"
+
+.SS "void QKlipperPrintBed::startTimeChanged ()\fC [signal]\fP"
+
+.SS "qreal QKlipperPrintBed::targetTemp () const"
+
+.SS "void QKlipperPrintBed::targetTempChanged ()\fC [signal]\fP"
+
+.SS "bool QKlipperPrintBed::tiltAdjustError () const"
+
+.SS "void QKlipperPrintBed::tiltAdjustErrorChanged ()\fC [signal]\fP"
+
+.SS "\fBQKlipperPrintBed::Type\fP QKlipperPrintBed::type () const"
+
+.SS "void QKlipperPrintBed::typeChanged ()\fC [signal]\fP"
+
+.SS "qreal QKlipperPrintBed::watts () const"
+
+.SS "void QKlipperPrintBed::wattsChanged ()\fC [signal]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for QKlipper from the source code\&.

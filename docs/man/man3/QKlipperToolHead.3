@@ -1,0 +1,527 @@
+.TH "QKlipperToolHead" 3 "Version 0.2" "QKlipper" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+QKlipperToolHead \- \fBQKlipperToolHead\fP class\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <qklippertoolhead\&.h>\fP
+.PP
+Inherits QObject\&.
+.SS "Public Slots"
+
+.in +1c
+.ti -1c
+.RI "void \fBsetPosition\fP (const \fBQKlipperPosition\fP &\fBposition\fP, qreal speed=0)"
+.br
+.RI "Sets the absolute position of the toolhead\&. "
+.ti -1c
+.RI "void \fBsetPosition\fP (qreal x=0, qreal y=0, qreal z=0, qreal speed=0)"
+.br
+.RI "Sets the absolute position of the toolhead\&. "
+.ti -1c
+.RI "void \fBsetPositionX\fP (qreal \fBposition\fP, qreal speed)"
+.br
+.RI "Sets the absolute position of the X Axis\&. "
+.ti -1c
+.RI "void \fBsetPositionY\fP (qreal \fBposition\fP, qreal speed)"
+.br
+.RI "Sets the absolute position of the Y Axis\&. "
+.ti -1c
+.RI "void \fBsetPositionZ\fP (qreal \fBposition\fP, qreal speed)"
+.br
+.RI "Sets the absolute position of the Z Axis\&. "
+.ti -1c
+.RI "void \fBhome\fP ()"
+.br
+.RI "Runs the homing script (G28) "
+.ti -1c
+.RI "void \fBmove\fP (qreal x=0, qreal y=0, qreal z=0, qreal speed=0)"
+.br
+.RI "Move the toolhead by the x, y and z values, relative to the current position\&. "
+.ti -1c
+.RI "void \fBmove\fP (const \fBQKlipperPosition\fP &\fBposition\fP, qreal speed=0)"
+.br
+.RI "Move the toolhead by the position value, relative to the current position\&. "
+.ti -1c
+.RI "void \fBmoveX\fP (qreal amount, qreal speed)"
+.br
+.RI "Sets the absolute position of the X Axis\&. "
+.ti -1c
+.RI "void \fBmoveY\fP (qreal amount, qreal speed)"
+.br
+.RI "Sets the absolute position of the Y Axis\&. "
+.ti -1c
+.RI "void \fBmoveZ\fP (qreal amount, qreal speed)"
+.br
+.RI "Sets the absolute position of the Z Axis\&. "
+.in -1c
+.SS "Signals"
+
+.in +1c
+.ti -1c
+.RI "void \fBpartsFanChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBextruderMapChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBcurrentExtruderNameChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBzHomedChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fByHomedChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBxHomedChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBisHomingChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBmaxAccelerationChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBmaxVelocityChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBmaxAccelerationToDecelerationChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBstallsChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBchecksChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBsquareCornerVelocityChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBpositionChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBdestinationChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBmaxPositionChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBminPositionChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBconsoleChanged\fP ()"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBQKlipperToolHead\fP (QObject *parent=nullptr)"
+.br
+.RI "Constructor\&. "
+.ti -1c
+.RI "\fB~QKlipperToolHead\fP ()"
+.br
+.RI "Destructor\&. "
+.ti -1c
+.RI "\fBQKlipperFan\fP * \fBpartsFan\fP () const"
+.br
+.ti -1c
+.RI "QMap< QString, \fBQKlipperExtruder\fP * > \fBextruderMap\fP () const"
+.br
+.ti -1c
+.RI "\fBQKlipperExtruder\fP * \fBextruder\fP (const QString &name)"
+.br
+.ti -1c
+.RI "\fBQKlipperExtruder\fP * \fBcurrentExtruder\fP ()"
+.br
+.ti -1c
+.RI "QString \fBcurrentExtruderName\fP () const"
+.br
+.ti -1c
+.RI "bool \fBzHomed\fP () const"
+.br
+.ti -1c
+.RI "bool \fByHomed\fP () const"
+.br
+.ti -1c
+.RI "bool \fBxHomed\fP () const"
+.br
+.ti -1c
+.RI "bool \fBisHoming\fP () const"
+.br
+.ti -1c
+.RI "qint32 \fBmaxAcceleration\fP () const"
+.br
+.ti -1c
+.RI "qint32 \fBmaxVelocity\fP () const"
+.br
+.ti -1c
+.RI "qint32 \fBmaxAccelerationToDeceleration\fP () const"
+.br
+.ti -1c
+.RI "qint32 \fBstalls\fP () const"
+.br
+.ti -1c
+.RI "qint32 \fBchecks\fP () const"
+.br
+.ti -1c
+.RI "qreal \fBsquareCornerVelocity\fP () const"
+.br
+.ti -1c
+.RI "\fBQKlipperPosition\fP \fBposition\fP () const"
+.br
+.ti -1c
+.RI "\fBQKlipperPosition\fP \fBdestination\fP () const"
+.br
+.ti -1c
+.RI "\fBQKlipperPosition\fP \fBmaxPosition\fP () const"
+.br
+.ti -1c
+.RI "\fBQKlipperPosition\fP \fBminPosition\fP () const"
+.br
+.ti -1c
+.RI "\fBQKlipperConsole\fP * \fBconsole\fP () const"
+.br
+.ti -1c
+.RI "QString \fBhomedAxes\fP () const"
+.br
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "\fBQKlipperFan\fP * \fBpartsFan\fP"
+.br
+.ti -1c
+.RI "QMap< QString, \fBQKlipperExtruder\fP * > \fBextruderMap\fP"
+.br
+.ti -1c
+.RI "QString \fBcurrentExtruderName\fP"
+.br
+.ti -1c
+.RI "bool \fBzHomed\fP"
+.br
+.ti -1c
+.RI "bool \fByHomed\fP"
+.br
+.ti -1c
+.RI "bool \fBxHomed\fP"
+.br
+.ti -1c
+.RI "bool \fBisHoming\fP"
+.br
+.ti -1c
+.RI "qint32 \fBmaxAcceleration\fP"
+.br
+.ti -1c
+.RI "qint32 \fBmaxVelocity\fP"
+.br
+.ti -1c
+.RI "qint32 \fBmaxAccelerationToDeceleration\fP"
+.br
+.ti -1c
+.RI "qint32 \fBstalls\fP"
+.br
+.ti -1c
+.RI "qint32 \fBchecks\fP"
+.br
+.ti -1c
+.RI "qreal \fBsquareCornerVelocity\fP"
+.br
+.ti -1c
+.RI "\fBQKlipperPosition\fP \fBposition\fP"
+.br
+.ti -1c
+.RI "\fBQKlipperPosition\fP \fBdestination\fP"
+.br
+.ti -1c
+.RI "\fBQKlipperPosition\fP \fBmaxPosition\fP"
+.br
+.ti -1c
+.RI "\fBQKlipperPosition\fP \fBminPosition\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+\fBQKlipperToolHead\fP class\&. 
+
+This class is holds data for the configuration of the printer's toolhead\&. It also provides methods 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "QKlipperToolHead::QKlipperToolHead (QObject * parent = \fCnullptr\fP)\fC [explicit]\fP"
+
+.PP
+Constructor\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIparent\fP The parent object 
+.RE
+.PP
+
+.SS "QKlipperToolHead::~QKlipperToolHead ()"
+
+.PP
+Destructor\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "qint32 QKlipperToolHead::checks () const"
+
+.SS "void QKlipperToolHead::checksChanged ()\fC [signal]\fP"
+
+.SS "\fBQKlipperConsole\fP * QKlipperToolHead::console () const"
+
+.SS "void QKlipperToolHead::consoleChanged ()\fC [signal]\fP"
+
+.SS "\fBQKlipperExtruder\fP * QKlipperToolHead::currentExtruder ()"
+
+.SS "QString QKlipperToolHead::currentExtruderName () const"
+
+.SS "void QKlipperToolHead::currentExtruderNameChanged ()\fC [signal]\fP"
+
+.SS "\fBQKlipperPosition\fP QKlipperToolHead::destination () const"
+
+.SS "void QKlipperToolHead::destinationChanged ()\fC [signal]\fP"
+
+.SS "\fBQKlipperExtruder\fP * QKlipperToolHead::extruder (const QString & name)"
+
+.SS "QMap< QString, \fBQKlipperExtruder\fP * > QKlipperToolHead::extruderMap () const"
+
+.SS "void QKlipperToolHead::extruderMapChanged ()\fC [signal]\fP"
+
+.SS "void QKlipperToolHead::home ()\fC [slot]\fP"
+
+.PP
+Runs the homing script (G28) 
+.SS "QString QKlipperToolHead::homedAxes () const"
+
+.SS "bool QKlipperToolHead::isHoming () const"
+
+.SS "void QKlipperToolHead::isHomingChanged ()\fC [signal]\fP"
+
+.SS "qint32 QKlipperToolHead::maxAcceleration () const"
+
+.SS "void QKlipperToolHead::maxAccelerationChanged ()\fC [signal]\fP"
+
+.SS "qint32 QKlipperToolHead::maxAccelerationToDeceleration () const"
+
+.SS "void QKlipperToolHead::maxAccelerationToDecelerationChanged ()\fC [signal]\fP"
+
+.SS "\fBQKlipperPosition\fP QKlipperToolHead::maxPosition () const"
+
+.SS "void QKlipperToolHead::maxPositionChanged ()\fC [signal]\fP"
+
+.SS "qint32 QKlipperToolHead::maxVelocity () const"
+
+.SS "void QKlipperToolHead::maxVelocityChanged ()\fC [signal]\fP"
+
+.SS "\fBQKlipperPosition\fP QKlipperToolHead::minPosition () const"
+
+.SS "void QKlipperToolHead::minPositionChanged ()\fC [signal]\fP"
+
+.SS "void QKlipperToolHead::move (const \fBQKlipperPosition\fP & position, qreal speed = \fC0\fP)\fC [slot]\fP"
+
+.PP
+Move the toolhead by the position value, relative to the current position\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIposition\fP The position to move to 
+.RE
+.PP
+
+.SS "void QKlipperToolHead::move (qreal x = \fC0\fP, qreal y = \fC0\fP, qreal z = \fC0\fP, qreal speed = \fC0\fP)\fC [slot]\fP"
+
+.PP
+Move the toolhead by the x, y and z values, relative to the current position\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIx\fP The value to move the x axis by
+.br
+\fIy\fP The value to move the y axis by
+.br
+\fIz\fP The value to move the z axis by 
+.RE
+.PP
+
+.SS "void QKlipperToolHead::moveX (qreal amount, qreal speed)\fC [slot]\fP"
+
+.PP
+Sets the absolute position of the X Axis\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIamount\fP The amount to move the X Axis
+.br
+\fIspeed\fP The speed of the movement 
+.RE
+.PP
+
+.SS "void QKlipperToolHead::moveY (qreal amount, qreal speed)\fC [slot]\fP"
+
+.PP
+Sets the absolute position of the Y Axis\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIamount\fP The amount to move the Y Axis
+.br
+\fIspeed\fP The speed of the movement 
+.RE
+.PP
+
+.SS "void QKlipperToolHead::moveZ (qreal amount, qreal speed)\fC [slot]\fP"
+
+.PP
+Sets the absolute position of the Z Axis\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIamount\fP The amount to move the Z Axis
+.br
+\fIspeed\fP The speed of the movement 
+.RE
+.PP
+
+.SS "\fBQKlipperFan\fP * QKlipperToolHead::partsFan () const"
+
+.SS "void QKlipperToolHead::partsFanChanged ()\fC [signal]\fP"
+
+.SS "\fBQKlipperPosition\fP QKlipperToolHead::position () const"
+
+.SS "void QKlipperToolHead::positionChanged ()\fC [signal]\fP"
+
+.SS "void QKlipperToolHead::setPosition (const \fBQKlipperPosition\fP & position, qreal speed = \fC0\fP)\fC [slot]\fP"
+
+.PP
+Sets the absolute position of the toolhead\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIposition\fP The position to move to
+.br
+\fIspeed\fP The speed of the movement 
+.RE
+.PP
+
+.SS "void QKlipperToolHead::setPosition (qreal x = \fC0\fP, qreal y = \fC0\fP, qreal z = \fC0\fP, qreal speed = \fC0\fP)\fC [slot]\fP"
+
+.PP
+Sets the absolute position of the toolhead\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIx\fP The value to move the x axis to
+.br
+\fIy\fP The value to move the y axis to
+.br
+\fIz\fP The value to move the z axis to 
+.RE
+.PP
+
+.SS "void QKlipperToolHead::setPositionX (qreal position, qreal speed)\fC [slot]\fP"
+
+.PP
+Sets the absolute position of the X Axis\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIposition\fP The position to move to
+.br
+\fIspeed\fP The speed of the movement 
+.RE
+.PP
+
+.SS "void QKlipperToolHead::setPositionY (qreal position, qreal speed)\fC [slot]\fP"
+
+.PP
+Sets the absolute position of the Y Axis\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIposition\fP The position to move to
+.br
+\fIspeed\fP The speed of the movement 
+.RE
+.PP
+
+.SS "void QKlipperToolHead::setPositionZ (qreal position, qreal speed)\fC [slot]\fP"
+
+.PP
+Sets the absolute position of the Z Axis\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIposition\fP The position to move to
+.br
+\fIspeed\fP The speed of the movement 
+.RE
+.PP
+
+.SS "qreal QKlipperToolHead::squareCornerVelocity () const"
+
+.SS "void QKlipperToolHead::squareCornerVelocityChanged ()\fC [signal]\fP"
+
+.SS "qint32 QKlipperToolHead::stalls () const"
+
+.SS "void QKlipperToolHead::stallsChanged ()\fC [signal]\fP"
+
+.SS "bool QKlipperToolHead::xHomed () const"
+
+.SS "void QKlipperToolHead::xHomedChanged ()\fC [signal]\fP"
+
+.SS "bool QKlipperToolHead::yHomed () const"
+
+.SS "void QKlipperToolHead::yHomedChanged ()\fC [signal]\fP"
+
+.SS "bool QKlipperToolHead::zHomed () const"
+
+.SS "void QKlipperToolHead::zHomedChanged ()\fC [signal]\fP"
+
+.SH "Property Documentation"
+.PP 
+.SS "qint32 QKlipperToolHead::checks\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperToolHead::currentExtruderName\fC [read]\fP, \fC [write]\fP"
+
+.SS "\fBQKlipperPosition\fP QKlipperToolHead::destination\fC [read]\fP, \fC [write]\fP"
+
+.SS "QMap<QString, \fBQKlipperExtruder\fP *> QKlipperToolHead::extruderMap\fC [read]\fP, \fC [write]\fP"
+
+.SS "bool QKlipperToolHead::isHoming\fC [read]\fP, \fC [write]\fP"
+
+.SS "qint32 QKlipperToolHead::maxAcceleration\fC [read]\fP, \fC [write]\fP"
+
+.SS "qint32 QKlipperToolHead::maxAccelerationToDeceleration\fC [read]\fP, \fC [write]\fP"
+
+.SS "\fBQKlipperPosition\fP QKlipperToolHead::maxPosition\fC [read]\fP, \fC [write]\fP"
+
+.SS "qint32 QKlipperToolHead::maxVelocity\fC [read]\fP, \fC [write]\fP"
+
+.SS "\fBQKlipperPosition\fP QKlipperToolHead::minPosition\fC [read]\fP, \fC [write]\fP"
+
+.SS "\fBQKlipperFan\fP * QKlipperToolHead::partsFan\fC [read]\fP, \fC [write]\fP"
+
+.SS "\fBQKlipperPosition\fP QKlipperToolHead::position\fC [read]\fP, \fC [write]\fP"
+
+.SS "qreal QKlipperToolHead::squareCornerVelocity\fC [read]\fP, \fC [write]\fP"
+
+.SS "qint32 QKlipperToolHead::stalls\fC [read]\fP, \fC [write]\fP"
+
+.SS "bool QKlipperToolHead::xHomed\fC [read]\fP, \fC [write]\fP"
+
+.SS "bool QKlipperToolHead::yHomed\fC [read]\fP, \fC [write]\fP"
+
+.SS "bool QKlipperToolHead::zHomed\fC [read]\fP, \fC [write]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for QKlipper from the source code\&.

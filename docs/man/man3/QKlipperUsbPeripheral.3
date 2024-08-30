@@ -1,0 +1,307 @@
+.TH "QKlipperUsbPeripheral" 3 "Version 0.2" "QKlipper" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+QKlipperUsbPeripheral \- Filled by machine\&.peripherals\&.usb\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <qklipperusbperipheral\&.h>\fP
+.PP
+Inherits QObject\&.
+.SS "Public Slots"
+
+.in +1c
+.ti -1c
+.RI "void \fBsetBusNumber\fP (qint32 \fBbusNumber\fP)"
+.br
+.ti -1c
+.RI "void \fBsetDeviceNumber\fP (qint32 \fBdeviceNumber\fP)"
+.br
+.ti -1c
+.RI "void \fBsetLocation\fP (const QString &\fBlocation\fP)"
+.br
+.ti -1c
+.RI "void \fBsetVendorId\fP (const QString &\fBvendorId\fP)"
+.br
+.ti -1c
+.RI "void \fBsetProductId\fP (const QString &\fBproductId\fP)"
+.br
+.ti -1c
+.RI "void \fBsetManufacturer\fP (const QString &\fBmanufacturer\fP)"
+.br
+.ti -1c
+.RI "void \fBsetProduct\fP (const QString &\fBproduct\fP)"
+.br
+.ti -1c
+.RI "void \fBsetClassName\fP (const QString &\fBclassName\fP)"
+.br
+.ti -1c
+.RI "void \fBsetSubclassName\fP (const QString &\fBsubclassName\fP)"
+.br
+.ti -1c
+.RI "void \fBsetProtocol\fP (const QString &\fBprotocol\fP)"
+.br
+.ti -1c
+.RI "void \fBsetDescription\fP (const QString &\fBdescription\fP)"
+.br
+.in -1c
+.SS "Signals"
+
+.in +1c
+.ti -1c
+.RI "void \fBbusNumberChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBdeviceNumberChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBlocationChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBvendorIdChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBproductIdChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBmanufacturerChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBproductChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBclassNameChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBsubclassNameChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBprotocolChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBdescriptionChanged\fP ()"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBQKlipperUsbPeripheral\fP (QObject *parent=nullptr)"
+.br
+.ti -1c
+.RI "\fBQKlipperUsbPeripheral\fP (const \fBQKlipperUsbPeripheral\fP &value)"
+.br
+.ti -1c
+.RI "\fBQKlipperUsbPeripheral\fP (\fBQKlipperUsbPeripheral\fP &&value)"
+.br
+.ti -1c
+.RI "\fBQKlipperUsbPeripheral\fP & \fBoperator=\fP (const \fBQKlipperUsbPeripheral\fP &value)"
+.br
+.ti -1c
+.RI "\fBQKlipperUsbPeripheral\fP & \fBoperator=\fP (\fBQKlipperUsbPeripheral\fP &&value)"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const \fBQKlipperUsbPeripheral\fP &value)"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (\fBQKlipperUsbPeripheral\fP &&value)"
+.br
+.ti -1c
+.RI "bool \fBoperator!=\fP (const \fBQKlipperUsbPeripheral\fP &value)"
+.br
+.ti -1c
+.RI "bool \fBoperator!=\fP (\fBQKlipperUsbPeripheral\fP &&value)"
+.br
+.ti -1c
+.RI "qint32 \fBbusNumber\fP () const"
+.br
+.ti -1c
+.RI "qint32 \fBdeviceNumber\fP () const"
+.br
+.ti -1c
+.RI "QString \fBlocation\fP () const"
+.br
+.ti -1c
+.RI "QString \fBvendorId\fP () const"
+.br
+.ti -1c
+.RI "QString \fBproductId\fP () const"
+.br
+.ti -1c
+.RI "QString \fBmanufacturer\fP () const"
+.br
+.ti -1c
+.RI "QString \fBproduct\fP () const"
+.br
+.ti -1c
+.RI "QString \fBclassName\fP () const"
+.br
+.ti -1c
+.RI "QString \fBsubclassName\fP () const"
+.br
+.ti -1c
+.RI "QString \fBprotocol\fP () const"
+.br
+.ti -1c
+.RI "QString \fBdescription\fP () const"
+.br
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "qint32 \fBbusNumber\fP"
+.br
+.ti -1c
+.RI "qint32 \fBdeviceNumber\fP"
+.br
+.ti -1c
+.RI "QString \fBlocation\fP"
+.br
+.ti -1c
+.RI "QString \fBvendorId\fP"
+.br
+.ti -1c
+.RI "QString \fBproductId\fP"
+.br
+.ti -1c
+.RI "QString \fBmanufacturer\fP"
+.br
+.ti -1c
+.RI "QString \fBproduct\fP"
+.br
+.ti -1c
+.RI "QString \fBclassName\fP"
+.br
+.ti -1c
+.RI "QString \fBsubclassName\fP"
+.br
+.ti -1c
+.RI "QString \fBprotocol\fP"
+.br
+.ti -1c
+.RI "QString \fBdescription\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Filled by machine\&.peripherals\&.usb\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "QKlipperUsbPeripheral::QKlipperUsbPeripheral (QObject * parent = \fCnullptr\fP)\fC [explicit]\fP"
+
+.SS "QKlipperUsbPeripheral::QKlipperUsbPeripheral (const \fBQKlipperUsbPeripheral\fP & value)"
+
+.SS "QKlipperUsbPeripheral::QKlipperUsbPeripheral (\fBQKlipperUsbPeripheral\fP && value)"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "qint32 QKlipperUsbPeripheral::busNumber () const"
+
+.SS "void QKlipperUsbPeripheral::busNumberChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperUsbPeripheral::className () const"
+
+.SS "void QKlipperUsbPeripheral::classNameChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperUsbPeripheral::description () const"
+
+.SS "void QKlipperUsbPeripheral::descriptionChanged ()\fC [signal]\fP"
+
+.SS "qint32 QKlipperUsbPeripheral::deviceNumber () const"
+
+.SS "void QKlipperUsbPeripheral::deviceNumberChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperUsbPeripheral::location () const"
+
+.SS "void QKlipperUsbPeripheral::locationChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperUsbPeripheral::manufacturer () const"
+
+.SS "void QKlipperUsbPeripheral::manufacturerChanged ()\fC [signal]\fP"
+
+.SS "bool QKlipperUsbPeripheral::operator!= (const \fBQKlipperUsbPeripheral\fP & value)"
+
+.SS "bool QKlipperUsbPeripheral::operator!= (\fBQKlipperUsbPeripheral\fP && value)"
+
+.SS "\fBQKlipperUsbPeripheral\fP & QKlipperUsbPeripheral::operator= (const \fBQKlipperUsbPeripheral\fP & value)"
+
+.SS "\fBQKlipperUsbPeripheral\fP & QKlipperUsbPeripheral::operator= (\fBQKlipperUsbPeripheral\fP && value)"
+
+.SS "bool QKlipperUsbPeripheral::operator== (const \fBQKlipperUsbPeripheral\fP & value)"
+
+.SS "bool QKlipperUsbPeripheral::operator== (\fBQKlipperUsbPeripheral\fP && value)"
+
+.SS "QString QKlipperUsbPeripheral::product () const"
+
+.SS "void QKlipperUsbPeripheral::productChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperUsbPeripheral::productId () const"
+
+.SS "void QKlipperUsbPeripheral::productIdChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperUsbPeripheral::protocol () const"
+
+.SS "void QKlipperUsbPeripheral::protocolChanged ()\fC [signal]\fP"
+
+.SS "void QKlipperUsbPeripheral::setBusNumber (qint32 busNumber)\fC [slot]\fP"
+
+.SS "void QKlipperUsbPeripheral::setClassName (const QString & className)\fC [slot]\fP"
+
+.SS "void QKlipperUsbPeripheral::setDescription (const QString & description)\fC [slot]\fP"
+
+.SS "void QKlipperUsbPeripheral::setDeviceNumber (qint32 deviceNumber)\fC [slot]\fP"
+
+.SS "void QKlipperUsbPeripheral::setLocation (const QString & location)\fC [slot]\fP"
+
+.SS "void QKlipperUsbPeripheral::setManufacturer (const QString & manufacturer)\fC [slot]\fP"
+
+.SS "void QKlipperUsbPeripheral::setProduct (const QString & product)\fC [slot]\fP"
+
+.SS "void QKlipperUsbPeripheral::setProductId (const QString & productId)\fC [slot]\fP"
+
+.SS "void QKlipperUsbPeripheral::setProtocol (const QString & protocol)\fC [slot]\fP"
+
+.SS "void QKlipperUsbPeripheral::setSubclassName (const QString & subclassName)\fC [slot]\fP"
+
+.SS "void QKlipperUsbPeripheral::setVendorId (const QString & vendorId)\fC [slot]\fP"
+
+.SS "QString QKlipperUsbPeripheral::subclassName () const"
+
+.SS "void QKlipperUsbPeripheral::subclassNameChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperUsbPeripheral::vendorId () const"
+
+.SS "void QKlipperUsbPeripheral::vendorIdChanged ()\fC [signal]\fP"
+
+.SH "Property Documentation"
+.PP 
+.SS "qint32 QKlipperUsbPeripheral::busNumber\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperUsbPeripheral::className\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperUsbPeripheral::description\fC [read]\fP, \fC [write]\fP"
+
+.SS "qint32 QKlipperUsbPeripheral::deviceNumber\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperUsbPeripheral::location\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperUsbPeripheral::manufacturer\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperUsbPeripheral::product\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperUsbPeripheral::productId\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperUsbPeripheral::protocol\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperUsbPeripheral::subclassName\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperUsbPeripheral::vendorId\fC [read]\fP, \fC [write]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for QKlipper from the source code\&.

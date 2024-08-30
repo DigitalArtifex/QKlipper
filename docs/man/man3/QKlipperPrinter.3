@@ -1,0 +1,483 @@
+.TH "QKlipperPrinter" 3 "Version 0.2" "QKlipper" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+QKlipperPrinter \- \fBQKlipperPrinter\fP class\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <qklipperprinter\&.h>\fP
+.PP
+Inherits QObject\&.
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum \fBStatus\fP { \fBReady\fP = 0b00000001, \fBError\fP = 0b00000010, \fBPaused\fP = 0b00000100, \fBCancelled\fP = 0b00001000, \fBPrinting\fP = 0b00010000, \fBOffline\fP = 0b10000000, \fBConnecting\fP = 0b01000000 }"
+.br
+.in -1c
+.SS "Signals"
+
+.in +1c
+.ti -1c
+.RI "void \fBtoolheadChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBbedChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBchamberChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBpowerProfileChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBnameChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBidChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBfirmwareVersionChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBstatusMessageChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBconfigFileChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBkinematicsChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBcolorChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBmaxAccelerationChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBmaxVelocityChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBmaxZAccelerationChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBmaxZVelocityChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBsquareCornerVelocityChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBprintTimeChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBautoConnectChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBdefaultPrinterChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBprintStartedChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBprintEndingChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBstatusChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBconsoleChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBprintJobChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBgCodeStoreChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBmcuChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBcurrentFileChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBsafeZHomeChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBfansChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBgcodeMoveChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBstepperMotorsChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBprobeDataChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBendstopStatusChanged\fP ()"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBQKlipperPrinter\fP (QObject *parent=nullptr)"
+.br
+.ti -1c
+.RI "\fB~QKlipperPrinter\fP ()"
+.br
+.ti -1c
+.RI "\fBQKlipperToolHead\fP * \fBtoolhead\fP () const"
+.br
+.ti -1c
+.RI "\fBQKlipperPrintBed\fP * \fBbed\fP () const"
+.br
+.ti -1c
+.RI "\fBQKlipperChamber\fP * \fBchamber\fP () const"
+.br
+.ti -1c
+.RI "QMap< QString, qreal > \fBpowerProfile\fP () const"
+.br
+.ti -1c
+.RI "QString \fBname\fP () const"
+.br
+.ti -1c
+.RI "QString \fBid\fP () const"
+.br
+.ti -1c
+.RI "QString \fBfirmwareVersion\fP () const"
+.br
+.ti -1c
+.RI "QString \fBstatusMessage\fP () const"
+.br
+.ti -1c
+.RI "QString \fBconfigFile\fP () const"
+.br
+.ti -1c
+.RI "QString \fBkinematics\fP () const"
+.br
+.ti -1c
+.RI "QString \fBcolor\fP () const"
+.br
+.ti -1c
+.RI "qreal \fBmaxAcceleration\fP () const"
+.br
+.ti -1c
+.RI "qreal \fBmaxVelocity\fP () const"
+.br
+.ti -1c
+.RI "qreal \fBmaxZAcceleration\fP () const"
+.br
+.ti -1c
+.RI "qreal \fBmaxZVelocity\fP () const"
+.br
+.ti -1c
+.RI "qreal \fBsquareCornerVelocity\fP () const"
+.br
+.ti -1c
+.RI "qreal \fBprintTime\fP () const"
+.br
+.ti -1c
+.RI "bool \fBautoConnect\fP () const"
+.br
+.ti -1c
+.RI "bool \fBdefaultPrinter\fP () const"
+.br
+.ti -1c
+.RI "QDateTime \fBprintStarted\fP () const"
+.br
+.ti -1c
+.RI "QDateTime \fBprintEnding\fP () const"
+.br
+.ti -1c
+.RI "\fBStatus\fP \fBstatus\fP () const"
+.br
+.ti -1c
+.RI "\fBQKlipperConsole\fP * \fBconsole\fP () const"
+.br
+.ti -1c
+.RI "\fBQKlipperPrintJob\fP * \fBprintJob\fP () const"
+.br
+.ti -1c
+.RI "\fBQKlipperGCodeStore\fP * \fBgCodeStore\fP () const"
+.br
+.ti -1c
+.RI "\fBQKlipperMCU\fP * \fBmcu\fP () const"
+.br
+.ti -1c
+.RI "\fBQKlipperFile\fP * \fBcurrentFile\fP () const"
+.br
+.ti -1c
+.RI "\fBQKlipperSafeZHome\fP * \fBsafeZHome\fP () const"
+.br
+.ti -1c
+.RI "\fBQKlipperExtruder\fP * \fBextruder\fP (const QString &\fBname\fP)"
+.br
+.ti -1c
+.RI "QMap< QString, \fBQKlipperFan\fP * > \fBfans\fP () const"
+.br
+.ti -1c
+.RI "\fBQKlipperFan\fP * \fBfan\fP (const QString &\fBname\fP) const"
+.br
+.ti -1c
+.RI "\fBQKlipperGCodeMove\fP \fBgcodeMove\fP () const"
+.br
+.ti -1c
+.RI "QMap< QString, \fBQKlipperStepperMotor\fP * > \fBstepperMotors\fP () const"
+.br
+.ti -1c
+.RI "\fBQKlipperStepperMotor\fP * \fBstepperMotor\fP (const QString &\fBname\fP)"
+.br
+.ti -1c
+.RI "\fBQKlipperProbeData\fP \fBprobeData\fP () const"
+.br
+.ti -1c
+.RI "\fBQKlipperEndstopStatus\fP \fBendstopStatus\fP () const"
+.br
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "\fBQKlipperSafeZHome\fP * \fBsafeZHome\fP"
+.br
+.ti -1c
+.RI "QMap< QString, \fBQKlipperFan\fP * > \fBfans\fP"
+.br
+.ti -1c
+.RI "\fBQKlipperProbeData\fP \fBprobeData\fP"
+.br
+.ti -1c
+.RI "QMap< QString, \fBQKlipperStepperMotor\fP * > \fBstepperMotors\fP"
+.br
+.ti -1c
+.RI "\fBQKlipperEndstopStatus\fP \fBendstopStatus\fP"
+.br
+.ti -1c
+.RI "\fBQKlipperGCodeMove\fP \fBgcodeMove\fP"
+.br
+.ti -1c
+.RI "\fBQKlipperGCodeStore\fP * \fBgCodeStore\fP"
+.br
+.ti -1c
+.RI "\fBQKlipperPrintJob\fP * \fBprintJob\fP"
+.br
+.ti -1c
+.RI "\fBStatus\fP \fBstatus\fP"
+.br
+.ti -1c
+.RI "QDateTime \fBprintEnding\fP"
+.br
+.ti -1c
+.RI "QDateTime \fBprintStarted\fP"
+.br
+.ti -1c
+.RI "\fBQKlipperFile\fP * \fBcurrentFile\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+\fBQKlipperPrinter\fP class\&. 
+
+This class provides information and methods for the klipper printer object 
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum \fBQKlipperPrinter::Status\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIReady \fP\fP
+.TP
+\fB\fIError \fP\fP
+.TP
+\fB\fIPaused \fP\fP
+.TP
+\fB\fICancelled \fP\fP
+.TP
+\fB\fIPrinting \fP\fP
+.TP
+\fB\fIOffline \fP\fP
+.TP
+\fB\fIConnecting \fP\fP
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "QKlipperPrinter::QKlipperPrinter (QObject * parent = \fCnullptr\fP)\fC [explicit]\fP"
+
+.SS "QKlipperPrinter::~QKlipperPrinter ()"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "bool QKlipperPrinter::autoConnect () const"
+
+.SS "void QKlipperPrinter::autoConnectChanged ()\fC [signal]\fP"
+
+.SS "\fBQKlipperPrintBed\fP * QKlipperPrinter::bed () const"
+
+.SS "void QKlipperPrinter::bedChanged ()\fC [signal]\fP"
+
+.SS "\fBQKlipperChamber\fP * QKlipperPrinter::chamber () const"
+
+.SS "void QKlipperPrinter::chamberChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperPrinter::color () const"
+
+.SS "void QKlipperPrinter::colorChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperPrinter::configFile () const"
+
+.SS "void QKlipperPrinter::configFileChanged ()\fC [signal]\fP"
+
+.SS "\fBQKlipperConsole\fP * QKlipperPrinter::console () const"
+
+.SS "void QKlipperPrinter::consoleChanged ()\fC [signal]\fP"
+
+.SS "\fBQKlipperFile\fP * QKlipperPrinter::currentFile () const"
+
+.SS "void QKlipperPrinter::currentFileChanged ()\fC [signal]\fP"
+
+.SS "bool QKlipperPrinter::defaultPrinter () const"
+
+.SS "void QKlipperPrinter::defaultPrinterChanged ()\fC [signal]\fP"
+
+.SS "\fBQKlipperEndstopStatus\fP QKlipperPrinter::endstopStatus () const"
+
+.SS "void QKlipperPrinter::endstopStatusChanged ()\fC [signal]\fP"
+
+.SS "\fBQKlipperExtruder\fP * QKlipperPrinter::extruder (const QString & name)"
+
+.SS "\fBQKlipperFan\fP * QKlipperPrinter::fan (const QString & name) const"
+
+.SS "QMap< QString, \fBQKlipperFan\fP * > QKlipperPrinter::fans () const"
+
+.SS "void QKlipperPrinter::fansChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperPrinter::firmwareVersion () const"
+
+.SS "void QKlipperPrinter::firmwareVersionChanged ()\fC [signal]\fP"
+
+.SS "\fBQKlipperGCodeMove\fP QKlipperPrinter::gcodeMove () const"
+
+.SS "void QKlipperPrinter::gcodeMoveChanged ()\fC [signal]\fP"
+
+.SS "\fBQKlipperGCodeStore\fP * QKlipperPrinter::gCodeStore () const"
+
+.SS "void QKlipperPrinter::gCodeStoreChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperPrinter::id () const"
+
+.SS "void QKlipperPrinter::idChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperPrinter::kinematics () const"
+
+.SS "void QKlipperPrinter::kinematicsChanged ()\fC [signal]\fP"
+
+.SS "qreal QKlipperPrinter::maxAcceleration () const"
+
+.SS "void QKlipperPrinter::maxAccelerationChanged ()\fC [signal]\fP"
+
+.SS "qreal QKlipperPrinter::maxVelocity () const"
+
+.SS "void QKlipperPrinter::maxVelocityChanged ()\fC [signal]\fP"
+
+.SS "qreal QKlipperPrinter::maxZAcceleration () const"
+
+.SS "void QKlipperPrinter::maxZAccelerationChanged ()\fC [signal]\fP"
+
+.SS "qreal QKlipperPrinter::maxZVelocity () const"
+
+.SS "void QKlipperPrinter::maxZVelocityChanged ()\fC [signal]\fP"
+
+.SS "\fBQKlipperMCU\fP * QKlipperPrinter::mcu () const"
+
+.SS "void QKlipperPrinter::mcuChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperPrinter::name () const"
+
+.SS "void QKlipperPrinter::nameChanged ()\fC [signal]\fP"
+
+.SS "QMap< QString, qreal > QKlipperPrinter::powerProfile () const"
+
+.SS "void QKlipperPrinter::powerProfileChanged ()\fC [signal]\fP"
+
+.SS "QDateTime QKlipperPrinter::printEnding () const"
+
+.SS "void QKlipperPrinter::printEndingChanged ()\fC [signal]\fP"
+
+.SS "\fBQKlipperPrintJob\fP * QKlipperPrinter::printJob () const"
+
+.SS "void QKlipperPrinter::printJobChanged ()\fC [signal]\fP"
+
+.SS "QDateTime QKlipperPrinter::printStarted () const"
+
+.SS "void QKlipperPrinter::printStartedChanged ()\fC [signal]\fP"
+
+.SS "qreal QKlipperPrinter::printTime () const"
+
+.SS "void QKlipperPrinter::printTimeChanged ()\fC [signal]\fP"
+
+.SS "\fBQKlipperProbeData\fP QKlipperPrinter::probeData () const"
+
+.SS "void QKlipperPrinter::probeDataChanged ()\fC [signal]\fP"
+
+.SS "\fBQKlipperSafeZHome\fP * QKlipperPrinter::safeZHome () const"
+
+.SS "void QKlipperPrinter::safeZHomeChanged ()\fC [signal]\fP"
+
+.SS "qreal QKlipperPrinter::squareCornerVelocity () const"
+
+.SS "void QKlipperPrinter::squareCornerVelocityChanged ()\fC [signal]\fP"
+
+.SS "\fBQKlipperPrinter::Status\fP QKlipperPrinter::status () const"
+
+.SS "void QKlipperPrinter::statusChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperPrinter::statusMessage () const"
+
+.SS "void QKlipperPrinter::statusMessageChanged ()\fC [signal]\fP"
+
+.SS "\fBQKlipperStepperMotor\fP * QKlipperPrinter::stepperMotor (const QString & name)"
+
+.SS "QMap< QString, \fBQKlipperStepperMotor\fP * > QKlipperPrinter::stepperMotors () const"
+
+.SS "void QKlipperPrinter::stepperMotorsChanged ()\fC [signal]\fP"
+
+.SS "\fBQKlipperToolHead\fP * QKlipperPrinter::toolhead () const"
+
+.SS "void QKlipperPrinter::toolheadChanged ()\fC [signal]\fP"
+
+.SH "Property Documentation"
+.PP 
+.SS "\fBQKlipperFile\fP * QKlipperPrinter::currentFile\fC [read]\fP, \fC [write]\fP"
+
+.SS "\fBQKlipperEndstopStatus\fP QKlipperPrinter::endstopStatus\fC [read]\fP, \fC [write]\fP"
+
+.SS "QMap<QString, \fBQKlipperFan\fP *> QKlipperPrinter::fans\fC [read]\fP, \fC [write]\fP"
+
+.SS "\fBQKlipperGCodeMove\fP QKlipperPrinter::gcodeMove\fC [read]\fP, \fC [write]\fP"
+
+.SS "\fBQKlipperGCodeStore\fP * QKlipperPrinter::gCodeStore\fC [read]\fP, \fC [write]\fP"
+
+.SS "QDateTime QKlipperPrinter::printEnding\fC [read]\fP, \fC [write]\fP"
+
+.SS "\fBQKlipperPrintJob\fP * QKlipperPrinter::printJob\fC [read]\fP, \fC [write]\fP"
+
+.SS "QDateTime QKlipperPrinter::printStarted\fC [read]\fP, \fC [write]\fP"
+
+.SS "\fBQKlipperProbeData\fP QKlipperPrinter::probeData\fC [read]\fP, \fC [write]\fP"
+
+.SS "\fBQKlipperSafeZHome\fP * QKlipperPrinter::safeZHome\fC [read]\fP, \fC [write]\fP"
+
+.SS "\fBStatus\fP QKlipperPrinter::status\fC [read]\fP, \fC [write]\fP"
+
+.SS "QMap<QString, \fBQKlipperStepperMotor\fP *> QKlipperPrinter::stepperMotors\fC [read]\fP, \fC [write]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for QKlipper from the source code\&.

@@ -1,0 +1,28 @@
+<map id="/home/parametheus/repo/QKlipper/QKlipperPrinter/qklipperprintbed.h" name="/home/parametheus/repo/QKlipper/QKlipperPrinter/qklipperprintbed.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="153,5,340,60"/>
+<area shape="rect" id="Node000002" href="$d2/d1f/qklipperprintbed_8cpp.html" title=" " alt="" coords="5,313,192,368"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="227,73,153,212,111,314,106,312,148,210,222,71"/>
+<area shape="rect" id="Node000003" href="$d5/d94/qklipperprinter_8h.html" title=" " alt="" coords="293,108,480,163"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="296,66,351,106,348,110,293,70"/>
+<area shape="rect" id="Node000004" href="$da/db6/qklipperconsole_8h.html" title=" " alt="" coords="433,211,628,265"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="437,168,494,208,491,213,434,173"/>
+<area shape="rect" id="Node000006" href="$d3/d75/qklipperinstance_8h.html" title=" " alt="" coords="216,313,413,368"/>
+<area shape="poly" id="edge12_Node000003_Node000006" title=" " alt="" coords="385,177,378,221,364,266,337,315,332,312,359,264,372,219,380,176"/>
+<area shape="rect" id="Node000011" href="$d5/d1b/qklippertoolhead_8cpp.html" title=" " alt="" coords="1077,313,1264,368"/>
+<area shape="poly" id="edge14_Node000003_Node000011" title=" " alt="" coords="494,162,1078,313,1077,318,493,167"/>
+<area shape="rect" id="Node000012" href="$da/d34/qklipperprinter_8cpp.html" title=" " alt="" coords="163,211,349,265"/>
+<area shape="poly" id="edge13_Node000003_Node000012" title=" " alt="" coords="344,173,292,213,289,208,340,169"/>
+<area shape="poly" id="edge10_Node000004_Node000002" title=" " alt="" coords="420,266,205,316,193,319,192,314,203,311,419,261"/>
+<area shape="rect" id="Node000005" href="$d9/dfa/qklipperconsole_8cpp.html" title=" " alt="" coords="859,313,1053,368"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="642,263,847,311,859,313,858,319,846,316,641,268"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="463,273,372,316,370,311,461,269"/>
+<area shape="rect" id="Node000009" href="$d7/d9e/qklipperextruder_8cpp.html" title=" " alt="" coords="437,313,624,368"/>
+<area shape="poly" id="edge8_Node000004_Node000009" title=" " alt="" coords="533,279,533,313,528,313,528,279"/>
+<area shape="rect" id="Node000010" href="$da/d85/qklipperfan_8cpp.html" title=" " alt="" coords="648,313,835,368"/>
+<area shape="poly" id="edge9_Node000004_Node000010" title=" " alt="" coords="599,269,688,311,685,316,597,274"/>
+<area shape="poly" id="edge11_Node000004_Node000011" title=" " alt="" coords="642,249,840,274,1066,311,1078,313,1077,318,1065,316,839,279,641,254"/>
+<area shape="rect" id="Node000007" href="$d5/d2b/qklipperinstance_8cpp.html" title=" " alt="" coords="108,416,305,471"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="278,380,237,418,233,414,274,376"/>
+<area shape="rect" id="Node000008" href="$df/d0a/main_8cpp.html" title=" " alt="" coords="329,423,516,463"/>
+<area shape="poly" id="edge7_Node000006_Node000008" title=" " alt="" coords="355,376,404,421,401,425,351,379"/>
+</map>

@@ -1,0 +1,213 @@
+.TH "QKlipperFan" 3 "Version 0.2" "QKlipper" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+QKlipperFan \- \fBQKlipperFan\fP class\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <qklipperfan\&.h>\fP
+.PP
+Inherits QObject\&.
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum \fBState\fP { \fBOff\fP = 0, \fBOn\fP = 1 }"
+.br
+.RI "State enum\&. "
+.in -1c
+.SS "Public Slots"
+
+.in +1c
+.ti -1c
+.RI "void \fBsetSpeed\fP (qreal \fBspeed\fP)"
+.br
+.RI "Sends a gcode script to set the requested speed\&. "
+.in -1c
+.SS "Signals"
+
+.in +1c
+.ti -1c
+.RI "void \fBnameChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBspeedChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBrpmChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBisControllableChanged\fP ()"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBQKlipperFan\fP (QObject *parent=nullptr)"
+.br
+.RI "Constructor\&. "
+.ti -1c
+.RI "QString \fBname\fP () const"
+.br
+.RI "Name of the fan object\&. "
+.ti -1c
+.RI "qreal \fBspeed\fP () const"
+.br
+.RI "Current speed of the fan\&. "
+.ti -1c
+.RI "qreal \fBrpm\fP () const"
+.br
+.RI "Current RPM\&. "
+.ti -1c
+.RI "bool \fBisControllable\fP () const"
+.br
+.RI "Controllable state of the fan object\&. "
+.ti -1c
+.RI "\fBQKlipperConsole\fP * \fBconsole\fP () const"
+.br
+.RI "Current console object\&. "
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "QString \fBname\fP"
+.br
+.ti -1c
+.RI "qreal \fBspeed\fP"
+.br
+.ti -1c
+.RI "qreal \fBrpm\fP"
+.br
+.ti -1c
+.RI "bool \fBisControllable\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+\fBQKlipperFan\fP class\&. 
+
+This class is responsible for monitoring and controlling fan objects\&.
+.PP
+Not all fans are controllable\&. 
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum \fBQKlipperFan::State\fP"
+
+.PP
+State enum\&. This enum provides flags for the on/off states 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIOff \fP\fP
+.TP
+\fB\fIOn \fP\fP
+!< Fan is off 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "QKlipperFan::QKlipperFan (QObject * parent = \fCnullptr\fP)\fC [explicit]\fP"
+
+.PP
+Constructor\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIparent\fP The parent object 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBQKlipperConsole\fP * QKlipperFan::console () const"
+
+.PP
+Current console object\&. 
+.PP
+\fBReturns\fP
+.RS 4
+The current console object 
+.RE
+.PP
+
+.SS "bool QKlipperFan::isControllable () const"
+
+.PP
+Controllable state of the fan object\&. 
+.PP
+\fBReturns\fP
+.RS 4
+True if the fan can be controlled 
+.RE
+.PP
+
+.SS "void QKlipperFan::isControllableChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperFan::name () const"
+
+.PP
+Name of the fan object\&. 
+.PP
+\fBReturns\fP
+.RS 4
+The current name of the fan 
+.RE
+.PP
+
+.SS "void QKlipperFan::nameChanged ()\fC [signal]\fP"
+
+.SS "qreal QKlipperFan::rpm () const"
+
+.PP
+Current RPM\&. 
+.PP
+\fBReturns\fP
+.RS 4
+The current RPM of the fan (if available) 
+.RE
+.PP
+
+.SS "void QKlipperFan::rpmChanged ()\fC [signal]\fP"
+
+.SS "void QKlipperFan::setSpeed (qreal speed)\fC [slot]\fP"
+
+.PP
+Sends a gcode script to set the requested speed\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIspeed\fP The value to set (0-100) 
+.RE
+.PP
+
+.SS "qreal QKlipperFan::speed () const"
+
+.PP
+Current speed of the fan\&. 
+.PP
+\fBReturns\fP
+.RS 4
+The current speed of the fan 
+.RE
+.PP
+
+.SS "void QKlipperFan::speedChanged ()\fC [signal]\fP"
+
+.SH "Property Documentation"
+.PP 
+.SS "bool QKlipperFan::isControllable\fC [read]\fP"
+
+.SS "QString QKlipperFan::name\fC [read]\fP"
+
+.SS "qreal QKlipperFan::rpm\fC [read]\fP"
+
+.SS "qreal QKlipperFan::speed\fC [read]\fP, \fC [write]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for QKlipper from the source code\&.

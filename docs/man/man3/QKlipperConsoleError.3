@@ -1,0 +1,147 @@
+.TH "QKlipperConsoleError" 3 "Version 0.2" "QKlipper" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+QKlipperConsoleError
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <qklipperconsoleerror\&.h>\fP
+.PP
+Inherits QObject\&.
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum \fBType\fP { \fBUnspecified\fP = 0, \fBCommand\fP = 1, \fBSocket\fP = 2, \fBFile\fP = 3, \fBNoError\fP = 4 }"
+.br
+.in -1c
+.SS "Public Slots"
+
+.in +1c
+.ti -1c
+.RI "void \fBsetErrorString\fP (const QString &\fBerrorString\fP)"
+.br
+.ti -1c
+.RI "void \fBsetOrigin\fP (const QString &\fBorigin\fP)"
+.br
+.ti -1c
+.RI "void \fBsetType\fP (\fBType\fP \fBtype\fP)"
+.br
+.in -1c
+.SS "Signals"
+
+.in +1c
+.ti -1c
+.RI "void \fBerrorStringChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBoriginChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBtypeChanged\fP ()"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBQKlipperConsoleError\fP (QObject *parent=nullptr)"
+.br
+.ti -1c
+.RI "\fBQKlipperConsoleError\fP (const \fBQKlipperConsoleError\fP &value)"
+.br
+.ti -1c
+.RI "\fBQKlipperConsoleError\fP (\fBQKlipperConsoleError\fP &&value)"
+.br
+.ti -1c
+.RI "\fBQKlipperConsoleError\fP & \fBoperator=\fP (const \fBQKlipperConsoleError\fP &value)"
+.br
+.ti -1c
+.RI "\fBQKlipperConsoleError\fP & \fBoperator=\fP (\fBQKlipperConsoleError\fP &&value)"
+.br
+.ti -1c
+.RI "QString \fBerrorString\fP () const"
+.br
+.ti -1c
+.RI "QString \fBorigin\fP () const"
+.br
+.ti -1c
+.RI "\fBType\fP \fBtype\fP () const"
+.br
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "QString \fBerrorString\fP"
+.br
+.ti -1c
+.RI "QString \fBorigin\fP"
+.br
+.ti -1c
+.RI "\fBType\fP \fBtype\fP"
+.br
+.in -1c
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum \fBQKlipperConsoleError::Type\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIUnspecified \fP\fP
+.TP
+\fB\fICommand \fP\fP
+.TP
+\fB\fISocket \fP\fP
+.TP
+\fB\fIFile \fP\fP
+.TP
+\fB\fINoError \fP\fP
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "QKlipperConsoleError::QKlipperConsoleError (QObject * parent = \fCnullptr\fP)\fC [explicit]\fP"
+
+.SS "QKlipperConsoleError::QKlipperConsoleError (const \fBQKlipperConsoleError\fP & value)"
+
+.SS "QKlipperConsoleError::QKlipperConsoleError (\fBQKlipperConsoleError\fP && value)"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "QString QKlipperConsoleError::errorString () const"
+
+.SS "void QKlipperConsoleError::errorStringChanged ()\fC [signal]\fP"
+
+.SS "\fBQKlipperConsoleError\fP & QKlipperConsoleError::operator= (const \fBQKlipperConsoleError\fP & value)"
+
+.SS "\fBQKlipperConsoleError\fP & QKlipperConsoleError::operator= (\fBQKlipperConsoleError\fP && value)"
+
+.SS "QString QKlipperConsoleError::origin () const"
+
+.SS "void QKlipperConsoleError::originChanged ()\fC [signal]\fP"
+
+.SS "void QKlipperConsoleError::setErrorString (const QString & errorString)\fC [slot]\fP"
+
+.SS "void QKlipperConsoleError::setOrigin (const QString & origin)\fC [slot]\fP"
+
+.SS "void QKlipperConsoleError::setType (\fBType\fP type)\fC [slot]\fP"
+
+.SS "\fBQKlipperConsoleError::Type\fP QKlipperConsoleError::type () const"
+
+.SS "void QKlipperConsoleError::typeChanged ()\fC [signal]\fP"
+
+.SH "Property Documentation"
+.PP 
+.SS "QString QKlipperConsoleError::errorString\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperConsoleError::origin\fC [read]\fP, \fC [write]\fP"
+
+.SS "\fBType\fP QKlipperConsoleError::type\fC [read]\fP, \fC [write]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for QKlipper from the source code\&.

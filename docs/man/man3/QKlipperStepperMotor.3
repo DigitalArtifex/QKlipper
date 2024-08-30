@@ -1,0 +1,103 @@
+.TH "QKlipperStepperMotor" 3 "Version 0.2" "QKlipper" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+QKlipperStepperMotor
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <qklippersteppermotor\&.h>\fP
+.PP
+Inherits QObject\&.
+.SS "Public Slots"
+
+.in +1c
+.ti -1c
+.RI "void \fBsetName\fP (const QString &\fBname\fP)"
+.br
+.ti -1c
+.RI "void \fBsetCurrent\fP (qreal \fBcurrent\fP)"
+.br
+.ti -1c
+.RI "void \fBsetEnabled\fP (bool \fBenabled\fP)"
+.br
+.in -1c
+.SS "Signals"
+
+.in +1c
+.ti -1c
+.RI "void \fBnameChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBcurrentChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBenabledChanged\fP ()"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBQKlipperStepperMotor\fP (QObject *parent=nullptr)"
+.br
+.ti -1c
+.RI "QString \fBname\fP () const"
+.br
+.ti -1c
+.RI "qreal \fBcurrent\fP () const"
+.br
+.ti -1c
+.RI "bool \fBenabled\fP () const"
+.br
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "QString \fBname\fP"
+.br
+.ti -1c
+.RI "qreal \fBcurrent\fP"
+.br
+.ti -1c
+.RI "bool \fBenabled\fP"
+.br
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "QKlipperStepperMotor::QKlipperStepperMotor (QObject * parent = \fCnullptr\fP)\fC [explicit]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "qreal QKlipperStepperMotor::current () const"
+
+.SS "void QKlipperStepperMotor::currentChanged ()\fC [signal]\fP"
+
+.SS "bool QKlipperStepperMotor::enabled () const"
+
+.SS "void QKlipperStepperMotor::enabledChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperStepperMotor::name () const"
+
+.SS "void QKlipperStepperMotor::nameChanged ()\fC [signal]\fP"
+
+.SS "void QKlipperStepperMotor::setCurrent (qreal current)\fC [slot]\fP"
+
+.SS "void QKlipperStepperMotor::setEnabled (bool enabled)\fC [slot]\fP"
+
+.SS "void QKlipperStepperMotor::setName (const QString & name)\fC [slot]\fP"
+
+.SH "Property Documentation"
+.PP 
+.SS "qreal QKlipperStepperMotor::current\fC [read]\fP, \fC [write]\fP"
+
+.SS "bool QKlipperStepperMotor::enabled\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperStepperMotor::name\fC [read]\fP, \fC [write]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for QKlipper from the source code\&.

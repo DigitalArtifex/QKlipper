@@ -1,0 +1,383 @@
+.TH "QKlipperWebcam" 3 "Version 0.2" "QKlipper" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+QKlipperWebcam
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <qklipperwebcam\&.h>\fP
+.PP
+Inherits QObject\&.
+.SS "Public Slots"
+
+.in +1c
+.ti -1c
+.RI "void \fBsetName\fP (const QString &\fBname\fP)"
+.br
+.ti -1c
+.RI "void \fBsetLocation\fP (const QString &\fBlocation\fP)"
+.br
+.ti -1c
+.RI "void \fBsetService\fP (const QString &\fBservice\fP)"
+.br
+.ti -1c
+.RI "void \fBsetIconString\fP (const QString &\fBiconString\fP)"
+.br
+.ti -1c
+.RI "void \fBsetStreamUrl\fP (const QString &\fBstreamUrl\fP)"
+.br
+.ti -1c
+.RI "void \fBsetSnapshotUrl\fP (const QString &\fBsnapshotUrl\fP)"
+.br
+.ti -1c
+.RI "void \fBsetAspectRatio\fP (const QString &\fBaspectRatio\fP)"
+.br
+.ti -1c
+.RI "void \fBsetSource\fP (const QString &\fBsource\fP)"
+.br
+.ti -1c
+.RI "void \fBsetUid\fP (const QString &\fBuid\fP)"
+.br
+.ti -1c
+.RI "void \fBsetTargetFps\fP (qint16 \fBtargetFps\fP)"
+.br
+.ti -1c
+.RI "void \fBsetRotation\fP (qint16 \fBrotation\fP)"
+.br
+.ti -1c
+.RI "void \fBsetEnabled\fP (bool \fBenabled\fP)"
+.br
+.ti -1c
+.RI "void \fBsetFlipVertical\fP (bool \fBflipVertical\fP)"
+.br
+.ti -1c
+.RI "void \fBsetFlipHorizontal\fP (bool \fBflipHorizontal\fP)"
+.br
+.ti -1c
+.RI "void \fBsetTargetFpsIdle\fP (qint16 \fBtargetFpsIdle\fP)"
+.br
+.in -1c
+.SS "Signals"
+
+.in +1c
+.ti -1c
+.RI "void \fBnameChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBlocationChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBserviceChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBiconStringChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBstreamUrlChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBsnapshotUrlChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBaspectRatioChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBsourceChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBuidChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBtargetFpsChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBrotationChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBenabledChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBflipVerticalChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBflipHorizontalChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBtargetFpsIdleChanged\fP ()"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBQKlipperWebcam\fP (QObject *parent=nullptr)"
+.br
+.ti -1c
+.RI "\fBQKlipperWebcam\fP (const \fBQKlipperWebcam\fP &value)"
+.br
+.ti -1c
+.RI "\fBQKlipperWebcam\fP (\fBQKlipperWebcam\fP &&value)"
+.br
+.ti -1c
+.RI "\fBQKlipperWebcam\fP & \fBoperator=\fP (const \fBQKlipperWebcam\fP &value)"
+.br
+.ti -1c
+.RI "\fBQKlipperWebcam\fP & \fBoperator=\fP (\fBQKlipperWebcam\fP &&value)"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const \fBQKlipperWebcam\fP &value)"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (\fBQKlipperWebcam\fP &&value)"
+.br
+.ti -1c
+.RI "bool \fBoperator!=\fP (const \fBQKlipperWebcam\fP &value)"
+.br
+.ti -1c
+.RI "bool \fBoperator!=\fP (\fBQKlipperWebcam\fP &&value)"
+.br
+.ti -1c
+.RI "QString \fBname\fP () const"
+.br
+.ti -1c
+.RI "QString \fBlocation\fP () const"
+.br
+.ti -1c
+.RI "QString \fBservice\fP () const"
+.br
+.ti -1c
+.RI "QString \fBiconString\fP () const"
+.br
+.ti -1c
+.RI "QString \fBstreamUrl\fP () const"
+.br
+.ti -1c
+.RI "QString \fBsnapshotUrl\fP () const"
+.br
+.ti -1c
+.RI "QString \fBaspectRatio\fP () const"
+.br
+.ti -1c
+.RI "QString \fBsource\fP () const"
+.br
+.ti -1c
+.RI "QString \fBuid\fP () const"
+.br
+.ti -1c
+.RI "qint16 \fBtargetFps\fP () const"
+.br
+.ti -1c
+.RI "qint16 \fBrotation\fP () const"
+.br
+.ti -1c
+.RI "bool \fBenabled\fP () const"
+.br
+.ti -1c
+.RI "bool \fBflipVertical\fP () const"
+.br
+.ti -1c
+.RI "bool \fBflipHorizontal\fP () const"
+.br
+.ti -1c
+.RI "qint16 \fBtargetFpsIdle\fP () const"
+.br
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "QString \fBname\fP"
+.br
+.ti -1c
+.RI "QString \fBlocation\fP"
+.br
+.ti -1c
+.RI "QString \fBservice\fP"
+.br
+.ti -1c
+.RI "QString \fBiconString\fP"
+.br
+.ti -1c
+.RI "QString \fBstreamUrl\fP"
+.br
+.ti -1c
+.RI "QString \fBsnapshotUrl\fP"
+.br
+.ti -1c
+.RI "QString \fBaspectRatio\fP"
+.br
+.ti -1c
+.RI "QString \fBsource\fP"
+.br
+.ti -1c
+.RI "QString \fBuid\fP"
+.br
+.ti -1c
+.RI "qint16 \fBtargetFps\fP"
+.br
+.ti -1c
+.RI "qint16 \fBrotation\fP"
+.br
+.ti -1c
+.RI "bool \fBenabled\fP"
+.br
+.ti -1c
+.RI "bool \fBflipVertical\fP"
+.br
+.ti -1c
+.RI "bool \fBflipHorizontal\fP"
+.br
+.ti -1c
+.RI "qint16 \fBtargetFpsIdle\fP"
+.br
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "QKlipperWebcam::QKlipperWebcam (QObject * parent = \fCnullptr\fP)\fC [explicit]\fP"
+
+.SS "QKlipperWebcam::QKlipperWebcam (const \fBQKlipperWebcam\fP & value)"
+
+.SS "QKlipperWebcam::QKlipperWebcam (\fBQKlipperWebcam\fP && value)"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "QString QKlipperWebcam::aspectRatio () const"
+
+.SS "void QKlipperWebcam::aspectRatioChanged ()\fC [signal]\fP"
+
+.SS "bool QKlipperWebcam::enabled () const"
+
+.SS "void QKlipperWebcam::enabledChanged ()\fC [signal]\fP"
+
+.SS "bool QKlipperWebcam::flipHorizontal () const"
+
+.SS "void QKlipperWebcam::flipHorizontalChanged ()\fC [signal]\fP"
+
+.SS "bool QKlipperWebcam::flipVertical () const"
+
+.SS "void QKlipperWebcam::flipVerticalChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperWebcam::iconString () const"
+
+.SS "void QKlipperWebcam::iconStringChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperWebcam::location () const"
+
+.SS "void QKlipperWebcam::locationChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperWebcam::name () const"
+
+.SS "void QKlipperWebcam::nameChanged ()\fC [signal]\fP"
+
+.SS "bool QKlipperWebcam::operator!= (const \fBQKlipperWebcam\fP & value)"
+
+.SS "bool QKlipperWebcam::operator!= (\fBQKlipperWebcam\fP && value)"
+
+.SS "\fBQKlipperWebcam\fP & QKlipperWebcam::operator= (const \fBQKlipperWebcam\fP & value)"
+
+.SS "\fBQKlipperWebcam\fP & QKlipperWebcam::operator= (\fBQKlipperWebcam\fP && value)"
+
+.SS "bool QKlipperWebcam::operator== (const \fBQKlipperWebcam\fP & value)"
+
+.SS "bool QKlipperWebcam::operator== (\fBQKlipperWebcam\fP && value)"
+
+.SS "qint16 QKlipperWebcam::rotation () const"
+
+.SS "void QKlipperWebcam::rotationChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperWebcam::service () const"
+
+.SS "void QKlipperWebcam::serviceChanged ()\fC [signal]\fP"
+
+.SS "void QKlipperWebcam::setAspectRatio (const QString & aspectRatio)\fC [slot]\fP"
+
+.SS "void QKlipperWebcam::setEnabled (bool enabled)\fC [slot]\fP"
+
+.SS "void QKlipperWebcam::setFlipHorizontal (bool flipHorizontal)\fC [slot]\fP"
+
+.SS "void QKlipperWebcam::setFlipVertical (bool flipVertical)\fC [slot]\fP"
+
+.SS "void QKlipperWebcam::setIconString (const QString & iconString)\fC [slot]\fP"
+
+.SS "void QKlipperWebcam::setLocation (const QString & location)\fC [slot]\fP"
+
+.SS "void QKlipperWebcam::setName (const QString & name)\fC [slot]\fP"
+
+.SS "void QKlipperWebcam::setRotation (qint16 rotation)\fC [slot]\fP"
+
+.SS "void QKlipperWebcam::setService (const QString & service)\fC [slot]\fP"
+
+.SS "void QKlipperWebcam::setSnapshotUrl (const QString & snapshotUrl)\fC [slot]\fP"
+
+.SS "void QKlipperWebcam::setSource (const QString & source)\fC [slot]\fP"
+
+.SS "void QKlipperWebcam::setStreamUrl (const QString & streamUrl)\fC [slot]\fP"
+
+.SS "void QKlipperWebcam::setTargetFps (qint16 targetFps)\fC [slot]\fP"
+
+.SS "void QKlipperWebcam::setTargetFpsIdle (qint16 targetFpsIdle)\fC [slot]\fP"
+
+.SS "void QKlipperWebcam::setUid (const QString & uid)\fC [slot]\fP"
+
+.SS "QString QKlipperWebcam::snapshotUrl () const"
+
+.SS "void QKlipperWebcam::snapshotUrlChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperWebcam::source () const"
+
+.SS "void QKlipperWebcam::sourceChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperWebcam::streamUrl () const"
+
+.SS "void QKlipperWebcam::streamUrlChanged ()\fC [signal]\fP"
+
+.SS "qint16 QKlipperWebcam::targetFps () const"
+
+.SS "void QKlipperWebcam::targetFpsChanged ()\fC [signal]\fP"
+
+.SS "qint16 QKlipperWebcam::targetFpsIdle () const"
+
+.SS "void QKlipperWebcam::targetFpsIdleChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperWebcam::uid () const"
+
+.SS "void QKlipperWebcam::uidChanged ()\fC [signal]\fP"
+
+.SH "Property Documentation"
+.PP 
+.SS "QString QKlipperWebcam::aspectRatio\fC [read]\fP, \fC [write]\fP"
+
+.SS "bool QKlipperWebcam::enabled\fC [read]\fP, \fC [write]\fP"
+
+.SS "bool QKlipperWebcam::flipHorizontal\fC [read]\fP, \fC [write]\fP"
+
+.SS "bool QKlipperWebcam::flipVertical\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperWebcam::iconString\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperWebcam::location\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperWebcam::name\fC [read]\fP, \fC [write]\fP"
+
+.SS "qint16 QKlipperWebcam::rotation\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperWebcam::service\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperWebcam::snapshotUrl\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperWebcam::source\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperWebcam::streamUrl\fC [read]\fP, \fC [write]\fP"
+
+.SS "qint16 QKlipperWebcam::targetFps\fC [read]\fP, \fC [write]\fP"
+
+.SS "qint16 QKlipperWebcam::targetFpsIdle\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperWebcam::uid\fC [read]\fP, \fC [write]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for QKlipper from the source code\&.

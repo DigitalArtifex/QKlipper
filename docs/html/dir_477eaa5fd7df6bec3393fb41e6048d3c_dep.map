@@ -1,0 +1,18 @@
+<map id="/home/parametheus/repo/QKlipper/QKlipperConsole" name="/home/parametheus/repo/QKlipper/QKlipperConsole">
+<area shape="rect" id="node1" href="dir_477eaa5fd7df6bec3393fb41e6048d3c.html" title="QKlipperConsole" alt="" coords="285,5,415,31"/>
+<area shape="rect" id="node2" href="dir_2a960ac97fb96c14f2245d9531eca669.html" title="QKlipperSystem" alt="" coords="5,79,132,104"/>
+<area shape="poly" id="edge1" href="dir_000000_000006.html" alt="" coords="305,33,128,78,127,73,304,28"/>
+<area shape="rect" id="edge1-headlabel" href="dir_000000_000006.html" title="1" alt="" coords="129,75,139,90"/>
+<area shape="rect" id="node3" href="dir_40d436e53d0026942b8250a5450fb444.html" title="QKlipperFile" alt="" coords="157,79,258,104"/>
+<area shape="poly" id="edge2" href="dir_000000_000001.html" alt="" coords="328,33,244,75,242,70,326,28"/>
+<area shape="rect" id="edge2-headlabel" href="dir_000000_000001.html" title="1" alt="" coords="246,71,255,85"/>
+<area shape="rect" id="node4" href="dir_73323d37c13c527b9c44e415467e2834.html" title="QKlipperMessage" alt="" coords="282,79,418,104"/>
+<area shape="poly" id="edge3" href="dir_000000_000003.html" alt="" coords="353,31,353,65,347,65,347,31"/>
+<area shape="rect" id="edge3-headlabel" href="dir_000000_000003.html" title="1" alt="" coords="354,53,363,68"/>
+<area shape="rect" id="node5" href="dir_7d64cea633fa22423246eca4ff5544b9.html" title="QKlipperServer" alt="" coords="442,79,562,104"/>
+<area shape="poly" id="edge4" href="dir_000000_000005.html" alt="" coords="376,28,466,70,464,75,373,33"/>
+<area shape="rect" id="edge4-headlabel" href="dir_000000_000005.html" title="1" alt="" coords="460,56,469,70"/>
+<area shape="rect" id="node6" href="dir_e465492944bf2c89235f155984d05ec6.html" title="QKlipperPrinter" alt="" coords="587,79,708,104"/>
+<area shape="poly" id="edge5" href="dir_000000_000004.html" alt="" coords="398,28,587,73,585,78,397,33"/>
+<area shape="rect" id="edge5-headlabel" href="dir_000000_000004.html" title="1" alt="" coords="579,59,588,73"/>
+</map>

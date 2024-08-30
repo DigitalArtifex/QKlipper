@@ -1,0 +1,150 @@
+.TH "QKlipperAdjustmentScrew" 3 "Version 0.2" "QKlipper" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+QKlipperAdjustmentScrew
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <qklipperadjustmentscrew\&.h>\fP
+.PP
+Inherits QObject\&.
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBAdjustment\fP"
+.br
+.in -1c
+.SS "Public Slots"
+
+.in +1c
+.ti -1c
+.RI "void \fBsetName\fP (const QString &\fBname\fP)"
+.br
+.ti -1c
+.RI "void \fBsetThread\fP (const QString &\fBthread\fP)"
+.br
+.ti -1c
+.RI "void \fBsetTiltAdjust\fP (const QPair< qreal, qreal > &\fBtiltAdjust\fP)"
+.br
+.ti -1c
+.RI "void \fBsetSpeed\fP (qreal \fBspeed\fP)"
+.br
+.ti -1c
+.RI "void \fBsetAdjustment\fP (const \fBAdjustment\fP &\fBadjustment\fP)"
+.br
+.in -1c
+.SS "Signals"
+
+.in +1c
+.ti -1c
+.RI "void \fBnameChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBthreadChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBtiltAdjustChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBspeedChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBadjustmentChanged\fP ()"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBQKlipperAdjustmentScrew\fP (QObject *parent=nullptr)"
+.br
+.ti -1c
+.RI "QString \fBname\fP () const"
+.br
+.ti -1c
+.RI "QString \fBthread\fP () const"
+.br
+.ti -1c
+.RI "QPair< qreal, qreal > \fBtiltAdjust\fP () const"
+.br
+.ti -1c
+.RI "qreal \fBspeed\fP () const"
+.br
+.ti -1c
+.RI "\fBAdjustment\fP \fBadjustment\fP () const"
+.br
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "QString \fBname\fP"
+.br
+.ti -1c
+.RI "QString \fBthread\fP"
+.br
+.ti -1c
+.RI "QPair< qreal, qreal > \fBtiltAdjust\fP"
+.br
+.ti -1c
+.RI "qreal \fBspeed\fP"
+.br
+.ti -1c
+.RI "\fBAdjustment\fP \fBadjustment\fP"
+.br
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "QKlipperAdjustmentScrew::QKlipperAdjustmentScrew (QObject * parent = \fCnullptr\fP)\fC [explicit]\fP"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBQKlipperAdjustmentScrew::Adjustment\fP QKlipperAdjustmentScrew::adjustment () const"
+
+.SS "void QKlipperAdjustmentScrew::adjustmentChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperAdjustmentScrew::name () const"
+
+.SS "void QKlipperAdjustmentScrew::nameChanged ()\fC [signal]\fP"
+
+.SS "void QKlipperAdjustmentScrew::setAdjustment (const \fBAdjustment\fP & adjustment)\fC [slot]\fP"
+
+.SS "void QKlipperAdjustmentScrew::setName (const QString & name)\fC [slot]\fP"
+
+.SS "void QKlipperAdjustmentScrew::setSpeed (qreal speed)\fC [slot]\fP"
+
+.SS "void QKlipperAdjustmentScrew::setThread (const QString & thread)\fC [slot]\fP"
+
+.SS "void QKlipperAdjustmentScrew::setTiltAdjust (const QPair< qreal, qreal > & tiltAdjust)\fC [slot]\fP"
+
+.SS "qreal QKlipperAdjustmentScrew::speed () const"
+
+.SS "void QKlipperAdjustmentScrew::speedChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperAdjustmentScrew::thread () const"
+
+.SS "void QKlipperAdjustmentScrew::threadChanged ()\fC [signal]\fP"
+
+.SS "QPair< qreal, qreal > QKlipperAdjustmentScrew::tiltAdjust () const"
+
+.SS "void QKlipperAdjustmentScrew::tiltAdjustChanged ()\fC [signal]\fP"
+
+.SH "Property Documentation"
+.PP 
+.SS "\fBAdjustment\fP QKlipperAdjustmentScrew::adjustment\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperAdjustmentScrew::name\fC [read]\fP, \fC [write]\fP"
+
+.SS "qreal QKlipperAdjustmentScrew::speed\fC [read]\fP, \fC [write]\fP"
+
+.SS "QString QKlipperAdjustmentScrew::thread\fC [read]\fP, \fC [write]\fP"
+
+.SS "QPair<qreal, qreal> QKlipperAdjustmentScrew::tiltAdjust\fC [read]\fP, \fC [write]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for QKlipper from the source code\&.

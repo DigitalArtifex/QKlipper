@@ -1,0 +1,244 @@
+.TH "QKlipperAnnouncement" 3 "Version 0.2" "QKlipper" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+QKlipperAnnouncement
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <qklipperannouncement\&.h>\fP
+.PP
+Inherits QObject\&.
+.SS "Signals"
+
+.in +1c
+.ti -1c
+.RI "void \fBentryIdChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBurlChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBtitleChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBdescriptionChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBpriorityChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBfeedChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBsourceChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBdateChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBdateDismissedChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBdateDismissedWakeChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBisDismissedChanged\fP ()"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBQKlipperAnnouncement\fP (QObject *parent=nullptr)"
+.br
+.ti -1c
+.RI "\fBQKlipperAnnouncement\fP (const \fBQKlipperAnnouncement\fP &value)"
+.br
+.ti -1c
+.RI "\fBQKlipperAnnouncement\fP (\fBQKlipperAnnouncement\fP &&value)"
+.br
+.ti -1c
+.RI "\fBQKlipperAnnouncement\fP & \fBoperator=\fP (const \fBQKlipperAnnouncement\fP &value)"
+.br
+.ti -1c
+.RI "\fBQKlipperAnnouncement\fP & \fBoperator=\fP (\fBQKlipperAnnouncement\fP &&value)"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const \fBQKlipperAnnouncement\fP &value)"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (\fBQKlipperAnnouncement\fP &&value)"
+.br
+.ti -1c
+.RI "bool \fBoperator!=\fP (const \fBQKlipperAnnouncement\fP &value)"
+.br
+.ti -1c
+.RI "bool \fBoperator!=\fP (\fBQKlipperAnnouncement\fP &&value)"
+.br
+.ti -1c
+.RI "QString \fBentryId\fP () const"
+.br
+.ti -1c
+.RI "QString \fBurl\fP () const"
+.br
+.ti -1c
+.RI "QString \fBtitle\fP () const"
+.br
+.ti -1c
+.RI "QString \fBdescription\fP () const"
+.br
+.ti -1c
+.RI "QString \fBpriority\fP () const"
+.br
+.ti -1c
+.RI "QString \fBfeed\fP () const"
+.br
+.ti -1c
+.RI "QString \fBsource\fP () const"
+.br
+.ti -1c
+.RI "qreal \fBdate\fP () const"
+.br
+.ti -1c
+.RI "qreal \fBdateDismissed\fP () const"
+.br
+.ti -1c
+.RI "qreal \fBdateDismissedWake\fP () const"
+.br
+.ti -1c
+.RI "bool \fBisDismissed\fP () const"
+.br
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "QString \fBentryId\fP"
+.br
+.ti -1c
+.RI "QString \fBurl\fP"
+.br
+.ti -1c
+.RI "QString \fBtitle\fP"
+.br
+.ti -1c
+.RI "QString \fBdescription\fP"
+.br
+.ti -1c
+.RI "QString \fBpriority\fP"
+.br
+.ti -1c
+.RI "QString \fBfeed\fP"
+.br
+.ti -1c
+.RI "QString \fBsource\fP"
+.br
+.ti -1c
+.RI "qreal \fBdate\fP"
+.br
+.ti -1c
+.RI "qreal \fBdateDismissed\fP"
+.br
+.ti -1c
+.RI "qreal \fBdateDismissedWake\fP"
+.br
+.ti -1c
+.RI "bool \fBisDismissed\fP"
+.br
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "QKlipperAnnouncement::QKlipperAnnouncement (QObject * parent = \fCnullptr\fP)\fC [explicit]\fP"
+
+.SS "QKlipperAnnouncement::QKlipperAnnouncement (const \fBQKlipperAnnouncement\fP & value)"
+
+.SS "QKlipperAnnouncement::QKlipperAnnouncement (\fBQKlipperAnnouncement\fP && value)"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "qreal QKlipperAnnouncement::date () const"
+
+.SS "void QKlipperAnnouncement::dateChanged ()\fC [signal]\fP"
+
+.SS "qreal QKlipperAnnouncement::dateDismissed () const"
+
+.SS "void QKlipperAnnouncement::dateDismissedChanged ()\fC [signal]\fP"
+
+.SS "qreal QKlipperAnnouncement::dateDismissedWake () const"
+
+.SS "void QKlipperAnnouncement::dateDismissedWakeChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperAnnouncement::description () const"
+
+.SS "void QKlipperAnnouncement::descriptionChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperAnnouncement::entryId () const"
+
+.SS "void QKlipperAnnouncement::entryIdChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperAnnouncement::feed () const"
+
+.SS "void QKlipperAnnouncement::feedChanged ()\fC [signal]\fP"
+
+.SS "bool QKlipperAnnouncement::isDismissed () const"
+
+.SS "void QKlipperAnnouncement::isDismissedChanged ()\fC [signal]\fP"
+
+.SS "bool QKlipperAnnouncement::operator!= (const \fBQKlipperAnnouncement\fP & value)\fC [inline]\fP"
+
+.SS "bool QKlipperAnnouncement::operator!= (\fBQKlipperAnnouncement\fP && value)\fC [inline]\fP"
+
+.SS "\fBQKlipperAnnouncement\fP & QKlipperAnnouncement::operator= (const \fBQKlipperAnnouncement\fP & value)"
+
+.SS "\fBQKlipperAnnouncement\fP & QKlipperAnnouncement::operator= (\fBQKlipperAnnouncement\fP && value)"
+
+.SS "bool QKlipperAnnouncement::operator== (const \fBQKlipperAnnouncement\fP & value)\fC [inline]\fP"
+
+.SS "bool QKlipperAnnouncement::operator== (\fBQKlipperAnnouncement\fP && value)\fC [inline]\fP"
+
+.SS "QString QKlipperAnnouncement::priority () const"
+
+.SS "void QKlipperAnnouncement::priorityChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperAnnouncement::source () const"
+
+.SS "void QKlipperAnnouncement::sourceChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperAnnouncement::title () const"
+
+.SS "void QKlipperAnnouncement::titleChanged ()\fC [signal]\fP"
+
+.SS "QString QKlipperAnnouncement::url () const"
+
+.SS "void QKlipperAnnouncement::urlChanged ()\fC [signal]\fP"
+
+.SH "Property Documentation"
+.PP 
+.SS "qreal QKlipperAnnouncement::date\fC [read]\fP"
+
+.SS "qreal QKlipperAnnouncement::dateDismissed\fC [read]\fP"
+
+.SS "qreal QKlipperAnnouncement::dateDismissedWake\fC [read]\fP"
+
+.SS "QString QKlipperAnnouncement::description\fC [read]\fP"
+
+.SS "QString QKlipperAnnouncement::entryId\fC [read]\fP"
+
+.SS "QString QKlipperAnnouncement::feed\fC [read]\fP"
+
+.SS "bool QKlipperAnnouncement::isDismissed\fC [read]\fP"
+
+.SS "QString QKlipperAnnouncement::priority\fC [read]\fP"
+
+.SS "QString QKlipperAnnouncement::source\fC [read]\fP"
+
+.SS "QString QKlipperAnnouncement::title\fC [read]\fP"
+
+.SS "QString QKlipperAnnouncement::url\fC [read]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for QKlipper from the source code\&.

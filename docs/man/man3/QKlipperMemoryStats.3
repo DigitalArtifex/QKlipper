@@ -1,0 +1,147 @@
+.TH "QKlipperMemoryStats" 3 "Version 0.2" "QKlipper" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+QKlipperMemoryStats \- Filled by machine\&.proc_stats\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <qklippermemorystats\&.h>\fP
+.PP
+Inherits QObject\&.
+.SS "Public Slots"
+
+.in +1c
+.ti -1c
+.RI "void \fBsetTotal\fP (qreal \fBtotal\fP)"
+.br
+.ti -1c
+.RI "void \fBsetUsed\fP (qreal \fBused\fP)"
+.br
+.ti -1c
+.RI "void \fBsetAverage\fP (qreal \fBaverage\fP)"
+.br
+.in -1c
+.SS "Signals"
+
+.in +1c
+.ti -1c
+.RI "void \fBtotalChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBusedChanged\fP ()"
+.br
+.ti -1c
+.RI "void \fBaverageChanged\fP ()"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBQKlipperMemoryStats\fP (QObject *parent=nullptr)"
+.br
+.ti -1c
+.RI "\fBQKlipperMemoryStats\fP (const \fBQKlipperMemoryStats\fP &value)"
+.br
+.ti -1c
+.RI "\fBQKlipperMemoryStats\fP (\fBQKlipperMemoryStats\fP &&value)"
+.br
+.ti -1c
+.RI "\fBQKlipperMemoryStats\fP & \fBoperator=\fP (const \fBQKlipperMemoryStats\fP &value)"
+.br
+.ti -1c
+.RI "\fBQKlipperMemoryStats\fP & \fBoperator=\fP (\fBQKlipperMemoryStats\fP &&value)"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (const \fBQKlipperMemoryStats\fP &value)"
+.br
+.ti -1c
+.RI "bool \fBoperator==\fP (\fBQKlipperMemoryStats\fP &&value)"
+.br
+.ti -1c
+.RI "bool \fBoperator!=\fP (const \fBQKlipperMemoryStats\fP &value)"
+.br
+.ti -1c
+.RI "bool \fBoperator!=\fP (\fBQKlipperMemoryStats\fP &&value)"
+.br
+.ti -1c
+.RI "qreal \fBtotal\fP () const"
+.br
+.ti -1c
+.RI "qreal \fBused\fP () const"
+.br
+.ti -1c
+.RI "qreal \fBaverage\fP () const"
+.br
+.in -1c
+.SS "Properties"
+
+.in +1c
+.ti -1c
+.RI "qreal \fBtotal\fP"
+.br
+.ti -1c
+.RI "qreal \fBused\fP"
+.br
+.ti -1c
+.RI "qreal \fBaverage\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Filled by machine\&.proc_stats\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "QKlipperMemoryStats::QKlipperMemoryStats (QObject * parent = \fCnullptr\fP)\fC [explicit]\fP"
+
+.SS "QKlipperMemoryStats::QKlipperMemoryStats (const \fBQKlipperMemoryStats\fP & value)"
+
+.SS "QKlipperMemoryStats::QKlipperMemoryStats (\fBQKlipperMemoryStats\fP && value)"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "qreal QKlipperMemoryStats::average () const"
+
+.SS "void QKlipperMemoryStats::averageChanged ()\fC [signal]\fP"
+
+.SS "bool QKlipperMemoryStats::operator!= (const \fBQKlipperMemoryStats\fP & value)"
+
+.SS "bool QKlipperMemoryStats::operator!= (\fBQKlipperMemoryStats\fP && value)"
+
+.SS "\fBQKlipperMemoryStats\fP & QKlipperMemoryStats::operator= (const \fBQKlipperMemoryStats\fP & value)"
+
+.SS "\fBQKlipperMemoryStats\fP & QKlipperMemoryStats::operator= (\fBQKlipperMemoryStats\fP && value)"
+
+.SS "bool QKlipperMemoryStats::operator== (const \fBQKlipperMemoryStats\fP & value)"
+
+.SS "bool QKlipperMemoryStats::operator== (\fBQKlipperMemoryStats\fP && value)"
+
+.SS "void QKlipperMemoryStats::setAverage (qreal average)\fC [slot]\fP"
+
+.SS "void QKlipperMemoryStats::setTotal (qreal total)\fC [slot]\fP"
+
+.SS "void QKlipperMemoryStats::setUsed (qreal used)\fC [slot]\fP"
+
+.SS "qreal QKlipperMemoryStats::total () const"
+
+.SS "void QKlipperMemoryStats::totalChanged ()\fC [signal]\fP"
+
+.SS "qreal QKlipperMemoryStats::used () const"
+
+.SS "void QKlipperMemoryStats::usedChanged ()\fC [signal]\fP"
+
+.SH "Property Documentation"
+.PP 
+.SS "qreal QKlipperMemoryStats::average\fC [read]\fP, \fC [write]\fP"
+
+.SS "qreal QKlipperMemoryStats::total\fC [read]\fP, \fC [write]\fP"
+
+.SS "qreal QKlipperMemoryStats::used\fC [read]\fP, \fC [write]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for QKlipper from the source code\&.
