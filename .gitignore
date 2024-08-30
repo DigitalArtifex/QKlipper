@@ -36,3 +36,6 @@ build/*
 
 #User profiles
 *.user*
+
+#doxygen files
+doc-gen/*
