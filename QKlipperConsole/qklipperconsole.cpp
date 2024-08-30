@@ -3076,6 +3076,9 @@ QKlipperServer *QKlipperConsole::server() const
 
 void QKlipperConsole::setServer(QKlipperServer *server)
 {
+    if(m_server == server)
+        return;
+
     m_server = server;
 }
 
@@ -3086,6 +3089,9 @@ QKlipperSystem *QKlipperConsole::system() const
 
 void QKlipperConsole::setSystem(QKlipperSystem *system)
 {
+    if(m_system == system)
+        return;
+
     m_system = system;
 }
 
@@ -3096,7 +3102,11 @@ QKlipperPrinter *QKlipperConsole::printer() const
 
 void QKlipperConsole::setPrinter(QKlipperPrinter *printer)
 {
+    if(printer == m_printer)
+        return;
+
     m_printer = printer;
+    m_printer->setConsole(this);
 }
 
 QString QKlipperConsole::errorMessage() const
@@ -5156,74 +5166,90 @@ void QKlipperConsole::printerSubscribeParser(QKlipperMessage *message)
     {
         QJsonObject toolhead = message->response()["toolhead"].toObject();
 
-        if(toolhead.contains("axis_maximum"))
+        if(toolhead.contains("axis_maximum") && toolhead["axis_maximum"].isArray())
         {
-            if(toolhead["axis_maximum"].isArray())
-            {
-                qreal x,y,z,e;
-                QJsonArray maxPos = toolhead["axis_maximum"].toArray();
-                x = maxPos[0].toDouble();
-                y = maxPos[1].toDouble();
-                z = maxPos[2].toDouble();
-                e = maxPos[3].toDouble();
+            QJsonArray positionArray = toolhead["axis_maximum"].toArray();
 
-                m_printer->toolhead()->maxPosition()["e"] = (e);
-                m_printer->toolhead()->maxPosition()["x"] = (x);
-                m_printer->toolhead()->maxPosition()["y"] = (y);
-                m_printer->toolhead()->maxPosition()["z"] = (z);
+            if(positionArray.count() >= 4)
+            {
+                QKlipperPosition position;
+
+                position["x"] = positionArray[0].toDouble();
+                position["y"] = positionArray[1].toDouble();
+                position["z"] = positionArray[2].toDouble();
+                position["e"] = positionArray[3].toDouble();
+
+                for(int i = 4; i < positionArray.count(); i++)
+                {
+                    QString name = QString("e%1").arg(QString::number(i - 4));
+                    position[name] = positionArray[3].toDouble();
+                }
+
+                m_printer->toolhead()->setMaxPosition(position);
             }
         }
-        if(toolhead.contains("axis_minimum"))
+        if(toolhead.contains("axis_minimum") && toolhead["axis_minimum"].isArray())
         {
-            if(toolhead["axis_minimum"].isArray())
-            {
-                qreal x,y,z,e;
-                QJsonArray maxPos = toolhead["axis_minimum"].toArray();
-                x = maxPos[0].toDouble();
-                y = maxPos[1].toDouble();
-                z = maxPos[2].toDouble();
-                e = maxPos[3].toDouble();
+            QJsonArray positionArray = toolhead["axis_minimum"].toArray();
 
-                m_printer->toolhead()->minPosition()["e"] = (e);
-                m_printer->toolhead()->minPosition()["x"] = (x);
-                m_printer->toolhead()->minPosition()["y"] = (y);
-                m_printer->toolhead()->minPosition()["z"] = (z);
+            if(positionArray.count() >= 4)
+            {
+                QKlipperPosition position;
+
+                position["x"] = positionArray[0].toDouble();
+                position["y"] = positionArray[1].toDouble();
+                position["z"] = positionArray[2].toDouble();
+                position["e"] = positionArray[3].toDouble();
+
+                for(int i = 4; i < positionArray.count(); i++)
+                {
+                    QString name = QString("e%1").arg(QString::number(i - 4));
+                    position[name] = positionArray[3].toDouble();
+                }
+
+                m_printer->toolhead()->setMinPosition(position);
             }
         }
-        if(toolhead.contains("position"))
-        {
-            if(toolhead["position"].isArray())
-            {
-                qreal x,y,z,e;
-                QJsonArray maxPos = toolhead["position"].toArray();
-                x = maxPos[0].toDouble();
-                y = maxPos[1].toDouble();
-                z = maxPos[2].toDouble();
-                e = maxPos[3].toDouble();
 
-                m_printer->toolhead()->destination()["e"] = (e);
-                m_printer->toolhead()->destination()["x"] = (x);
-                m_printer->toolhead()->destination()["y"] = (y);
-                m_printer->toolhead()->destination()["z"] = (z);
+        if(toolhead.contains("position") && toolhead["position"].isArray())
+        {
+            QJsonArray positionArray = toolhead["position"].toArray();
+
+            if(positionArray.count() >= 4)
+            {
+                QKlipperPosition position;
+
+                position["x"] = positionArray[0].toDouble();
+                position["y"] = positionArray[1].toDouble();
+                position["z"] = positionArray[2].toDouble();
+                position["e"] = positionArray[3].toDouble();
+
+                for(int i = 4; i < positionArray.count(); i++)
+                {
+                    QString name = QString("e%1").arg(QString::number(i - 4));
+                    position[name] = positionArray[3].toDouble();
+                }
+
+                m_printer->toolhead()->setDestination(position);
             }
         }
-        if(toolhead.contains("homed_axes"))
-        {
-            if(toolhead["homed_axes"].isString())
-            {
-                QString homed = toolhead["homed_axes"].toString();
 
-                m_printer->toolhead()->setXHomed(homed.contains(QString("x")));
-                m_printer->toolhead()->setYHomed(homed.contains(QString("y")));
-                m_printer->toolhead()->setZHomed(homed.contains(QString("z")));
-            }
+        if(toolhead.contains("homed_axes") && toolhead["homed_axes"].isString())
+        {
+            QString homed = toolhead["homed_axes"].toString();
+
+            m_printer->toolhead()->setXHomed(homed.contains(QString("x")));
+            m_printer->toolhead()->setYHomed(homed.contains(QString("y")));
+            m_printer->toolhead()->setZHomed(homed.contains(QString("z")));
         }
+
         if(toolhead.contains("estimated_print_time"))
         {
             double time = toolhead["estimated_print_time"].toDouble();
             QDateTime date = QDateTime::currentDateTime().addSecs(time);
             m_printer->setPrintEnding(date);
         }
+
         if(toolhead.contains("extruder"))
         {
             //string
@@ -5283,18 +5309,23 @@ void QKlipperConsole::printerSubscribeParser(QKlipperMessage *message)
         QJsonObject motion = message->response()["motion_report"].toObject();
         if(motion.contains("live_position"))
         {
-            QJsonArray position = motion["live_position"].toArray();
-            if(position.count() == 4)
+            QJsonArray positionArray = motion["live_position"].toArray();
+            if(positionArray.count() >= 4)
             {
-                qreal x = position[0].toDouble();
-                qreal y = position[1].toDouble();
-                qreal z = position[2].toDouble();
-                qreal e = position[3].toDouble();
+                QKlipperPosition position;
 
-                m_printer->toolhead()->position()["e"] = (e);
-                m_printer->toolhead()->position()["x"] = (x);
-                m_printer->toolhead()->position()["y"] = (y);
-                m_printer->toolhead()->position()["z"] = (z);
+                position["x"] = positionArray[0].toDouble();
+                position["y"] = positionArray[1].toDouble();
+                position["z"] = positionArray[2].toDouble();
+                position["e"] = positionArray[3].toDouble();
+
+                for(int i = 4; i < positionArray.count(); i++)
+                {
+                    QString name = QString("e%1").arg(QString::number(i - 4));
+                    position[name] = positionArray[3].toDouble();
+                }
+
+                m_printer->toolhead()->setPosition(position);
             }
         }
     }

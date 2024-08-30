@@ -32,12 +32,11 @@ void QKlipperInstance::reset()
     m_system = new QKlipperSystem(this);
     m_server = new QKlipperServer(this);
 
-    m_printer = new QKlipperPrinter(this);
-    m_printer->setConsole(m_console);
-
     m_console->setSystem(m_system);
     m_console->setServer(m_server);
     m_console->setPrinter(m_printer);
+
+    m_printer = new QKlipperPrinter(this);
 
     QKlipperClientIdentifier identifier;
 

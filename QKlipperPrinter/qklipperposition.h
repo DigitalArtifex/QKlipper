@@ -21,7 +21,11 @@
 
 #include <QObject>
 #include <QMap>
-
+//!  QKlipperPosition class
+/*!
+  This class holds data on the XYZ position as well as extruders. For extruders other than "extruder0", use the
+  position("e#") method
+*/
 class QKlipperPosition
 {
     Q_GADGET

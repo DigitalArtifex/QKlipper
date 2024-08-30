@@ -193,7 +193,7 @@ void QKlipperExtruder::extrude(qreal amount, qreal speed)
     }
 }
 
-void QKlipperExtruder::pidCalibration(qreal target)
+void QKlipperExtruder::calibratePid(qreal target)
 {
     //set to relative movement
     QString gcode = QString("PID_CALIBRATE HEATER=%1 TARGET=%2").arg(m_name, QString::number(target));
@@ -633,19 +633,6 @@ void QKlipperExtruder::setTemperatureStoreValue(const QKlipperTemperatureStoreVa
 
     m_temperatureStore.append(value);
     emit temperatureStoreChanged();
-}
-
-QKlipperPrinter *QKlipperExtruder::printer() const
-{
-    return m_printer;
-}
-
-void QKlipperExtruder::setPrinter(QKlipperPrinter *printer)
-{
-    if (m_printer == printer)
-        return;
-    m_printer = printer;
-    emit printerChanged();
 }
 
 void QKlipperExtruder::setPressureAdvanceSmoothTimeData(qreal pressureAdvanceSmoothTime)

@@ -1,15 +1,12 @@
 #include "qklippertoolhead.h"
 #include "qklipperprinter.h"
 
+#include "QKlipperConsole/qklipperconsole.h"
+
 QKlipperToolHead::QKlipperToolHead(QObject *parent)
     : QObject{parent}
 {
     m_partsFan = new QKlipperFan(this);
-
-    QKlipperPrinter* printer = qobject_cast<QKlipperPrinter*>(parent);
-
-    if(printer)
-        m_printer = printer;
 }
 
 QKlipperToolHead::~QKlipperToolHead()
@@ -30,6 +27,9 @@ void QKlipperToolHead::setPartsFan(QKlipperFan *partsFan)
 {
     if (m_partsFan == partsFan)
         return;
+
+    if(m_partsFan)
+        delete m_partsFan;
 
     m_partsFan = partsFan;
     emit partsFanChanged();
@@ -103,17 +103,227 @@ void QKlipperToolHead::setPositionData(const QKlipperPosition &position)
     emit positionChanged();
 }
 
-QKlipperPrinter *QKlipperToolHead::printer() const
+void QKlipperToolHead::setPosition(const QKlipperPosition &position, qreal speed)
 {
-    return m_printer;
+    if(m_xHomed && m_zHomed && m_yHomed)
+    {
+        //set to absolute movement
+        QString gcode("G90");
+        m_console->printerGcodeScript(gcode);
+
+        //set the requested position
+        gcode = QString("G1 X%1 Y%2 Z%3").arg
+        (
+            QString::number(position.x()),
+            QString::number(position.y()),
+            QString::number(position.z())
+        );
+
+        //only send speed if specified
+        if(speed > 0)
+            gcode += QString(" F") + QString::number(speed);
+
+        m_console->printerGcodeScript(gcode);
+    }
 }
 
-void QKlipperToolHead::setPrinter(QKlipperPrinter *printer)
+void QKlipperToolHead::setPosition(qreal x, qreal y, qreal z, qreal speed)
 {
-    if (m_printer == printer)
-        return;
-    m_printer = printer;
-    emit printerChanged();
+    if(m_xHomed && m_zHomed && m_yHomed)
+    {
+        //set to absolute movement
+        QString gcode("G90");
+        m_console->printerGcodeScript(gcode);
+
+        //set the requested position
+        gcode = QString("G1 X%1 Y%2 Z%3").arg
+        (
+            QString::number(x),
+            QString::number(y),
+            QString::number(z)
+        );
+
+        //only send speed if specified
+        if(speed > 0)
+            gcode += QString(" F") + QString::number(speed);
+
+        m_console->printerGcodeScript(gcode);
+    }
+}
+
+void QKlipperToolHead::setPositionX(qreal position, qreal speed)
+{
+    if(m_xHomed)
+    {
+        //set to absolute movement
+        QString gcode("G90");
+        m_console->printerGcodeScript(gcode);
+
+        //set the requested position
+        gcode = QString("G1 X%1").arg(QString::number(position));
+
+        //only send speed if specified
+        if(speed > 0)
+            gcode += QString(" F") + QString::number(speed);
+
+        m_console->printerGcodeScript(gcode);
+    }
+}
+
+void QKlipperToolHead::setPositionY(qreal position, qreal speed)
+{
+    if(m_yHomed)
+    {
+        //set to absolute movement
+        QString gcode("G90");
+        m_console->printerGcodeScript(gcode);
+
+        //set the requested position
+        gcode = QString("G1 Y%1").arg(QString::number(position));
+
+        //only send speed if specified
+        if(speed > 0)
+            gcode += QString(" F") + QString::number(speed);
+
+        m_console->printerGcodeScript(gcode);
+    }
+}
+
+void QKlipperToolHead::setPositionZ(qreal position, qreal speed)
+{
+    if(m_zHomed)
+    {
+        //set to absolute movement
+        QString gcode("G90");
+        m_console->printerGcodeScript(gcode);
+
+        //set the requested position
+        gcode = QString("G1 Z%1").arg(QString::number(position));
+
+        //only send speed if specified
+        if(speed > 0)
+            gcode += QString(" F") + QString::number(speed);
+
+        m_console->printerGcodeScript(gcode);
+    }
+}
+
+void QKlipperToolHead::home()
+{
+    m_isHoming = true;
+    emit isHomingChanged();
+
+    //send homing command
+    QString gcode("G28");
+    m_console->printerGcodeScript(gcode);
+
+    m_isHoming = false;
+    emit isHomingChanged();
+}
+
+void QKlipperToolHead::move(qreal x, qreal y, qreal z, qreal speed)
+{
+    if(m_xHomed && m_zHomed && m_yHomed)
+    {
+        //set to relative movement
+        QString gcode("G91");
+        m_console->printerGcodeScript(gcode);
+
+        //set the requested position
+        gcode = QString("G1 X%1 Y%2 Z%3").arg
+        (
+            QString::number(x),
+            QString::number(y),
+            QString::number(z)
+        );
+
+        //only send speed if specified
+        if(speed > 0)
+            gcode += QString(" F") + QString::number(speed);
+
+        m_console->printerGcodeScript(gcode);
+    }
+}
+
+void QKlipperToolHead::move(const QKlipperPosition &position, qreal speed)
+{
+    if(m_xHomed && m_zHomed && m_yHomed)
+    {
+        //set to relative movement
+        QString gcode("G91");
+        m_console->printerGcodeScript(gcode);
+
+        //set the requested position
+        gcode = QString("G1 X%1 Y%2 Z%3").arg
+        (
+            QString::number(position.x()),
+            QString::number(position.y()),
+            QString::number(position.z())
+        );
+
+        //only send speed if specified
+        if(speed > 0)
+            gcode += QString(" F") + QString::number(speed);
+
+        m_console->printerGcodeScript(gcode);
+    }
+}
+
+void QKlipperToolHead::moveX(qreal amount, qreal speed)
+{
+    if(m_xHomed)
+    {
+        //set to relative movement
+        QString gcode("G91");
+        m_console->printerGcodeScript(gcode);
+
+        //extrude the requested amount
+        gcode = QString("G1 X") + QString::number(amount);
+
+        //only send speed if specified
+        if(speed > 0)
+            gcode += QString(" F") + QString::number(speed);
+
+        m_console->printerGcodeScript(gcode);
+    }
+}
+
+void QKlipperToolHead::moveY(qreal amount, qreal speed)
+{
+    if(m_yHomed)
+    {
+        //set to relative movement
+        QString gcode("G91");
+        m_console->printerGcodeScript(gcode);
+
+        //extrude the requested amount
+        gcode = QString("G1 Y") + QString::number(amount);
+
+        //only send speed if specified
+        if(speed > 0)
+            gcode += QString(" F") + QString::number(speed);
+
+        m_console->printerGcodeScript(gcode);
+    }
+}
+
+void QKlipperToolHead::moveZ(qreal amount, qreal speed)
+{
+    if(m_zHomed)
+    {
+        //set to relative movement
+        QString gcode("G91");
+        m_console->printerGcodeScript(gcode);
+
+        //extrude the requested amount
+        gcode = QString("G1 Z") + QString::number(amount);
+
+        //only send speed if specified
+        if(speed > 0)
+            gcode += QString(" F") + QString::number(speed);
+
+        m_console->printerGcodeScript(gcode);
+    }
 }
 
 QKlipperConsole *QKlipperToolHead::console() const
@@ -121,12 +331,26 @@ QKlipperConsole *QKlipperToolHead::console() const
     return m_console;
 }
 
+QString QKlipperToolHead::homedAxes() const
+{
+    QString homed;
+
+    if(m_xHomed)
+        homed += "x";
+    if(m_yHomed)
+        homed += "y";
+    if(m_zHomed)
+        homed += "z";
+
+    return homed;
+}
+
 void QKlipperToolHead::setConsole(QKlipperConsole *console)
 {
     if (m_console == console)
         return;
 
-    QMapIterator<QString,QKlipperExtruder*> iterator(m_extruderMap);
+    QMapIterator<QString, QKlipperExtruder*> iterator(m_extruderMap);
 
     while(iterator.hasNext())
     {
@@ -147,6 +371,7 @@ void QKlipperToolHead::setMaxPosition(const QKlipperPosition &maxPosition)
 {
     if (m_maxPosition == maxPosition)
         return;
+
     m_maxPosition = maxPosition;
     emit maxPositionChanged();
 }
@@ -160,6 +385,7 @@ void QKlipperToolHead::setDestination(const QKlipperPosition &destination)
 {
     if (m_destination == destination)
         return;
+
     m_destination = destination;
     emit destinationChanged();
 }
@@ -167,14 +393,6 @@ void QKlipperToolHead::setDestination(const QKlipperPosition &destination)
 QKlipperPosition QKlipperToolHead::position() const
 {
     return m_position;
-}
-
-void QKlipperToolHead::setPosition(const QKlipperPosition &position)
-{
-    if (m_position == position)
-        return;
-    m_position = position;
-    emit positionChanged();
 }
 
 qreal QKlipperToolHead::squareCornerVelocity() const
@@ -251,6 +469,7 @@ void QKlipperToolHead::setMaxAcceleration(qint32 maxAcceleration)
 {
     if (m_maxAcceleration == maxAcceleration)
         return;
+
     m_maxAcceleration = maxAcceleration;
     emit maxAccelerationChanged();
 }
@@ -264,6 +483,7 @@ void QKlipperToolHead::setIsHoming(bool isHoming)
 {
     if (m_isHoming == isHoming)
         return;
+
     m_isHoming = isHoming;
     emit isHomingChanged();
 }
@@ -277,6 +497,7 @@ void QKlipperToolHead::setXHomed(bool xHomed)
 {
     if (m_xHomed == xHomed)
         return;
+
     m_xHomed = xHomed;
     emit xHomedChanged();
 }
@@ -303,6 +524,7 @@ void QKlipperToolHead::setZHomed(bool zHomed)
 {
     if (m_zHomed == zHomed)
         return;
+
     m_zHomed = zHomed;
     emit zHomedChanged();
 }
@@ -316,6 +538,7 @@ void QKlipperToolHead::setCurrentExtruderName(const QString &currentExtruderName
 {
     if (m_currentExtruderName == currentExtruderName)
         return;
+
     m_currentExtruderName = currentExtruderName;
     emit currentExtruderNameChanged();
 }

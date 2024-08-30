@@ -423,7 +423,7 @@ public slots:
      *
      * \param target The temperature to use in the PID calibration
      */
-    void pidCalibration(qreal target);
+    void calibratePid(qreal target);
 
 private slots:
 
@@ -504,8 +504,6 @@ private slots:
 
     void setTemperatureStore(const QKlipperTemperatureStore &temperatureStore);
     void setTemperatureStoreValue(const QKlipperTemperatureStoreValue &value);
-
-    void setPrinter(QKlipperPrinter *printer);
 
     void setOffset(const QKlipperPosition &offset);
 
@@ -661,7 +659,6 @@ private:
     QKlipperTemperatureStore m_temperatureStore;
 
     //Parent printer object
-    QKlipperPrinter *m_printer = nullptr;
     QKlipperConsole *m_console = nullptr;
 };
 

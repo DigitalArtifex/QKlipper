@@ -21,16 +21,33 @@
 
 #include <QObject>
 
+class QKlipperConsole;
+
+//!  QKlipperPrintBedMesh class
+/*!
+  This class provides the current bed mesh configuration as well as the probed and calculated mesh
+*/
 class QKlipperPrintBedMesh : public QObject
 {
     Q_OBJECT
+
+    friend QKlipperConsole;
 public:
+    //!  Limit struct
+    /*!
+      This struct provides an x/y coordinate pair
+    */
     struct Limit
     {
         qreal x;
         qreal y;
     };
 
+    /*
+     * Constructor
+     *
+     * \param parent The parent object
+     */
     explicit QKlipperPrintBedMesh(QObject *parent = nullptr);
 
     qreal fadeEnd() const;
@@ -67,7 +84,7 @@ public:
 
     QString algorithm() const;
 
-public slots:
+private slots:
     void setFadeEnd(qreal fadeEnd);
 
     void setFadeStart(qreal fadeStart);

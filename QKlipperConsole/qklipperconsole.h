@@ -91,20 +91,76 @@ public:
      */
     ~QKlipperConsole();
 
+    /*
+     * Connect to the websocket address and process
+     * startup sequence
+     */
     void connect();
+
+    /*
+     * Disconnect from the websocket and reset objects
+     */
     void disconnect();
 
+    /*
+     * Connection state of the console
+     *
+     * \returns The current connection state value
+     */
     ConnectionState connectionState() const;
+
+    /*
+     * Checks the current connection state to see if it has the passed flag
+     *
+     * \param state The connection flag to check for
+     *
+     * \returns True is the current connection state contains the state flag
+     */
     bool hasConnectionState(ConnectionState state);
+
+    /*
+     * Adds a flag to the current connection state
+     */
     void addConnectionState(ConnectionState state);
+
+    /*
+     * Removes a flag from the current connection state
+     */
     void removeConnectionState(ConnectionState state);
+
+    /*
+     * Checks if the current state for the connecting flag
+     *
+     * \returns True if the connection state contains the connecting flag
+     */
     bool isConnecting();
+
+    /*
+     * Checks if the current state for the connecting, MoonrakerConnected flags
+     *
+     * \returns True if the connection state contains the connecting flag
+     */
     bool isConnected();
 
+    /*
+     * The current progress of the startup sequence
+     *
+     * \returns The statup progress (0-100)
+     */
     qreal startupSequenceProgress() const;
 
+    /*
+     * Current startup sequence text
+     *
+     * \returns Current startup sequence text
+     */
     QString startupSequenceText() const;
 
+    /*
+     * Error message, if available
+     *
+     * \returns Error message, if available
+     */
     QString errorMessage() const;
 
     QKlipperPrinter *printer() const;

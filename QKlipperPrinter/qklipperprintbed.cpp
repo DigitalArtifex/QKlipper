@@ -1,5 +1,7 @@
 #include "qklipperprintbed.h"
 
+#include "QKlipperConsole/qklipperconsole.h"
+
 QKlipperPrintBed::QKlipperPrintBed(QObject *parent)
     : QObject{parent}
 {
@@ -36,11 +38,38 @@ qreal QKlipperPrintBed::targetTemp() const
 
 void QKlipperPrintBed::setTargetTemp(qreal targetTemp)
 {
-    if (qFuzzyCompare(m_targetTemp, targetTemp))
-        return;
+    //M140 sets bed temp without waiting
+    QString gcode = QString("M140 S") + QString::number(targetTemp);
 
-    m_targetTemp = targetTemp;
-    emit targetTempChanged();
+    //send the G-Code
+    m_console->printerGcodeScript(gcode);
+}
+
+void QKlipperPrintBed::calibratePid(qreal target)
+{
+    //set to relative movement
+    QString gcode = QString("PID_CALIBRATE HEATER=%1 TARGET=%2").arg("heater_bed", QString::number(target));
+
+    //run calibration
+    m_console->printerGcodeScript(gcode);
+}
+
+void QKlipperPrintBed::calibrateAdjustmentScrews()
+{
+    m_hasAdjustmentScrewResult = false;
+    emit adjustmentScrewsCalibrating();
+
+    QString gcode("SCREWS_TILT_CALCULATE");
+    m_console->printerGcodeScript(gcode);
+}
+
+void QKlipperPrintBed::calibrateBedMesh()
+{
+    m_bedMeshCalibrating = true;
+    emit bedMeshCalibrating();
+
+    QString gcode("BED_MESH_CALIBRATE");
+    m_console->printerGcodeScript(gcode);
 }
 
 void QKlipperPrintBed::setTargetTempData(qreal targetTemp)

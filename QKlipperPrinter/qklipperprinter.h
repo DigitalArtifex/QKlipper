@@ -1,3 +1,20 @@
+/*
+ * QKlipper - A Qt library for the Klipper/Moonraker API
+ * Copyright (C) 2024 James Dudeck
+ *
+ * This program is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of  MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 #ifndef QKLIPPERPRINTER_H
 #define QKLIPPERPRINTER_H
 
@@ -19,23 +36,6 @@
 #include "qklippergcodemove.h"
 #include "qklipperendstopstatus.h"
 #include "qklippermcu.h"
-/*
- * QKlipper - A Qt library for the Klipper/Moonraker API
- * Copyright (C) 2024 James Dudeck
- *
- * This program is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation, either version 3 of the License, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of  MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
- * more details.
- *
- * You should have received a copy of the GNU General Public License along with
- * this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 
 #include "qklippersafezhome.h"
 #include "qklipperextruder.h"
@@ -44,6 +44,10 @@
 
 class QKlipperConsole;
 
+//!  QKlipperPrinter class
+/*!
+  This class provides information and methods for the klipper printer object
+*/
 class QKlipperPrinter : public QObject
 {
     Q_OBJECT
@@ -136,6 +140,8 @@ public:
     QKlipperEndstopStatus endstopStatus() const;
 
 public slots:
+
+private slots:
 
     void setToolhead(QKlipperToolHead *toolhead);
 
@@ -281,35 +287,35 @@ private:
     QKlipperChamber                                 *m_chamber = nullptr;
     QKlipperMCU                                     *m_mcu = nullptr;
 
-    QMap<QString,qreal>                      m_powerProfile;
+    QMap<QString,qreal>                              m_powerProfile;
 
-    QString                                  m_name;
-    QString                                  m_id;
-    QString                                  m_firmwareVersion;
-    QString                                  m_statusMessage;
-    QString                                  m_configFile;
-    QString                                  m_kinematics;
-    QString                                  m_color;
+    QString                                          m_name;
+    QString                                          m_id;
+    QString                                          m_firmwareVersion;
+    QString                                          m_statusMessage;
+    QString                                          m_configFile;
+    QString                                          m_kinematics;
+    QString                                          m_color;
 
-    qreal                                    m_maxAcceleration = 0;
-    qreal                                    m_maxVelocity = 0;
-    qreal                                    m_maxZAcceleration = 0;
-    qreal                                    m_maxZVelocity = 0;
-    qreal                                    m_squareCornerVelocity = 0;
-    qreal                                    m_printTime = 0;
+    qreal                                            m_maxAcceleration = 0;
+    qreal                                            m_maxVelocity = 0;
+    qreal                                            m_maxZAcceleration = 0;
+    qreal                                            m_maxZVelocity = 0;
+    qreal                                            m_squareCornerVelocity = 0;
+    qreal                                            m_printTime = 0;
 
-    QTimer                                  *m_connectionTimer = nullptr;
+    QTimer                                          *m_connectionTimer = nullptr;
 
-    bool                                     m_autoConnect = true;
-    bool                                     m_defaultPrinter = false;
+    bool                                             m_autoConnect = true;
+    bool                                             m_defaultPrinter = false;
 
-    QKlipperFile                            *m_currentFile = nullptr;
-    QDateTime                                m_printStarted;
-    QDateTime                                m_printEnding;
+    QKlipperFile                                    *m_currentFile = nullptr;
+    QDateTime                                        m_printStarted;
+    QDateTime                                        m_printEnding;
 
-    Status                                   m_status = Offline;
+    Status                                           m_status = Offline;
 
-    QKlipperConsole                         *m_console = nullptr;
+    QKlipperConsole                                 *m_console = nullptr;
 
     QKlipperPrintJob                                *m_printJob = nullptr;
 
@@ -318,13 +324,13 @@ private:
 
     QKlipperEndstopStatus                            m_endstopStatus;
 
-    QMap<QString,QKlipperStepperMotor*>             m_stepperMotors;
+    QMap<QString,QKlipperStepperMotor*>              m_stepperMotors;
 
     QKlipperProbeData                                m_probeData;
 
     QMap<QString,QKlipperFan*>                       m_fans;
 
-    QKlipperSafeZHome                        *m_safeZHome = nullptr;
+    QKlipperSafeZHome                               *m_safeZHome = nullptr;
     Q_PROPERTY(QKlipperSafeZHome *safeZHome READ safeZHome WRITE setSafeZHome NOTIFY safeZHomeChanged FINAL)
     Q_PROPERTY(QMap<QString, QKlipperFan *> fans READ fans WRITE setFans NOTIFY fansChanged FINAL)
     Q_PROPERTY(QKlipperProbeData probeData READ probeData WRITE setProbeData NOTIFY probeDataChanged FINAL)

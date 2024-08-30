@@ -35,6 +35,7 @@ class QKlipperFan : public QObject
     Q_OBJECT
 
     friend QKlipperConsole;
+    friend QKlipperPrinter;
 public:
     //!  State enum
     /*!

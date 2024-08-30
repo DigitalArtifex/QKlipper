@@ -26,11 +26,31 @@
 #include "qklipperextruder.h"
 #include "qklipperposition.h"
 
+class QKlipperConsole;
+class QKlipperPrinter;
+
+//!  QKlipperToolHead class
+/*!
+  This class is holds data for the configuration of the printer's toolhead. It also provides methods
+*/
 class QKlipperToolHead : public QObject
 {
     Q_OBJECT
+    friend QKlipperConsole;
+    friend QKlipperPrinter;
+
 public:
+
+    /*
+     * Constructor
+     *
+     * \param parent The parent object
+     */
     explicit QKlipperToolHead(QObject *parent = nullptr);
+
+    /*
+     * Destructor
+     */
     ~QKlipperToolHead();
 
     QKlipperFan *partsFan() const;
@@ -71,9 +91,110 @@ public:
 
     QKlipperConsole *console() const;
 
-    QKlipperPrinter *printer() const;
+    QString homedAxes() const;
 
 public slots:
+
+    /*
+     * Sets the absolute position of the toolhead
+     *
+     * \param position The position to move to
+     *
+     * \param speed The speed of the movement
+     */
+    void setPosition(const QKlipperPosition &position, qreal speed = 0);
+
+    /*
+     * Sets the absolute position of the toolhead
+     *
+     * \param x The value to move the x axis to
+     *
+     * \param y The value to move the y axis to
+     *
+     * \param z The value to move the z axis to
+     */
+    void setPosition(qreal x = 0, qreal y = 0, qreal z = 0, qreal speed = 0);
+
+
+    /*
+     * Sets the absolute position of the X Axis
+     *
+     * \param position The position to move to
+     *
+     * \param speed The speed of the movement
+     */
+    void setPositionX(qreal position, qreal speed);
+
+    /*
+     * Sets the absolute position of the Y Axis
+     *
+     * \param position The position to move to
+     *
+     * \param speed The speed of the movement
+     */
+    void setPositionY(qreal position, qreal speed);
+
+    /*
+     * Sets the absolute position of the Z Axis
+     *
+     * \param position The position to move to
+     *
+     * \param speed The speed of the movement
+     */
+    void setPositionZ(qreal position, qreal speed);
+
+    /*
+     * Runs the homing script (G28)
+     */
+    void home();
+
+    /*
+     * Move the toolhead by the x, y and z values, relative to the current position
+     *
+     * \param x The value to move the x axis by
+     *
+     * \param y The value to move the y axis by
+     *
+     * \param z The value to move the z axis by
+     */
+    void move(qreal x = 0, qreal y = 0, qreal z = 0, qreal speed = 0);
+
+    /*
+     * Move the toolhead by the position value, relative to the current position
+     *
+     * \param position The position to move to
+     */
+    void move(const QKlipperPosition &position, qreal speed = 0);
+
+    /*
+     * Sets the absolute position of the X Axis
+     *
+     * \param amount The amount to move the X Axis
+     *
+     * \param speed The speed of the movement
+     */
+    void moveX(qreal amount, qreal speed);
+
+    /*
+     * Sets the absolute position of the Y Axis
+     *
+     * \param amount The amount to move the Y Axis
+     *
+     * \param speed The speed of the movement
+     */
+    void moveY(qreal amount, qreal speed);
+
+    /*
+     * Sets the absolute position of the Z Axis
+     *
+     * \param amount The amount to move the Z Axis
+     *
+     * \param speed The speed of the movement
+     */
+    void moveZ(qreal amount, qreal speed);
+
+private slots:
+    void setPositionData(const QKlipperPosition &position);
     void setPartsFan(QKlipperFan *partsFan);
 
     void setExtruderMap(const QMap<QString, QKlipperExtruder *> &extruderMap);
@@ -101,8 +222,6 @@ public slots:
 
     void setSquareCornerVelocity(qreal squareCornerVelocity);
 
-    void setPosition(const QKlipperPosition &position);
-
     void setDestination(const QKlipperPosition &destination);
 
     void setMaxPosition(const QKlipperPosition &maxPosition);
@@ -110,11 +229,6 @@ public slots:
     void setMinPosition(const QKlipperPosition &minPosition);
 
     void setConsole(QKlipperConsole *console);
-
-    void setPrinter(QKlipperPrinter *printer);
-
-private slots:
-    void setPositionData(const QKlipperPosition &position);
 
 signals:
 
@@ -154,8 +268,6 @@ signals:
 
     void consoleChanged();
 
-    void printerChanged();
-
 private:
 
     QKlipperFan                              *m_partsFan = nullptr;
@@ -164,7 +276,7 @@ private:
     QKlipperPosition                          m_destination;
     QKlipperPosition                          m_maxPosition;
     QKlipperPosition                          m_minPosition;
-    QString m_currentExtruderName;
+    QString                                   m_currentExtruderName;
 
     bool m_zHomed = false;
     bool m_yHomed = false;
@@ -179,7 +291,6 @@ private:
 
     qreal m_squareCornerVelocity = 0;
 
-    QKlipperPrinter *m_printer = nullptr;
     QKlipperConsole *m_console = nullptr;
 
     Q_PROPERTY(QKlipperFan *partsFan READ partsFan WRITE setPartsFan NOTIFY partsFanChanged FINAL)

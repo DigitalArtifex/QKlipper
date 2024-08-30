@@ -29,6 +29,15 @@
 class QKlipperPrinter;
 class QKlipperConsole;
 
+//!  QKlipperPrintBed class
+/*!
+  This class is responsible for the actual communication to the klipper instance via moonraker.
+  It provides methods for the moonraker API for controlling and querying aspects of the klipper
+  instance.
+
+  Prior to connecting, it is required to pass instance references to QKlipperPrinter, QKlipperSystem
+  and QKlipperServer that have been setup and configured.
+*/
 class QKlipperPrintBed : public QObject
 {
     Q_OBJECT
@@ -41,7 +50,16 @@ public:
         NonHeated
     };
 
+    /*
+     * Constructor
+     *
+     * \param parent The parent object
+     */
     explicit QKlipperPrintBed(QObject *parent = nullptr);
+
+    /*
+     * Destructor
+     */
     ~QKlipperPrintBed();
 
     qreal currentTemp() const;
@@ -110,9 +128,33 @@ public:
     QString sensorType() const;
 
 public slots:
+    /*
+     * Sends a gcode script to set the requested temperature
+     *
+     * \param targetTemp The value (in Celsius) to set (0-maxTemp)
+     */
+    void setTargetTemp(qreal targetTemp);
+
+    /*
+     * Sends a gcode script to calibrate the extruder at the target temperature.
+     *
+     * \param target The temperature to use in the PID calibration
+     */
+    void calibratePid(qreal target);
+
+    /*
+     * Sends a gcode script to probe the bed corners to determine adjustment values
+     */
+    void calibrateAdjustmentScrews();
+
+    /*
+     * Sends a gcode script to probe the entire bed to generate the bed mesh
+     */
+    void calibrateBedMesh();
+
+private slots:
     void setCurrentTemp(qreal currentTemp);
 
-    void setTargetTemp(qreal targetTemp);
     void setTargetTempData(qreal targetTemp);
 
     void setPower(qreal power);
@@ -212,6 +254,9 @@ signals:
     void heaterPinChanged();
 
     void sensorTypeChanged();
+
+    void adjustmentScrewsCalibrating();
+    void bedMeshCalibrating();
 
 private:
     qreal m_currentTemp = 0;

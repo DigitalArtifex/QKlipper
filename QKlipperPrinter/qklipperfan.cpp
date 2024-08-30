@@ -1,5 +1,7 @@
 #include "qklipperfan.h"
 
+#include "QKlipperConsole/qklipperconsole.h"
+
 QKlipperFan::QKlipperFan(QObject *parent)
     : QObject{parent}
 {
@@ -32,11 +34,9 @@ qreal QKlipperFan::speed() const
 
 void QKlipperFan::setSpeed(qreal speed)
 {
-    if (qFuzzyCompare(m_speed, speed))
-        return;
-
-    m_speed = speed;
-    emit speedChanged();
+    //set the fan speed
+    QString gcode = QString("SET_FAN_SPEED FAN=%1 SPEED=%2").arg(m_name, QString::number(speed));
+    m_console->printerGcodeScript(gcode);
 }
 
 void QKlipperFan::resetSpeed()
@@ -99,14 +99,4 @@ void QKlipperFan::setNameData(const QString &name)
 
     m_name = name;
     emit nameChanged();
-}
-
-QKlipperPrinter *QKlipperFan::printer() const
-{
-    return m_printer;
-}
-
-void QKlipperFan::setPrinter(QKlipperPrinter *printer)
-{
-    m_printer = printer;
 }

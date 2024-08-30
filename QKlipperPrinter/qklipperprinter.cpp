@@ -337,6 +337,14 @@ void QKlipperPrinter::setConsole(QKlipperConsole *console)
     m_bed->setConsole(console);
     m_toolhead->setConsole(console);
 
+    QMapIterator<QString, QKlipperFan*> iterator(m_fans);
+
+    while(iterator.hasNext())
+    {
+        iterator.next();
+        iterator.value()->setConsole(console);
+    }
+
     m_console = console;
     emit consoleChanged();
 }
