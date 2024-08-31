@@ -3,6 +3,7 @@
 QKlipperInstance::QKlipperInstance(QObject *parent)
     : QObject{parent}
 {
+    reset();
 }
 
 QKlipperInstance::~QKlipperInstance()
@@ -31,61 +32,11 @@ void QKlipperInstance::reset()
     m_console = new QKlipperConsole(this);
     m_system = new QKlipperSystem(this);
     m_server = new QKlipperServer(this);
+    m_printer = new QKlipperPrinter(this);
 
     m_console->setSystem(m_system);
     m_console->setServer(m_server);
     m_console->setPrinter(m_printer);
-
-    m_printer = new QKlipperPrinter(this);
-
-    QKlipperClientIdentifier identifier;
-
-#ifndef QKLIPPER_IDENTIFIER_NAME
-    identifier.name = "QKlipper App";
-#else
-    identifier.name = QKLIPPER_IDENTIFIER_NAME;
-#endif
-
-#ifndef QKLIPPER_IDENTIFIER_VERSION
-    identifier.version = "0.0.1";
-#else
-    identifier.version = QKLIPPER_IDENTIFIER_VERSION;
-#endif
-
-#ifndef QKLIPPER_IDENTIFIER_TYPE
-    identifier.type = "other";
-#else
-    identifier.type = QKLIPPER_IDENTIFIER_TYPE;
-#endif
-
-#ifndef QKLIPPER_IDENTIFIER_URL
-    identifier.url = "n/a";
-#else
-    identifier.url = QKLIPPER_IDENTIFIER_URL;
-#endif
-
-    m_server->setClientIdentifier(identifier);
-    m_server->setConnectionType(m_connectionType);
-    m_server->setApiKey(m_apiKey);
-
-    if(m_instanceLocation.isEmpty())
-    {
-        m_server->setAddress(m_address);
-        m_server->setPort(m_port);
-        m_server->setConnectionType(QKlipperServer::Remote);
-    }
-    else
-    {
-        m_server->setAddress(m_address);
-        m_server->setPort(m_port);
-        m_server->setInstanceLocation(m_instanceLocation);
-        m_server->setConnectionType(QKlipperServer::Local);
-    }
-
-    connect(m_printer, SIGNAL(statusMessageChanged()), this, SLOT(printerStateChanged()));
-
-    if(m_autoConnect)
-        m_console->connect();
 }
 
 QString QKlipperInstance::name() const
@@ -192,9 +143,56 @@ QKlipperServer::ConnectionType QKlipperInstance::connectionType() const
     return m_connectionType;
 }
 
-void QKlipperInstance::init()
+void QKlipperInstance::connect()
 {
-    reset();
+    QKlipperClientIdentifier identifier;
+
+#ifndef QKLIPPER_IDENTIFIER_NAME
+    identifier.name = "QKlipper App";
+#else
+    identifier.name = QKLIPPER_IDENTIFIER_NAME;
+#endif
+
+#ifndef QKLIPPER_IDENTIFIER_VERSION
+    identifier.version = "0.0.1";
+#else
+    identifier.version = QKLIPPER_IDENTIFIER_VERSION;
+#endif
+
+#ifndef QKLIPPER_IDENTIFIER_TYPE
+    identifier.type = "other";
+#else
+    identifier.type = QKLIPPER_IDENTIFIER_TYPE;
+#endif
+
+#ifndef QKLIPPER_IDENTIFIER_URL
+    identifier.url = "n/a";
+#else
+    identifier.url = QKLIPPER_IDENTIFIER_URL;
+#endif
+
+    m_server->setClientIdentifier(identifier);
+    m_server->setConnectionType(m_connectionType);
+    m_server->setApiKey(m_apiKey);
+
+    if(m_instanceLocation.isEmpty())
+    {
+        m_server->setAddress(m_address);
+        m_server->setPort(m_port);
+        m_server->setConnectionType(QKlipperServer::Remote);
+    }
+    else
+    {
+        m_server->setAddress(m_address);
+        m_server->setPort(m_port);
+        m_server->setInstanceLocation(m_instanceLocation);
+        m_server->setConnectionType(QKlipperServer::Local);
+    }
+
+    QObject::connect(m_printer, SIGNAL(statusMessageChanged()), this, SLOT(printerStateChanged()));
+
+    if(m_console)
+        m_console->connect();
 }
 
 void QKlipperInstance::setConnectionType(QKlipperServer::ConnectionType connectionType)

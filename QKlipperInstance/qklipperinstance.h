@@ -77,7 +77,7 @@ public:
 
     QKlipperServer::ConnectionType connectionType() const;
 
-    void init();
+    void connect();
 
 public slots:
     void setName(const QString &name);
