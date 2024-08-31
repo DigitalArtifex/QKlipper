@@ -12,13 +12,12 @@ int main(int argc, char *argv[])
 
     //address and port for non-rpc calls
     instance->setPort(7125);
-    instance->setAddress("artifex.local");
+    instance->setAddress("localhost");
 
     //instance location is required for local connections
-    //instance->setInstanceLocation("/home/parametheus/printer_data");
-    instance->setAutoConnect(true);
+    instance->setInstanceLocation("/home/parametheus/printer_data");
 
-    instance->init();
+    instance->connect();
 
     return a.exec();
 }
