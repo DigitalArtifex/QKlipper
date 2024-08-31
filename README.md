@@ -26,9 +26,8 @@ Qt based Klipper/Moonraker library (ALPHA - convenience methods still being port
     
     //instance location is required for local connections
     instance->setInstanceLocation("/home/parametheus/printer_data");
-    instance->setAutoConnect(true);
     
-    instance->init();
+    instance->connect();
 ```
 Local connections require `setInstanceLoction` to be called with the fully qualified path of the klipper installation.
 ##
@@ -41,9 +40,8 @@ Local connections require `setInstanceLoction` to be called with the fully quali
     //address and port for klipper instance
     instance->setPort(7125);
     instance->setAddress("artifex.local"); //do not include http
-    instance->setAutoConnect(true);
     
-    instance->init();
+    instance->connect();
 ```
 
 
@@ -95,7 +93,6 @@ class MyClass : QObject
             if(console->hasConnectionState(QKlipperConsole::Syncronized) && !console->isConnecting())
             {
                 //console is ready
-                QKlipperPrinter *printer = instance->printer();
                 printer->toolhead()->home(); //homes the toolhead
                 printer->toolhead()->setPosition(100, 50, 50); //sets absolute position
                 printer->bed()->setTargetTemperature(60); //sets the target temp (C)
