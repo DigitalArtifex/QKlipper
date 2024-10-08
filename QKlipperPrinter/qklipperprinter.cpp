@@ -1,4 +1,5 @@
 #include "qklipperprinter.h"
+#include "QKlipper/QKlipperConsole/qklipperconsole.h"
 
 QKlipperPrinter::QKlipperPrinter(QObject *parent)
     : QObject{parent}
@@ -537,6 +538,71 @@ void QKlipperPrinter::setProbeData(const QKlipperProbeData &probeData)
 QKlipperEndstopStatus QKlipperPrinter::endstopStatus() const
 {
     return m_endstopStatus;
+}
+
+void QKlipperPrinter::pause()
+{
+    if(!m_console->isConnected())
+    {
+        qDebug() << "Console not connected";
+        return;
+    }
+
+    QKlipperConsoleError error;
+    m_console->printerPrintPause(&error);
+
+    if(error.type() != QKlipperConsoleError::NoError)
+        qDebug() << "Error pausing print." << error.type() << error.errorString();
+}
+
+void QKlipperPrinter::resume()
+{
+    if(!m_console->isConnected())
+    {
+        qDebug() << "Console not connected";
+        return;
+    }
+
+    QKlipperConsoleError error;
+    m_console->printerPrintResume(&error);
+
+    if(error.type() != QKlipperConsoleError::NoError)
+        qDebug() << "Error resuming print." << error.type() << error.errorString();
+}
+
+void QKlipperPrinter::cancel()
+{
+    if(!m_console->isConnected())
+    {
+        qDebug() << "Console not connected";
+        return;
+    }
+
+    QKlipperConsoleError error;
+    m_console->printerPrintCancel(&error);
+
+    if(error.type() != QKlipperConsoleError::NoError)
+        qDebug() << "Error cancelling print." << error.type() << error.errorString();
+}
+
+void QKlipperPrinter::start(QKlipperFile *file)
+{
+    if(!m_console->isConnected())
+    {
+        qDebug() << "Console not connected";
+        return;
+    }
+
+    QKlipperConsoleError error;
+    m_console->printerPrintStart(file, &error);
+
+    if(error.type() != QKlipperConsoleError::NoError)
+        qDebug() << "Error cancelling print." << error.type() << error.errorString();
+}
+
+qreal QKlipperPrinter::watts()
+{
+    return m_toolhead->watts();
 }
 
 void QKlipperPrinter::setEndstopStatus(const QKlipperEndstopStatus &endstopStatus)

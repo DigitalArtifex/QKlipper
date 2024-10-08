@@ -63,10 +63,10 @@ public slots:
 private slots:
 
 signals:
-
     void queueChanged();
-
     void stateChanged();
+    void jobAdded(QKlipperPrintJob *);
+    void jobRemoved(QKlipperPrintJob *);
 
 private:
     QList<QKlipperPrintJob*> m_queue;

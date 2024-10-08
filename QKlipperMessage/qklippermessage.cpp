@@ -7,6 +7,8 @@ QKlipperMessage::QKlipperMessage(QObject *parent)
 {
     m_id = ++s_currentId;
 
+    m_timestamp = QDateTime::currentDateTime();
+
     m_responseTimer = new QTimer();
     m_responseTimer->setInterval(3000);
     m_responseTimer->setSingleShot(true);
@@ -288,6 +290,8 @@ QByteArray QKlipperMessage::toRpc() const
                 break;
             case QMetaType::QStringList:
                 break;
+
+                //treat 'unknowns' as nullptr
             case QMetaType::Nullptr:
             case QMetaType::Void:
             case QMetaType::VoidStar:
@@ -423,6 +427,8 @@ void QKlipperMessage::setResponse(const QByteArray &response)
     if(m_responseTimer->isActive())
         m_responseTimer->stop();
 
+    setResponseTimestamp(QDateTime::currentDateTime());
+
     QJsonParseError parseError;
     QJsonDocument document = QJsonDocument::fromJson(response, &parseError);
 
@@ -472,6 +478,34 @@ void QKlipperMessage::startTimer()
 void QKlipperMessage::on_responseTimerTimeout()
 {
     emit responseTimeout();
+}
+
+QDateTime QKlipperMessage::responseTimestamp() const
+{
+    return m_responseTimestamp;
+}
+
+void QKlipperMessage::setResponseTimestamp(const QDateTime &responseTimestamp)
+{
+    if (m_responseTimestamp == responseTimestamp)
+        return;
+
+    m_responseTimestamp = responseTimestamp;
+    emit responseTimestampChanged();
+}
+
+QDateTime QKlipperMessage::timestamp() const
+{
+    return m_timestamp;
+}
+
+void QKlipperMessage::setTimestamp(const QDateTime &timestamp)
+{
+    if (m_timestamp == timestamp)
+        return;
+
+    m_timestamp = timestamp;
+    emit timestampChanged();
 }
 
 QKlipperMessage::Origin QKlipperMessage::origin() const

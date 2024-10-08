@@ -1,6 +1,6 @@
 #include "qklipperfan.h"
 
-#include "QKlipperConsole/qklipperconsole.h"
+#include "../QKlipperConsole/qklipperconsole.h"
 
 QKlipperFan::QKlipperFan(QObject *parent)
     : QObject{parent}

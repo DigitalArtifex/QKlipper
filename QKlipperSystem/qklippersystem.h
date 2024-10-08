@@ -161,6 +161,10 @@ public slots:
 
     void setPythonVersion(const QString &pythonVersion);
 
+    bool stopService(QString serviceName);
+    bool startService(QString serviceName);
+    bool restartService(QString serviceName);
+
 signals:
 
     void driveCapacityChanged();

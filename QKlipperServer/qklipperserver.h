@@ -21,7 +21,7 @@
 
 #include <QObject>
 
-#include "QKlipperFile/qklipperfile.h"
+#include "../QKlipperFile/qklipperfile.h"
 #include "qklipperclientidentifier.h"
 #include "qklippergcodestore.h"
 #include "qklipperaccessdetails.h"
@@ -93,6 +93,7 @@ public:
     QKlipperJobQueue *jobQueue() const;
 
     QMap<QString, QKlipperFile *> fileSystem() const;
+    QKlipperFileList fileList(const QString &directory) const;
     QKlipperFile *file(QString uri);
 
     QKlipperClientIdentifier clientIdentifier() const;
@@ -159,6 +160,7 @@ public slots:
     void setJobQueue(QKlipperJobQueue *jobQueue);
 
     void setFileSystem(const QMap<QString, QKlipperFile *> &fileSystem);
+    void setFileList(const QString &directory, QKlipperFileList files);
 
     void setClientIdentifier(const QKlipperClientIdentifier &clientIdentifier);
 
@@ -209,6 +211,8 @@ signals:
     void jobQueueChanged();
 
     void fileSystemChanged();
+
+    void fileListChanged(QString);
 
     void clientIdentifierChanged();
 

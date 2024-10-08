@@ -1,6 +1,6 @@
 #include "qklipperprintbed.h"
 
-#include "QKlipperConsole/qklipperconsole.h"
+#include "../QKlipperConsole/qklipperconsole.h"
 
 QKlipperPrintBed::QKlipperPrintBed(QObject *parent)
     : QObject{parent}
@@ -368,7 +368,7 @@ void QKlipperPrintBed::setHasBedMeshResult(bool hasBedMeshResult)
     emit hasBedMeshResultChanged();
 }
 
-bool QKlipperPrintBed::adjustmentScrewsCalibrating() const
+bool QKlipperPrintBed::isAdjustmentScrewsCalibrating() const
 {
     return m_adjustmentScrewsCalibrating;
 }
@@ -381,7 +381,7 @@ void QKlipperPrintBed::setAdjustmentScrewsCalibrating(bool adjustmentScrewsCalib
     emit adjustmentScrewsCalibratingChanged();
 }
 
-bool QKlipperPrintBed::bedMeshCalibrating() const
+bool QKlipperPrintBed::isBedMeshCalibrating() const
 {
     return m_bedMeshCalibrating;
 }
@@ -423,7 +423,7 @@ void QKlipperPrintBed::setTiltAdjustError(bool tiltAdjustError)
 
 QKlipperPrinter *QKlipperPrintBed::printer() const
 {
-    return m_printer;
+    return qobject_cast<QKlipperPrinter*>(parent());
 }
 
 void QKlipperPrintBed::setPrinter(QKlipperPrinter *printer)

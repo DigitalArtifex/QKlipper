@@ -132,6 +132,8 @@ void QKlipperConsole::disconnect()
 
 void QKlipperConsole::machineShutdown(QKlipperConsoleError *error)
 {
+    qDebug() << "Sending WS method" << "machine.shutdown";
+
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("machine.shutdown");
 
@@ -154,6 +156,8 @@ void QKlipperConsole::machineShutdown(QKlipperConsoleError *error)
 
 void QKlipperConsole::machineReboot(QKlipperConsoleError *error)
 {
+    qDebug() << "Sending WS method" << "machine.reboot";
+
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("machine.reboot");
 
@@ -176,6 +180,8 @@ void QKlipperConsole::machineReboot(QKlipperConsoleError *error)
 
 void QKlipperConsole::machineSystemInfo()
 {
+    qDebug() << "Sending WS method" << "machine.system.info";
+
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("machine.system.info");
 
@@ -211,6 +217,8 @@ void QKlipperConsole::machineSystemInfo()
 
 bool QKlipperConsole::machineServiceRestart(QString service, QKlipperConsoleError *error)
 {
+    qDebug() << "Sending WS method" << "machine.system.info";
+
     QKlipperMessage *message = new QKlipperMessage();
     message->setParam("service", service);
     message->setMethod("machine.service.restart");
@@ -228,7 +236,7 @@ bool QKlipperConsole::machineServiceRestart(QString service, QKlipperConsoleErro
     {
         error->setErrorString(reply->errorString());
         error->setType(QKlipperConsoleError::Socket);
-        error->setOrigin("printer.emergency_stop");
+        error->setOrigin(message->method());
     }
 
     //returns ok
@@ -249,6 +257,8 @@ bool QKlipperConsole::machineServiceRestart(QString service, QKlipperConsoleErro
 
 bool QKlipperConsole::machineServiceStop(QString service, QKlipperConsoleError *error)
 {
+    qDebug() << "Sending WS method" << "machine.service.stop";
+
     QKlipperMessage *message = new QKlipperMessage();
     message->setParam("service", service);
     message->setMethod("machine.service.stop");
@@ -266,7 +276,7 @@ bool QKlipperConsole::machineServiceStop(QString service, QKlipperConsoleError *
     {
         error->setErrorString(reply->errorString());
         error->setType(QKlipperConsoleError::Socket);
-        error->setOrigin("printer.emergency_stop");
+        error->setOrigin(message->method());
     }
 
     //returns ok
@@ -287,6 +297,8 @@ bool QKlipperConsole::machineServiceStop(QString service, QKlipperConsoleError *
 
 bool QKlipperConsole::machineServiceStart(QString service, QKlipperConsoleError *error)
 {
+    qDebug() << "Sending WS method" << "machine.service.start";
+
     QKlipperMessage *message = new QKlipperMessage();
     message->setParam("service", service);
     message->setMethod("machine.service.start");
@@ -304,7 +316,7 @@ bool QKlipperConsole::machineServiceStart(QString service, QKlipperConsoleError 
     {
         error->setErrorString(reply->errorString());
         error->setType(QKlipperConsoleError::Socket);
-        error->setOrigin("printer.emergency_stop");
+        error->setOrigin(message->method());
     }
 
     //returns ok
@@ -325,6 +337,8 @@ bool QKlipperConsole::machineServiceStart(QString service, QKlipperConsoleError 
 
 void QKlipperConsole::machinePeripheralsUSB()
 {
+    qDebug() << "Sending WS method" << "machine.peripherals.usb";
+
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("machine.peripherals.usb");
 
@@ -363,6 +377,8 @@ void QKlipperConsole::machinePeripheralsSerial()
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("machine.peripherals.serial");
 
+    qDebug() << "Sending WS method" << message->method();
+
     m_messageMap.insert(message->id(), message);
 
     QNetworkAccessManager *manager = new QNetworkAccessManager();
@@ -397,6 +413,8 @@ void QKlipperConsole::machinePeripheralsVideo()
 {
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("machine.peripherals.video");
+
+    qDebug() << "Sending WS method" << message->method();
 
     m_messageMap.insert(message->id(), message);
 
@@ -436,6 +454,8 @@ void QKlipperConsole::machinePeripheralsCanbus(qint32 canBus)
 
     m_messageMap.insert(message->id(), message);
 
+    qDebug() << "Sending WS method" << message->method();
+
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
     QObject::connect
@@ -467,9 +487,11 @@ void QKlipperConsole::machinePeripheralsCanbus(qint32 canBus)
 void QKlipperConsole::machineProcStats()
 {
     QKlipperMessage *message = new QKlipperMessage();
-    message->setMethod("machine.peripherals.video");
+    message->setMethod("machine.proc_stats");
 
     m_messageMap.insert(message->id(), message);
+
+    qDebug() << "Sending WS method" << message->method();
 
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
@@ -506,6 +528,8 @@ void QKlipperConsole::machineUpdateStatus()
 
     m_messageMap.insert(message->id(), message);
 
+    qDebug() << "Sending WS method" << message->method();
+
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
     QObject::connect
@@ -541,6 +565,8 @@ void QKlipperConsole::machineUpdateRefresh()
 
     m_messageMap.insert(message->id(), message);
 
+    qDebug() << "Sending WS method" << message->method();
+
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
     QObject::connect
@@ -573,6 +599,8 @@ bool QKlipperConsole::machineUpdateFull(QKlipperConsoleError *error)
 {
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("machine.update.full");
+
+    qDebug() << "Sending WS method" << message->method();
 
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
@@ -611,6 +639,8 @@ bool QKlipperConsole::machineUpdateMoonraker(QKlipperConsoleError *error)
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("machine.update.moonraker");
 
+    qDebug() << "Sending WS method" << message->method();
+
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
     QEventLoop loop;
@@ -647,6 +677,8 @@ bool QKlipperConsole::machineUpdateKlipper(QKlipperConsoleError *error)
 {
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("machine.update.klipper");
+
+    qDebug() << "Sending WS method" << message->method();
 
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
@@ -686,6 +718,8 @@ bool QKlipperConsole::machineUpdateClient(QString client, QKlipperConsoleError *
     message->setParam("name", client);
     message->setMethod("machine.update.client");
 
+    qDebug() << "Sending WS method" << message->method();
+
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
     QEventLoop loop;
@@ -722,6 +756,8 @@ bool QKlipperConsole::machineUpdateSystem(QKlipperConsoleError *error)
 {
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("machine.update.system");
+
+    qDebug() << "Sending WS method" << message->method();
 
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
@@ -762,6 +798,8 @@ bool QKlipperConsole::machineUpdateRecover(QString name, bool hardRecover, QKlip
     message->setParam("hard", hardRecover);
     message->setMethod("machine.update.recover");
 
+    qDebug() << "Sending WS method" << message->method();
+
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
     QEventLoop loop;
@@ -799,6 +837,8 @@ bool QKlipperConsole::machineUpdateRollback(QString name, QKlipperConsoleError *
     QKlipperMessage *message = new QKlipperMessage();
     message->setParam("name", name);
     message->setMethod("machine.update.rollback");
+
+    qDebug() << "Sending WS method" << message->method();
 
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
@@ -838,6 +878,8 @@ void QKlipperConsole::printerInfo()
     message->setMethod("printer.info");
 
     m_messageMap.insert(message->id(), message);
+
+    qDebug() << "Sending WS method" << message->method();
 
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
@@ -884,6 +926,8 @@ void QKlipperConsole::printerObjectsList()
 
     m_messageMap.insert(message->id(), message);
 
+    qDebug() << "Sending WS method" << message->method();
+
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
     QObject::connect
@@ -923,6 +967,8 @@ void QKlipperConsole::printerObjectsQuery(QString &object)
     message->setMethod("printer.objects.query");
 
     m_messageMap.insert(message->id(), message);
+
+    qDebug() << "Sending WS method" << message->method();
 
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
@@ -970,6 +1016,8 @@ bool QKlipperConsole::printerEmergencyStop(QKlipperConsoleError *error)
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("printer.emergency_stop");
 
+    qDebug() << "Sending WS method" << message->method();
+
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
     QEventLoop loop;
@@ -1009,6 +1057,8 @@ void QKlipperConsole::printerQueryEndstops()
 
     m_messageMap.insert(message->id(), message);
 
+    qDebug() << "Sending WS method" << message->method();
+
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
     QObject::connect
@@ -1045,6 +1095,8 @@ bool QKlipperConsole::printerPrintStart(QString file, QKlipperConsoleError *erro
     message->setParam("filename", file);
     message->setMethod("printer.print.start");
 
+    qDebug() << "Sending WS method" << message->method();
+
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
     QEventLoop loop;
@@ -1075,6 +1127,12 @@ bool QKlipperConsole::printerPrintStart(QString file, QKlipperConsoleError *erro
     }
 
     return false;
+}
+
+bool QKlipperConsole::printerPrintStart(QKlipperFile *file, QKlipperConsoleError *error)
+{
+    QString filename = QString("%1/%2").arg(file->path(), file->filename());
+    return printerPrintStart(filename, error);
 }
 
 bool QKlipperConsole::printerPrintPause(QKlipperConsoleError *error)
@@ -1119,6 +1177,8 @@ bool QKlipperConsole::printerPrintResume(QKlipperConsoleError *error)
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("printer.print.resume");
 
+    qDebug() << "Sending WS method" << message->method();
+
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
     QEventLoop loop;
@@ -1156,6 +1216,8 @@ bool QKlipperConsole::printerPrintCancel(QKlipperConsoleError *error)
 
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("printer.printer.cancel");
+
+    qDebug() << "Sending WS method" << message->method();
 
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
@@ -1196,6 +1258,8 @@ bool QKlipperConsole::printerGcodeScript(QString gcode, QKlipperConsoleError *er
     message->setParam("script", gcode);
     message->setMethod("printer.gcode.script");
 
+    qDebug() << "Sending WS method" << message->method();
+
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
     QEventLoop loop;
@@ -1233,6 +1297,8 @@ bool QKlipperConsole::restartKlipper(QKlipperConsoleError *error)
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("printer.restart");
 
+    qDebug() << "Sending WS method" << message->method();
+
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
     QEventLoop loop;
@@ -1268,6 +1334,8 @@ bool QKlipperConsole::restartFirmware(QKlipperConsoleError *error)
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("printer.restart_firmware");
 
+    qDebug() << "Sending WS method" << message->method();
+
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
     QEventLoop loop;
@@ -1302,6 +1370,8 @@ bool QKlipperConsole::serverRestart(QKlipperConsoleError *error)
 {
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("server.restart");
+
+    qDebug() << "Sending WS method" << message->method();
 
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
@@ -1341,6 +1411,8 @@ void QKlipperConsole::serverInfo()
 
     m_messageMap.insert(message->id(), message);
 
+    qDebug() << "Sending WS method" << message->method();
+
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
     QObject::connect
@@ -1377,6 +1449,8 @@ void QKlipperConsole::serverConfig()
 
     m_messageMap.insert(message->id(), message);
 
+    qDebug() << "Sending WS method" << message->method();
+
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
     QObject::connect
@@ -1411,6 +1485,8 @@ void QKlipperConsole::serverFileRoots()
     message->setMethod("server.files.roots");
 
     m_messageMap.insert(message->id(), message);
+
+    qDebug() << "Sending WS method" << message->method();
 
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
@@ -1449,6 +1525,8 @@ void QKlipperConsole::serverFilesMetadata(QString fileName)
 
     m_messageMap.insert(message->id(), message);
 
+    qDebug() << "Sending WS method" << message->method();
+
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
     QObject::connect
@@ -1483,7 +1561,7 @@ void QKlipperConsole::serverFilesMetadata(QKlipperFile *file)
     QString path;
 
     if(file->path().length() > 0)
-        path = file->path() + QString("/") + file->filename();
+        path = file->path() + file->filename();
     else
         path = file->filename();
 
@@ -1493,6 +1571,8 @@ void QKlipperConsole::serverFilesMetadata(QKlipperFile *file)
     message->setMethod("server.files.metadata");
 
     m_messageMap.insert(message->id(), message);
+
+    qDebug() << "Sending WS method" << message->method();
 
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
@@ -1531,6 +1611,8 @@ void QKlipperConsole::serverFilesList(QString directory)
 
     m_messageMap.insert(message->id(), message);
 
+    qDebug() << "Sending WS method" << message->method();
+
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
     QObject::connect
@@ -1567,6 +1649,8 @@ void QKlipperConsole::serverFileDelete(QString file)
     message->setMethod("server.files.delete_file");
 
     m_messageMap.insert(message->id(), message);
+
+    qDebug() << "Sending WS method" << message->method();
 
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
@@ -1605,6 +1689,8 @@ void QKlipperConsole::serverFileDelete(QKlipperFile *file)
 
     m_messageMap.insert(message->id(), message);
 
+    qDebug() << "Sending WS method" << message->method();
+
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
     QObject::connect
@@ -1641,6 +1727,8 @@ void QKlipperConsole::serverFileMove(QString source, QString destination)
     message->setMethod("server.files.move");
 
     m_messageMap.insert(message->id(), message);
+
+    qDebug() << "Sending WS method" << message->method();
 
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
@@ -1680,6 +1768,8 @@ void QKlipperConsole::serverFileCopy(QString source, QString destination)
     message->setMethod("server.files.copy");
 
     m_messageMap.insert(message->id(), message);
+
+    qDebug() << "Sending WS method" << message->method();
 
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
@@ -1875,6 +1965,8 @@ void QKlipperConsole::serverDirectoryPost(QString directory)
 
     m_messageMap.insert(message->id(), message);
 
+    qDebug() << "Sending WS method" << message->method();
+
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
     QObject::connect
@@ -1910,6 +2002,8 @@ void QKlipperConsole::serverDirectoryDelete(QString directory)
     message->setMethod("server.files.delete_directory");
 
     m_messageMap.insert(message->id(), message);
+
+    qDebug() << "Sending WS method" << message->method();
 
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
@@ -1947,6 +2041,8 @@ void QKlipperConsole::serverTemperatureStore()
 
     m_messageMap.insert(message->id(), message);
 
+    qDebug() << "Sending WS method" << message->method();
+
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
     QObject::connect
@@ -1983,6 +2079,8 @@ void QKlipperConsole::serverGcodeStore()
 
     m_messageMap.insert(message->id(), message);
 
+    qDebug() << "Sending WS method" << message->method();
+
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
     QObject::connect
@@ -2017,6 +2115,8 @@ void QKlipperConsole::serverLogsRollover()
     message->setMethod("server.logs.rollover");
 
     m_messageMap.insert(message->id(), message);
+
+    qDebug() << "Sending WS method" << message->method();
 
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
@@ -2054,6 +2154,8 @@ void QKlipperConsole::serverLogsRollover(QString &application)
 
     m_messageMap.insert(message->id(), message);
 
+    qDebug() << "Sending WS method" << message->method();
+
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
     QObject::connect
@@ -2089,6 +2191,8 @@ void QKlipperConsole::serverWebsocketId()
 
     m_messageMap.insert(message->id(), message);
 
+    qDebug() << "Sending WS method" << message->method();
+
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
     QObject::connect
@@ -2123,6 +2227,8 @@ void QKlipperConsole::serverWebcamList()
     message->setMethod("server.webcams.list");
 
     m_messageMap.insert(message->id(), message);
+
+    qDebug() << "Sending WS method" << message->method();
 
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
@@ -2172,6 +2278,8 @@ void QKlipperConsole::serverWebcamCreate(QKlipperWebcam *webcam)
     message->setMethod("server.webcams.post_item");
 
     m_messageMap.insert(message->id(), message);
+
+    qDebug() << "Sending WS method" << message->method();
 
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
@@ -2223,6 +2331,8 @@ void QKlipperConsole::serverWebcamUpdate(QKlipperWebcam *webcam)
 
     m_messageMap.insert(message->id(), message);
 
+    qDebug() << "Sending WS method" << message->method();
+
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
     QObject::connect
@@ -2258,6 +2368,8 @@ void QKlipperConsole::serverWebcamDelete(QKlipperWebcam *webcam)
     message->setMethod("server.webcams.delete_item");
 
     m_messageMap.insert(message->id(), message);
+
+    qDebug() << "Sending WS method" << message->method();
 
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
@@ -2295,6 +2407,8 @@ void QKlipperConsole::serverAnnouncementsList(bool includeDismissed)
 
     m_messageMap.insert(message->id(), message);
 
+    qDebug() << "Sending WS method" << message->method();
+
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
     QObject::connect
@@ -2329,6 +2443,8 @@ void QKlipperConsole::serverAnnouncementsUpdate()
     message->setMethod("server.announcements.update");
 
     m_messageMap.insert(message->id(), message);
+
+    qDebug() << "Sending WS method" << message->method();
 
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
@@ -2367,6 +2483,8 @@ void QKlipperConsole::serverAnnouncementDismiss(QString entryId, qint64 waketime
 
     m_messageMap.insert(message->id(), message);
 
+    qDebug() << "Sending WS method" << message->method();
+
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
     QObject::connect
@@ -2401,6 +2519,8 @@ void QKlipperConsole::serverJobQueueStatus()
     message->setMethod("server.job_queue.status");
 
     m_messageMap.insert(message->id(), message);
+
+    qDebug() << "Sending WS method" << message->method();
 
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
@@ -2437,6 +2557,8 @@ void QKlipperConsole::serverJobQueueStart()
 
     m_messageMap.insert(message->id(), message);
 
+    qDebug() << "Sending WS method" << message->method();
+
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
     QObject::connect
@@ -2471,6 +2593,8 @@ void QKlipperConsole::serverJobQueuePause()
     message->setMethod("server.job_queue.pause");
 
     m_messageMap.insert(message->id(), message);
+
+    qDebug() << "Sending WS method" << message->method();
 
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
@@ -2508,6 +2632,8 @@ void QKlipperConsole::serverJobQueueJump(QString id)
 
     m_messageMap.insert(message->id(), message);
 
+    qDebug() << "Sending WS method" << message->method();
+
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
     QObject::connect
@@ -2544,6 +2670,8 @@ void QKlipperConsole::serverJobQueueAdd(QStringList filenames)
 
     m_messageMap.insert(message->id(), message);
 
+    qDebug() << "Sending WS method" << message->method();
+
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
     QObject::connect
@@ -2579,6 +2707,8 @@ void QKlipperConsole::serverJobQueueDelete(QStringList ids)
     message->setMethod("server.job_queue.jump");
 
     m_messageMap.insert(message->id(), message);
+
+    qDebug() << "Sending WS method" << message->method();
 
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
@@ -2679,6 +2809,8 @@ void QKlipperConsole::accessUsersList()
     message->setMethod("access.users.list");
 
     m_messageMap.insert(message->id(), message);
+
+    qDebug() << "Sending WS method" << message->method();
 
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
@@ -2928,9 +3060,15 @@ void QKlipperConsole::addConnectionState(ConnectionState state)
 {
     setConnectionState((ConnectionState)(m_connectionState | state));
 
-    if(hasConnectionState((ConnectionState)(KlipperConnected | MoonrakerConnected)) &&
-            !hasConnectionState(Syncronized))
+    if(hasConnectionState((ConnectionState)(KlipperConnected | MoonrakerConnected)) && !hasConnectionState(Startup) && !hasConnectionState(Syncronized))
+    {
         addConnectionState(Syncronized);
+    }
+    if(hasConnectionState((ConnectionState)(Connecting | Syncronized)))
+    {
+        removeConnectionState(Connecting);
+        addConnectionState(Connected);
+    }
 }
 
 void QKlipperConsole::removeConnectionState(ConnectionState state)
@@ -2961,6 +3099,8 @@ void QKlipperConsole::setConnectionState(ConnectionState connectionState)
 
     m_connectionState = connectionState;
     emit connectionStateChanged();
+
+    qDebug() << "Connection State: " << m_connectionState;
 }
 
 void QKlipperConsole::resetConnectionState()
@@ -3610,6 +3750,7 @@ void QKlipperConsole::processStartupSequence()
             setStartupSequenceProgress(100);
             setStartupSequenceText("Connected");
             removeConnectionState(Startup);
+            addConnectionState(Initialized);
         }
         else
         {
@@ -4315,7 +4456,9 @@ void QKlipperConsole::machineUpdateStatusParser(QKlipperMessage *message)
     //Grab the version info
     QJsonObject versionObject = message->response()["version_info"].toObject();
     QStringList keys = versionObject.keys();
-    QMap<QString, QKlipperUpdatePackage> packages;
+    QMultiMap<QString, QKlipperUpdatePackage> packages;
+
+    QStringList systemPackages;
 
     foreach(QString key, keys)
     {
@@ -4327,12 +4470,8 @@ void QKlipperConsole::machineUpdateStatusParser(QKlipperMessage *message)
 
             updateState->setSystemPackageCount(systemObject["package_count"].toInt());
 
-            QStringList systemPackages;
-
             for(int i = 0; i < packageArray.count(); i++)
                 systemPackages += packageArray[i].toString();
-
-            updateState->setSystemPackages(systemPackages);
         }
         //Package states
         else
@@ -4427,14 +4566,17 @@ void QKlipperConsole::machineUpdateStatusParser(QKlipperMessage *message)
             packages.insert(key, packageState);
         }
     }
+
+    updateState->setPackages(packages);
+    updateState->setSystemPackages(systemPackages);
 }
 
 void QKlipperConsole::printerInfoParser(QKlipperMessage *message)
 {
+    QString state = message->response()["state"].toString();
+
     if(message->response().toObject().contains(QString("state")))
     {
-        QString state = message->response()["state"].toString();
-
         if(state == QString("ready"))
             m_printer->setStatus(QKlipperPrinter::Ready);
         else if(state == QString("error"))
@@ -4445,7 +4587,6 @@ void QKlipperConsole::printerInfoParser(QKlipperMessage *message)
             m_printer->setStatus(QKlipperPrinter::Paused);
         else if(state == QString("cancelled"))
             m_printer->setStatus(QKlipperPrinter::Cancelled);
-
     }
 
     if(message->response().toObject().contains(QString("config_file")))
@@ -5983,9 +6124,13 @@ void QKlipperConsole::serverWebsocketIdParser(QKlipperMessage *message)
 
 void QKlipperConsole::serverFilesMetadataParser(QKlipperMessage *message)
 {
-    QString path = QString("gcodes/%1").arg(message->param("path").toString());
+    QString path = QString("%1").arg(message->param("path").toString());
 
+    QKlipperFile *file = m_server->file(path);
     QKlipperMetadata metadata;
+
+    if(file)
+        metadata = file->metadata();
 
     metadata.printStartTime = message->response()["print_start_time"].toDouble();
     metadata.jobId = message->response()["job_id"].toInt();
@@ -6022,7 +6167,8 @@ void QKlipperConsole::serverFilesMetadataParser(QKlipperMessage *message)
         metadata.thumbnails.append(thumbnail);
     }
 
-    m_server->setFileMetadata(path, metadata);
+    if(file)
+        file->setMetadata(metadata);
 }
 
 void QKlipperConsole::serverFilesDeleteParser(QKlipperMessage *message)
@@ -6058,20 +6204,8 @@ void QKlipperConsole::serverFilesListParser(QKlipperMessage *message)
     QString directory = message->param("path").toString();
     QString root = rootInfo["name"].toString();
 
-    if(directory.contains(QString("/")))
-    {
-        if(directory.endsWith(QString("/")))
-            directory = directory.mid(0, directory.length() -1);
-
-        directory.remove(root);
-
-        if(directory.startsWith(QString("/")))
-            directory = directory.mid(1, directory.length() -1);
-
-        directory = directory.mid(0, directory.lastIndexOf(QString("/")));
-    }
-    else
-        directory.remove(root);
+    if(!directory.endsWith("/"))
+        directory += "/";
 
     foreach(QJsonValueConstRef directoryRef, directories)
     {
@@ -6079,14 +6213,10 @@ void QKlipperConsole::serverFilesListParser(QKlipperMessage *message)
         {
             QJsonObject directoryObject = directoryRef.toObject();
 
-            bool newDir = false;
-            QKlipperFile *directoryListing = m_server->file(root + QString('/') + message->param("path").toString());
+            QKlipperFile *directoryListing = m_server->file(directory);
 
             if(!directoryListing)
-            {
-                newDir = true;
                 directoryListing = new QKlipperFile(m_server);
-            }
 
             QString directoryName = directoryObject["dirname"].toString();
 
@@ -6097,8 +6227,7 @@ void QKlipperConsole::serverFilesListParser(QKlipperMessage *message)
             directoryListing->setDateModified(directoryObject["modified"].toDouble());
             directoryListing->setFileType(QKlipperFile::Directory);
 
-            if(newDir)
-                m_server->setFile(directoryListing);
+            fileList += directoryListing;
         }
     }
 
@@ -6108,18 +6237,14 @@ void QKlipperConsole::serverFilesListParser(QKlipperMessage *message)
         {
             QJsonObject directoryObject = fileRef.toObject();
 
-            bool newFile = false;
-            QKlipperFile *file = m_server->file(root + QString('/') + message->param("path").toString());
+            QString filename = directoryObject["filename"].toString();
+
+            QKlipperFile *file = m_server->file(directory + filename);
 
             if(!file)
-            {
-                newFile = true;
                 file = new QKlipperFile(m_server);
-            }
 
-            QString directoryName = directoryObject["filename"].toString();
-
-            file->setFilename(directoryName);
+            file->setFilename(filename);
             file->setRoot(root);
             file->setPath(directory);
             file->setFileSize(directoryObject["size"].toDouble());
@@ -6131,10 +6256,11 @@ void QKlipperConsole::serverFilesListParser(QKlipperMessage *message)
             else if(root == QString("config"))
                 file->setFileType(QKlipperFile::Config);
 
-            if(newFile)
-                m_server->setFile(file);
+            fileList += file;
         }
     }
+
+    m_server->setFileList(directory, fileList);
 }
 
 void QKlipperConsole::serverDirectoryPostParser(QKlipperMessage *message)

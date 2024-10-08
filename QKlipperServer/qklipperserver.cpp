@@ -1,4 +1,5 @@
 #include "qklipperserver.h"
+#include "QKlipper/QKlipperConsole/qklipperconsole.h"
 
 QKlipperServer::QKlipperServer(QObject *parent)
     : QObject{parent}
@@ -34,6 +35,7 @@ void QKlipperServer::setMoonrakerLocation(const QString &moonrakerLocation)
 {
     if (m_moonrakerLocation == moonrakerLocation)
         return;
+
     m_moonrakerLocation = moonrakerLocation;
     emit moonrakerLocationChanged();
 }
@@ -456,6 +458,38 @@ QMap<QString, QKlipperFile *> QKlipperServer::fileSystem() const
     return m_fileSystem;
 }
 
+QKlipperFileList QKlipperServer::fileList(const QString &directory) const
+{
+    QKlipperFileList fileList;
+    QKlipperFileList dirList;
+
+    QMapIterator<QString, QKlipperFile*> iterator(m_fileSystem);
+
+    while(iterator.hasNext())
+    {
+        iterator.next();
+
+        QString directoryKey = iterator.key();
+
+        if(directoryKey.contains("/"))
+        {
+            directoryKey = directoryKey.left(directoryKey.lastIndexOf("/") + 1);
+        }
+
+        if(directoryKey == directory)
+        {
+            if(iterator.value()->fileType() == QKlipperFile::Directory)
+                dirList += iterator.value();
+            else
+                fileList += iterator.value();
+        }
+    }
+
+    dirList += fileList;
+
+    return dirList;
+}
+
 QKlipperFile *QKlipperServer::file(QString uri)
 {
     if(m_fileSystem.contains(uri))
@@ -471,6 +505,16 @@ void QKlipperServer::setFileSystem(const QMap<QString, QKlipperFile *> &fileSyst
 
     m_fileSystem = fileSystem;
     emit fileSystemChanged();
+}
+
+void QKlipperServer::setFileList(const QString &directory, QKlipperFileList files)
+{
+    foreach(QKlipperFile *file, files)
+    {
+        m_fileSystem[directory + file->filename()] = file;
+    }
+
+    emit fileListChanged(directory);
 }
 
 QKlipperClientIdentifier QKlipperServer::clientIdentifier() const

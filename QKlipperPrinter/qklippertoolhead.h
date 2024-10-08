@@ -57,6 +57,7 @@ public:
 
     QMap<QString, QKlipperExtruder *> extruderMap() const;
     QKlipperExtruder *extruder(const QString &name);
+    QKlipperExtruder *extruder(int index);
     QKlipperExtruder *currentExtruder();
 
     QString currentExtruderName() const;
@@ -92,6 +93,8 @@ public:
     QKlipperConsole *console() const;
 
     QString homedAxes() const;
+
+    bool isHomed() const;
 
 public slots:
 
@@ -173,7 +176,7 @@ public slots:
      *
      * \param speed The speed of the movement
      */
-    void moveX(qreal amount, qreal speed);
+    void moveX(qreal amount, qreal speed = 0);
 
     /*!
      * Sets the absolute position of the Y Axis
@@ -182,7 +185,7 @@ public slots:
      *
      * \param speed The speed of the movement
      */
-    void moveY(qreal amount, qreal speed);
+    void moveY(qreal amount, qreal speed = 0);
 
     /*!
      * Sets the absolute position of the Z Axis
@@ -191,14 +194,19 @@ public slots:
      *
      * \param speed The speed of the movement
      */
-    void moveZ(qreal amount, qreal speed);
+    void moveZ(qreal amount, qreal speed = 0);
+
+    void setExtruder(QString name, QKlipperExtruder *extruder);
+
+    qreal watts();
+
+    void setIsHomed(bool isHomed);
 
 private slots:
     void setPositionData(const QKlipperPosition &position);
     void setPartsFan(QKlipperFan *partsFan);
 
     void setExtruderMap(const QMap<QString, QKlipperExtruder *> &extruderMap);
-    void setExtruder(QString name, QKlipperExtruder *extruder);
 
     void setCurrentExtruderName(const QString &currentExtruderName);
 
@@ -268,6 +276,8 @@ signals:
 
     void consoleChanged();
 
+    void isHomedChanged();
+
 private:
 
     QKlipperFan                              *m_partsFan = nullptr;
@@ -282,6 +292,7 @@ private:
     bool m_yHomed = false;
     bool m_xHomed = false;
     bool m_isHoming = false;
+    bool m_isHomed = false;
 
     qint32 m_maxAcceleration = 0;
     qint32 m_maxVelocity = 0;
@@ -310,6 +321,7 @@ private:
     Q_PROPERTY(QKlipperPosition destination READ destination WRITE setDestination NOTIFY destinationChanged FINAL)
     Q_PROPERTY(QKlipperPosition maxPosition READ maxPosition WRITE setMaxPosition NOTIFY maxPositionChanged FINAL)
     Q_PROPERTY(QKlipperPosition minPosition READ minPosition WRITE setMinPosition NOTIFY minPositionChanged FINAL)
+    Q_PROPERTY(bool isHomed READ isHomed WRITE setIsHomed NOTIFY isHomedChanged FINAL)
 };
 
 #endif // QKLIPPERTOOLHEAD_H

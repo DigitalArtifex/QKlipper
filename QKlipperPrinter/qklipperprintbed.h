@@ -105,9 +105,9 @@ public:
 
     bool hasBedMeshResult() const;
 
-    bool adjustmentScrewsCalibrating() const;
+    bool isAdjustmentScrewsCalibrating() const;
 
-    bool bedMeshCalibrating() const;
+    bool isBedMeshCalibrating() const;
 
     qreal adjustmentScrewsMaxDeviation() const;
 
@@ -152,6 +152,8 @@ public slots:
      */
     void calibrateBedMesh();
 
+    void setMaxWatts(qreal maxWatts);
+
 private slots:
     void setCurrentTemp(qreal currentTemp);
 
@@ -160,8 +162,6 @@ private slots:
     void setPower(qreal power);
 
     void setWatts(qreal watts);
-
-    void setMaxWatts(qreal maxWatts);
 
     void setInlineResistor(qreal inlineResistor);
 

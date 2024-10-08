@@ -139,6 +139,13 @@ public:
 
     QKlipperEndstopStatus endstopStatus() const;
 
+    void pause();
+    void resume();
+    void cancel();
+    void start(QKlipperFile *file);
+
+    qreal watts();
+
 public slots:
 
 private slots:

@@ -77,7 +77,8 @@ public:
         Connected =            0b00000100, /*!!< Connection to websocket established */
         MoonrakerConnected =   0b00001000, /*!!< Connection to moonraker established */
         KlipperConnected =     0b00010000, /*!!< Connection to klipper verified */
-        Syncronized =          0b00100000, /*!!< Connection to websocket, moonraker and klipper established and startup completed */
+        Initialized =          0b00100000, /*!!< Connection startup sequence finished */
+        Syncronized =          0b00111100, /*!!< Connection to websocket, moonraker and klipper established and startup sequence completed */
         Error =                0b10000000  /*!!< Error detected with the connection */
     };
 
@@ -426,6 +427,17 @@ public slots:
      * \param error Optional reference to the QKlipperConsoleError object
      */
     bool printerPrintStart(QString file, QKlipperConsoleError *error = nullptr);
+
+    /*!
+     * Sends a command to start a print job
+     *
+     * This is a blocking method
+     *
+     * \param gcode The gcode script to run
+     *
+     * \param error Optional reference to the QKlipperConsoleError object
+     */
+    bool printerPrintStart(QKlipperFile *file, QKlipperConsoleError *error = nullptr);
 
     /*!
      * Sends a command to pause the printer's current print job
@@ -849,7 +861,7 @@ private:
 
     ConnectionState m_connectionState = Idle;
 
-    QAbstractSocket *m_rpcUpdateSocket;
+    QAbstractSocket *m_rpcUpdateSocket = nullptr;
     QByteArray m_rpcDataBuffer;
     QQueue<QByteArray> m_rpcResponseQueue;
 

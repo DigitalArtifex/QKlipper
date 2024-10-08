@@ -82,6 +82,10 @@ public:
 
     Origin origin() const;
 
+    QDateTime timestamp() const;
+
+    QDateTime responseTimestamp() const;
+
 public slots:
 
     void setId(qint32 id);
@@ -112,6 +116,10 @@ public slots:
     void setOrigin(Origin origin);
     void resetOrigin();
 
+    void setTimestamp(const QDateTime &timestamp);
+
+    void setResponseTimestamp(const QDateTime &responseTimestamp);
+
 protected slots:
     void on_responseTimerTimeout();
 
@@ -126,6 +134,10 @@ signals:
     void responseTimeout();
 
     void originChanged();
+
+    void timestampChanged();
+
+    void responseTimestampChanged();
 
 private:
     static qint32 s_currentId;
@@ -144,6 +156,8 @@ private:
     QMap<QString,QVariant> m_params;
 
     QJsonValue m_response;
+    QDateTime m_timestamp;
+    QDateTime m_responseTimestamp;
 
     Q_PROPERTY(qint32 id READ id WRITE setId RESET resetId NOTIFY idChanged FINAL)
     Q_PROPERTY(Protocol protocol READ protocol WRITE setProtocol RESET resetProtocol NOTIFY protocolChanged FINAL)
@@ -153,6 +167,8 @@ private:
     Q_PROPERTY(QJsonValue response READ response WRITE setResponse RESET resetResponse NOTIFY responseChanged FINAL)
     Q_PROPERTY(QString errorString READ errorString WRITE setErrorString RESET resetErrorString NOTIFY errorStringChanged FINAL)
     Q_PROPERTY(Origin origin READ origin WRITE setOrigin RESET resetOrigin NOTIFY originChanged FINAL)
+    Q_PROPERTY(QDateTime timestamp READ timestamp WRITE setTimestamp NOTIFY timestampChanged FINAL)
+    Q_PROPERTY(QDateTime responseTimestamp READ responseTimestamp WRITE setResponseTimestamp NOTIFY responseTimestampChanged FINAL)
 };
 
 #endif // QKLIPPERMESSAGE_H

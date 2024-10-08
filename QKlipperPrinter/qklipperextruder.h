@@ -425,6 +425,8 @@ public slots:
      */
     void calibratePid(qreal target);
 
+    void setMaxWatts(qreal maxWatts);
+
 private slots:
 
     //TODO: rename all functions here to end with Data
@@ -449,8 +451,6 @@ private slots:
     void setPower(qreal power);
 
     void setWatts(qreal watts);
-
-    void setMaxWatts(qreal maxWatts);
 
     void setInlineResistor(qreal inlineResistor);
 

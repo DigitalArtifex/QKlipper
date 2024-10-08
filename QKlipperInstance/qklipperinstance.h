@@ -38,10 +38,10 @@
 #include <QNetworkReply>
 #include <QNetworkRequest>
 
-#include "QKlipperConsole/qklipperconsole.h"
-#include "QKlipperPrinter/qklipperprinter.h"
-#include "QKlipperServer/qklipperserver.h"
-#include "QKlipperSystem/qklippersystem.h"
+#include "../QKlipperConsole/qklipperconsole.h"
+#include "../QKlipperPrinter/qklipperprinter.h"
+#include "../QKlipperServer/qklipperserver.h"
+#include "../QKlipperSystem/qklippersystem.h"
 
 class QKlipperInstance : public QObject
 {
@@ -51,8 +51,6 @@ public:
     explicit QKlipperInstance(QObject *parent = nullptr);
     ~QKlipperInstance();
 
-    void reset();
-
     QString name() const;
 
     QString address() const;
@@ -60,8 +58,6 @@ public:
     QString id() const;
 
     QString apiKey() const;
-
-    bool autoConnect() const;
 
     qint16 port() const;
 
@@ -77,25 +73,29 @@ public:
 
     QKlipperServer::ConnectionType connectionType() const;
 
-    void connect();
+    Q_INVOKABLE void connect();
+    Q_INVOKABLE void disconnect();
+    Q_INVOKABLE void reset();
+
+    QString profileColor() const;
+
+    bool isConnected() const;
 
 public slots:
     void setName(const QString &name);
-
     void setAddress(const QString &address);
-
     void setId(const QString &id);
-
     void setApiKey(const QString &apiKey);
-
-    void setAutoConnect(bool autoConnect);
-
     void setPort(qint16 port);
 
     void setInstanceLocation(const QString &instanceLocation);
     void printerStateChanged();
 
     void setConnectionType(QKlipperServer::ConnectionType connectionType);
+
+    void setConsole(QKlipperConsole *console);
+
+    void setProfileColor(const QString &profileColor);
 
 signals:
 
@@ -107,13 +107,31 @@ signals:
 
     void apiKeyChanged();
 
-    void autoConnectChanged();
-
     void portChanged();
 
     void instanceLocationChanged();
 
     void connectionTypeChanged();
+
+    void consoleChanged();
+
+    void profileColorChanged();
+
+    void connected(QKlipperInstance*);
+    void disconnected(QKlipperInstance*);
+
+    void isConnectedChanged();
+
+    void printJobAdded(QKlipperInstance*, QKlipperPrintJob*);
+    void printJobRemoved(QKlipperInstance*, QKlipperPrintJob*);
+
+    void error(QKlipperInstance*, QString, QString);
+
+protected slots:
+    void setIsConnected(bool isConnected);
+    void onConsoleConnectionStateChanged();
+    void onServerPrintJobAdded(QKlipperPrintJob *job);
+    void onServerPrintJobRemoved(QKlipperPrintJob *job);
 
 private:
     QKlipperConsole *m_console = nullptr;
@@ -126,21 +144,24 @@ private:
     QString m_id;
     QString m_apiKey;
     QString m_instanceLocation;
-
-    bool m_autoConnect = false;
+    QString m_profileColor;
 
     qint16 m_port;
 
     QKlipperServer::ConnectionType m_connectionType = QKlipperServer::None;
 
+    bool m_isConnected = false;
+
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged FINAL)
     Q_PROPERTY(QString address READ address WRITE setAddress NOTIFY addressChanged FINAL)
     Q_PROPERTY(QString id READ id WRITE setId NOTIFY idChanged FINAL)
     Q_PROPERTY(QString apiKey READ apiKey WRITE setApiKey NOTIFY apiKeyChanged FINAL)
-    Q_PROPERTY(bool autoConnect READ autoConnect WRITE setAutoConnect NOTIFY autoConnectChanged FINAL)
     Q_PROPERTY(qint16 port READ port WRITE setPort NOTIFY portChanged FINAL)
     Q_PROPERTY(QString instanceLocation READ instanceLocation WRITE setInstanceLocation NOTIFY instanceLocationChanged FINAL)
     Q_PROPERTY(QKlipperServer::ConnectionType connectionType READ connectionType WRITE setConnectionType NOTIFY connectionTypeChanged FINAL)
+    Q_PROPERTY(QKlipperConsole *console READ console WRITE setConsole NOTIFY consoleChanged FINAL)
+    Q_PROPERTY(QString profileColor READ profileColor WRITE setProfileColor NOTIFY profileColorChanged FINAL)
+    Q_PROPERTY(bool isConnected READ isConnected WRITE setIsConnected NOTIFY isConnectedChanged FINAL)
 };
 
 #endif // QKLIPPERINSTANCE_H

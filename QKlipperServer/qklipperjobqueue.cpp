@@ -28,7 +28,10 @@ void QKlipperJobQueue::addJob(QKlipperPrintJob *job)
 {
     if(!m_queue.contains(job))
     {
+        job->setParent(this);
+
         m_queue.append(job);
+        emit jobAdded(job);
         emit queueChanged();
     }
 }
@@ -38,6 +41,7 @@ void QKlipperJobQueue::removeJob(QKlipperPrintJob *job)
     if(m_queue.contains(job))
     {
         m_queue.removeAll(job);
+        emit jobRemoved(job);
         emit queueChanged();
 
         delete job;

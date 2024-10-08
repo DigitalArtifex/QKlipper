@@ -3,6 +3,7 @@
 QKlipperInstance::QKlipperInstance(QObject *parent)
     : QObject{parent}
 {
+    m_id = QUuid::createUuid().toString();
     reset();
 }
 
@@ -48,6 +49,7 @@ void QKlipperInstance::setName(const QString &name)
 {
     if (m_name == name)
         return;
+
     m_name = name;
     emit nameChanged();
 }
@@ -61,6 +63,10 @@ void QKlipperInstance::setAddress(const QString &address)
 {
     if (m_address == address)
         return;
+
+    if(m_server)
+        m_server->setAddress(address);
+
     m_address = address;
     emit addressChanged();
 }
@@ -74,6 +80,7 @@ void QKlipperInstance::setId(const QString &id)
 {
     if (m_id == id)
         return;
+
     m_id = id;
     emit idChanged();
 }
@@ -88,21 +95,11 @@ void QKlipperInstance::setApiKey(const QString &apiKey)
     if (m_apiKey == apiKey)
         return;
 
+    if(m_server)
+        m_server->setApiKey(apiKey);
+
     m_apiKey = apiKey;
     emit apiKeyChanged();
-}
-
-bool QKlipperInstance::autoConnect() const
-{
-    return m_autoConnect;
-}
-
-void QKlipperInstance::setAutoConnect(bool autoConnect)
-{
-    if (m_autoConnect == autoConnect)
-        return;
-    m_autoConnect = autoConnect;
-    emit autoConnectChanged();
 }
 
 qint16 QKlipperInstance::port() const
@@ -175,24 +172,31 @@ void QKlipperInstance::connect()
     m_server->setConnectionType(m_connectionType);
     m_server->setApiKey(m_apiKey);
 
+    m_server->setAddress(m_address);
+    m_server->setPort(m_port);
+
     if(m_instanceLocation.isEmpty())
-    {
-        m_server->setAddress(m_address);
-        m_server->setPort(m_port);
         m_server->setConnectionType(QKlipperServer::Remote);
-    }
     else
     {
-        m_server->setAddress(m_address);
-        m_server->setPort(m_port);
         m_server->setInstanceLocation(m_instanceLocation);
         m_server->setConnectionType(QKlipperServer::Local);
     }
 
     QObject::connect(m_printer, SIGNAL(statusMessageChanged()), this, SLOT(printerStateChanged()));
+    QObject::connect(m_console, SIGNAL(connectionStateChanged()), this, SLOT(onConsoleConnectionStateChanged()));
+
+    QObject::connect(m_server->jobQueue(), SIGNAL(jobAdded(QKlipperPrintJob*)), this, SLOT(onServerPrintJobAdded(QKlipperPrintJob*)));
+    QObject::connect(m_server->jobQueue(), SIGNAL(jobRemoved(QKlipperPrintJob*)), this, SLOT(onServerPrintJobRemoved(QKlipperPrintJob*)));
 
     if(m_console)
         m_console->connect();
+}
+
+void QKlipperInstance::disconnect()
+{
+    if(m_console)
+        m_console->disconnect();
 }
 
 void QKlipperInstance::setConnectionType(QKlipperServer::ConnectionType connectionType)
@@ -205,6 +209,66 @@ void QKlipperInstance::setConnectionType(QKlipperServer::ConnectionType connecti
 
     m_connectionType = connectionType;
     emit connectionTypeChanged();
+}
+
+void QKlipperInstance::setConsole(QKlipperConsole *console)
+{
+    if (m_console == console)
+        return;
+
+    m_console = console;
+    emit consoleChanged();
+}
+
+QString QKlipperInstance::profileColor() const
+{
+    return m_profileColor;
+}
+
+void QKlipperInstance::setProfileColor(const QString &profileColor)
+{
+    if (m_profileColor == profileColor)
+        return;
+
+    m_profileColor = profileColor;
+    emit profileColorChanged();
+}
+
+void QKlipperInstance::onConsoleConnectionStateChanged()
+{
+    if(m_console && m_console->isConnected() && m_console->hasConnectionState(QKlipperConsole::Syncronized))
+        setIsConnected(true);
+    else
+        setIsConnected(false);
+}
+
+void QKlipperInstance::onServerPrintJobAdded(QKlipperPrintJob *job)
+{
+    emit printJobAdded(this, job);
+}
+
+void QKlipperInstance::onServerPrintJobRemoved(QKlipperPrintJob *job)
+{
+    emit printJobRemoved(this, job);
+}
+
+bool QKlipperInstance::isConnected() const
+{
+    return m_isConnected;
+}
+
+void QKlipperInstance::setIsConnected(bool isConnected)
+{
+    if (m_isConnected == isConnected)
+        return;
+
+    m_isConnected = isConnected;
+    emit isConnectedChanged();
+
+    if(isConnected)
+        emit connected(this);
+    else
+        emit disconnected(this);
 }
 
 QKlipperPrinter *QKlipperInstance::printer() const

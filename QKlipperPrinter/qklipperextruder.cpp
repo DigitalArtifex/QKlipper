@@ -1,5 +1,5 @@
 #include "qklipperextruder.h"
-#include "QKlipperConsole/qklipperconsole.h"
+#include "../QKlipperConsole/qklipperconsole.h"
 
 QKlipperExtruder::QKlipperExtruder(QObject *parent)
     : QObject{parent}

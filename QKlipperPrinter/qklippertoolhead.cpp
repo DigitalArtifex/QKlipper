@@ -1,12 +1,16 @@
 #include "qklippertoolhead.h"
 #include "qklipperprinter.h"
 
-#include "QKlipperConsole/qklipperconsole.h"
+#include "../QKlipperConsole/qklipperconsole.h"
 
 QKlipperToolHead::QKlipperToolHead(QObject *parent)
     : QObject{parent}
 {
     m_partsFan = new QKlipperFan(this);
+
+    QKlipperExtruder *extruder = new QKlipperExtruder(this);
+    extruder->setName("extruder");
+    m_extruderMap["extruder"] = extruder;
 }
 
 QKlipperToolHead::~QKlipperToolHead()
@@ -79,6 +83,20 @@ void QKlipperToolHead::setExtruder(QString name, QKlipperExtruder *extruder)
 
     m_extruderMap[name] = extruder;
     emit extruderMapChanged();
+}
+
+qreal QKlipperToolHead::watts()
+{
+    qreal totalWatts = 0;
+    QMapIterator<QString,QKlipperExtruder*> iterator(m_extruderMap);
+
+    while(iterator.hasNext())
+    {
+        iterator.next();
+        totalWatts += iterator.value()->watts();
+    }
+
+    return totalWatts;
 }
 
 QKlipperPosition QKlipperToolHead::minPosition() const
@@ -210,15 +228,14 @@ void QKlipperToolHead::setPositionZ(qreal position, qreal speed)
 
 void QKlipperToolHead::home()
 {
-    m_isHoming = true;
-    emit isHomingChanged();
+    setIsHoming(true);
+    setIsHomed(false);
 
     //send homing command
     QString gcode("G28");
     m_console->printerGcodeScript(gcode);
 
-    m_isHoming = false;
-    emit isHomingChanged();
+    setIsHoming(false);
 }
 
 void QKlipperToolHead::move(qreal x, qreal y, qreal z, qreal speed)
@@ -362,6 +379,20 @@ void QKlipperToolHead::setConsole(QKlipperConsole *console)
     emit consoleChanged();
 }
 
+bool QKlipperToolHead::isHomed() const
+{
+    return m_isHomed;
+}
+
+void QKlipperToolHead::setIsHomed(bool isHomed)
+{
+    if (m_isHomed == isHomed)
+        return;
+
+    m_isHomed = isHomed;
+    emit isHomedChanged();
+}
+
 QKlipperPosition QKlipperToolHead::maxPosition() const
 {
     return m_maxPosition;
@@ -430,6 +461,7 @@ void QKlipperToolHead::setStalls(qint32 stalls)
 {
     if (m_stalls == stalls)
         return;
+
     m_stalls = stalls;
     emit stallsChanged();
 }
@@ -443,6 +475,7 @@ void QKlipperToolHead::setMaxAccelerationToDeceleration(qint32 maxAccelerationTo
 {
     if (m_maxAccelerationToDeceleration == maxAccelerationToDeceleration)
         return;
+
     m_maxAccelerationToDeceleration = maxAccelerationToDeceleration;
     emit maxAccelerationToDecelerationChanged();
 }
@@ -456,6 +489,7 @@ void QKlipperToolHead::setMaxVelocity(qint32 maxVelocity)
 {
     if (m_maxVelocity == maxVelocity)
         return;
+
     m_maxVelocity = maxVelocity;
     emit maxVelocityChanged();
 }
@@ -500,6 +534,9 @@ void QKlipperToolHead::setXHomed(bool xHomed)
 
     m_xHomed = xHomed;
     emit xHomedChanged();
+
+    if(m_xHomed && m_yHomed && m_zHomed)
+        setIsHomed(true);
 }
 
 bool QKlipperToolHead::yHomed() const
@@ -511,8 +548,12 @@ void QKlipperToolHead::setYHomed(bool yHomed)
 {
     if (m_yHomed == yHomed)
         return;
+
     m_yHomed = yHomed;
     emit yHomedChanged();
+
+    if(m_xHomed && m_yHomed && m_zHomed)
+        setIsHomed(true);
 }
 
 bool QKlipperToolHead::zHomed() const
@@ -527,6 +568,9 @@ void QKlipperToolHead::setZHomed(bool zHomed)
 
     m_zHomed = zHomed;
     emit zHomedChanged();
+
+    if(m_xHomed && m_yHomed && m_zHomed)
+        setIsHomed(true);
 }
 
 QString QKlipperToolHead::currentExtruderName() const

@@ -1,4 +1,6 @@
 #include "qklippersystem.h"
+#include <QKlipper/QKlipperConsole/qklipperconsole.h>
+#include <QKlipper/QKlipperConsole/qklipperconsoleerror.h>
 
 QKlipperSystem::QKlipperSystem(QObject *parent)
     : QObject{parent}
@@ -42,6 +44,55 @@ void QKlipperSystem::setDriveCapacity(qint64 driveCapacity)
 
     m_driveCapacity = driveCapacity;
     emit driveCapacityChanged();
+}
+
+
+bool QKlipperSystem::stopService(QString serviceName)
+{
+    QKlipperConsole *console = qobject_cast<QKlipperConsole*>(parent());
+
+    if(console && console->isConnected())
+    {
+        QKlipperConsoleError error;
+        console->machineServiceStop(serviceName, &error);
+
+        if(error.type() == QKlipperConsoleError::NoError)
+            return true;
+    }
+
+    return false;
+}
+
+bool QKlipperSystem::startService(QString serviceName)
+{
+    QKlipperConsole *console = qobject_cast<QKlipperConsole*>(parent());
+
+    if(console && console->isConnected())
+    {
+        QKlipperConsoleError error;
+        console->machineServiceStart(serviceName, &error);
+
+        if(error.type() == QKlipperConsoleError::NoError)
+            return true;
+    }
+
+    return false;
+}
+
+bool QKlipperSystem::restartService(QString serviceName)
+{
+    QKlipperConsole *console = qobject_cast<QKlipperConsole*>(parent());
+
+    if(console && console->isConnected())
+    {
+        QKlipperConsoleError error;
+        console->machineServiceRestart(serviceName, &error);
+
+        if(error.type() == QKlipperConsoleError::NoError)
+            return true;
+    }
+
+    return false;
 }
 
 qint64 QKlipperSystem::driveUsage() const
