@@ -1,4 +1,5 @@
 #include "qklipperinstance.h"
+#include "qsettings.h"
 
 QKlipperInstance::QKlipperInstance(QObject *parent)
     : QObject{parent}
@@ -252,6 +253,15 @@ void QKlipperInstance::onServerPrintJobRemoved(QKlipperPrintJob *job)
     emit printJobRemoved(this, job);
 }
 
+void QKlipperInstance::onConsoleError(QKlipperError &error)
+{
+    if(!m_errors.contains(error.id()))
+    {
+        m_errors.insert(error.id(), error);
+        emit this->error(this, error);
+    }
+}
+
 bool QKlipperInstance::isConnected() const
 {
     return m_isConnected;
@@ -262,13 +272,18 @@ void QKlipperInstance::setIsConnected(bool isConnected)
     if (m_isConnected == isConnected)
         return;
 
-    m_isConnected = isConnected;
-    emit isConnectedChanged();
-
-    if(isConnected)
+    if(isConnected && !m_isConnected)
+    {
+        m_isConnected = isConnected;
         emit connected(this);
-    else
+    }
+    else if(!isConnected && m_isConnected)
+    {
+        m_isConnected = isConnected;
         emit disconnected(this);
+    }
+
+    emit isConnectedChanged();
 }
 
 QKlipperPrinter *QKlipperInstance::printer() const

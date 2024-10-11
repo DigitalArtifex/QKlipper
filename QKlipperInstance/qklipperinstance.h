@@ -125,13 +125,14 @@ signals:
     void printJobAdded(QKlipperInstance*, QKlipperPrintJob*);
     void printJobRemoved(QKlipperInstance*, QKlipperPrintJob*);
 
-    void error(QKlipperInstance*, QString, QString);
+    void error(QKlipperInstance*, QKlipperError&);
 
 protected slots:
     void setIsConnected(bool isConnected);
     void onConsoleConnectionStateChanged();
     void onServerPrintJobAdded(QKlipperPrintJob *job);
     void onServerPrintJobRemoved(QKlipperPrintJob *job);
+    void onConsoleError(QKlipperError &error);
 
 private:
     QKlipperConsole *m_console = nullptr;
@@ -150,7 +151,10 @@ private:
 
     QKlipperServer::ConnectionType m_connectionType = QKlipperServer::None;
 
+    QMap<QString,QKlipperError> m_errors;
+
     bool m_isConnected = false;
+    bool m_hasError = false;
 
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged FINAL)
     Q_PROPERTY(QString address READ address WRITE setAddress NOTIFY addressChanged FINAL)
