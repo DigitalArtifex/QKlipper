@@ -70,9 +70,6 @@ QKlipperMetadata QKlipperFile::metadata() const
 
 void QKlipperFile::setMetadata(const QKlipperMetadata &metadata)
 {
-    if (m_metadata == metadata)
-        return;
-
     m_metadata = metadata;
     emit metadataChanged();
 }
@@ -122,6 +119,7 @@ void QKlipperFile::setFileSize(qint64 fileSize)
 {
     if (m_fileSize == fileSize)
         return;
+
     m_fileSize = fileSize;
     emit fileSizeChanged();
 }
