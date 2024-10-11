@@ -435,7 +435,6 @@ void QKlipperMessage::setResponse(const QByteArray &response)
     if(parseError.error != QJsonParseError::NoError)
     {
         setState(Error);
-        setErrorString(parseError.errorString());
 
         return;
     }
@@ -446,25 +445,6 @@ void QKlipperMessage::setResponse(const QByteArray &response)
 void QKlipperMessage::resetResponse()
 {
     setResponse(QJsonObject());
-}
-
-QString QKlipperMessage::errorString() const
-{
-    return m_errorString;
-}
-
-void QKlipperMessage::setErrorString(const QString &errorString)
-{
-    if (m_errorString == errorString)
-        return;
-
-    m_errorString = errorString;
-    emit errorStringChanged();
-}
-
-void QKlipperMessage::resetErrorString()
-{
-    setErrorString(QString());
 }
 
 void QKlipperMessage::startTimer()
@@ -478,6 +458,20 @@ void QKlipperMessage::startTimer()
 void QKlipperMessage::on_responseTimerTimeout()
 {
     emit responseTimeout();
+}
+
+QKlipperError QKlipperMessage::error() const
+{
+    return m_error;
+}
+
+void QKlipperMessage::setError(const QKlipperError &error)
+{
+    if (m_error == error)
+        return;
+
+    m_error = error;
+    emit errorChanged();
 }
 
 QDateTime QKlipperMessage::responseTimestamp() const

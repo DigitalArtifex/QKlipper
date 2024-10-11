@@ -32,6 +32,8 @@
 #include <QJsonParseError>
 #include <QJsonValue>
 
+#include <QKlipper/qklippererror.h>
+
 #define QKLIPPER_RPC_EOF (char)0x03;
 
 class QKlipperMessage : public QObject
@@ -78,13 +80,13 @@ public:
 
     QJsonValue response() const;
 
-    QString errorString() const;
-
     Origin origin() const;
 
     QDateTime timestamp() const;
 
     QDateTime responseTimestamp() const;
+
+    QKlipperError error() const;
 
 public slots:
 
@@ -108,9 +110,6 @@ public slots:
     void setResponse(const QByteArray &response);
     void resetResponse();
 
-    void setErrorString(const QString &errorString);
-    void resetErrorString();
-
     void startTimer();
 
     void setOrigin(Origin origin);
@@ -119,6 +118,8 @@ public slots:
     void setTimestamp(const QDateTime &timestamp);
 
     void setResponseTimestamp(const QDateTime &responseTimestamp);
+
+    void setError(const QKlipperError &error);
 
 protected slots:
     void on_responseTimerTimeout();
@@ -130,7 +131,6 @@ signals:
     void idChanged();
     void stateChanged();
     void responseChanged();
-    void errorStringChanged();
     void responseTimeout();
 
     void originChanged();
@@ -138,6 +138,8 @@ signals:
     void timestampChanged();
 
     void responseTimestampChanged();
+
+    void errorChanged();
 
 private:
     static qint32 s_currentId;
@@ -151,7 +153,6 @@ private:
     qint32 m_id = 0;
 
     QString m_method;
-    QString m_errorString;
 
     QMap<QString,QVariant> m_params;
 
@@ -159,16 +160,18 @@ private:
     QDateTime m_timestamp;
     QDateTime m_responseTimestamp;
 
+    QKlipperError m_error;
+
     Q_PROPERTY(qint32 id READ id WRITE setId RESET resetId NOTIFY idChanged FINAL)
     Q_PROPERTY(Protocol protocol READ protocol WRITE setProtocol RESET resetProtocol NOTIFY protocolChanged FINAL)
     Q_PROPERTY(QMap<QString, QVariant> params READ params WRITE setParams RESET resetParams NOTIFY paramsChanged FINAL)
     Q_PROPERTY(QString method READ method WRITE setMethod RESET resetMethod NOTIFY methodChanged FINAL)
     Q_PROPERTY(State state READ state WRITE setState RESET resetState NOTIFY stateChanged FINAL)
     Q_PROPERTY(QJsonValue response READ response WRITE setResponse RESET resetResponse NOTIFY responseChanged FINAL)
-    Q_PROPERTY(QString errorString READ errorString WRITE setErrorString RESET resetErrorString NOTIFY errorStringChanged FINAL)
     Q_PROPERTY(Origin origin READ origin WRITE setOrigin RESET resetOrigin NOTIFY originChanged FINAL)
     Q_PROPERTY(QDateTime timestamp READ timestamp WRITE setTimestamp NOTIFY timestampChanged FINAL)
     Q_PROPERTY(QDateTime responseTimestamp READ responseTimestamp WRITE setResponseTimestamp NOTIFY responseTimestampChanged FINAL)
+    Q_PROPERTY(QKlipperError error READ error WRITE setError NOTIFY errorChanged FINAL)
 };
 
 #endif // QKLIPPERMESSAGE_H
