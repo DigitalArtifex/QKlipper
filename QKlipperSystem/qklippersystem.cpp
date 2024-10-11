@@ -1,6 +1,6 @@
 #include "qklippersystem.h"
 #include <QKlipper/QKlipperConsole/qklipperconsole.h>
-#include <QKlipper/QKlipperConsole/qklipperconsoleerror.h>
+#include <QKlipper/qklippererror.h>
 
 QKlipperSystem::QKlipperSystem(QObject *parent)
     : QObject{parent}
@@ -53,10 +53,10 @@ bool QKlipperSystem::stopService(QString serviceName)
 
     if(console && console->isConnected())
     {
-        QKlipperConsoleError error;
+        QKlipperError error;
         console->machineServiceStop(serviceName, &error);
 
-        if(error.type() == QKlipperConsoleError::NoError)
+        if(error.type() == QKlipperError::NoError)
             return true;
     }
 
@@ -69,10 +69,10 @@ bool QKlipperSystem::startService(QString serviceName)
 
     if(console && console->isConnected())
     {
-        QKlipperConsoleError error;
+        QKlipperError error;
         console->machineServiceStart(serviceName, &error);
 
-        if(error.type() == QKlipperConsoleError::NoError)
+        if(error.type() == QKlipperError::NoError)
             return true;
     }
 
@@ -85,10 +85,10 @@ bool QKlipperSystem::restartService(QString serviceName)
 
     if(console && console->isConnected())
     {
-        QKlipperConsoleError error;
+        QKlipperError error;
         console->machineServiceRestart(serviceName, &error);
 
-        if(error.type() == QKlipperConsoleError::NoError)
+        if(error.type() == QKlipperError::NoError)
             return true;
     }
 

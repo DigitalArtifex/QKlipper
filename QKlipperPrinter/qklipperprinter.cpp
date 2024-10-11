@@ -548,10 +548,10 @@ void QKlipperPrinter::pause()
         return;
     }
 
-    QKlipperConsoleError error;
+    QKlipperError error;
     m_console->printerPrintPause(&error);
 
-    if(error.type() != QKlipperConsoleError::NoError)
+    if(error.type() != QKlipperError::NoError)
         qDebug() << "Error pausing print." << error.type() << error.errorString();
 }
 
@@ -563,10 +563,10 @@ void QKlipperPrinter::resume()
         return;
     }
 
-    QKlipperConsoleError error;
+    QKlipperError error;
     m_console->printerPrintResume(&error);
 
-    if(error.type() != QKlipperConsoleError::NoError)
+    if(error.type() != QKlipperError::NoError)
         qDebug() << "Error resuming print." << error.type() << error.errorString();
 }
 
@@ -578,10 +578,10 @@ void QKlipperPrinter::cancel()
         return;
     }
 
-    QKlipperConsoleError error;
+    QKlipperError error;
     m_console->printerPrintCancel(&error);
 
-    if(error.type() != QKlipperConsoleError::NoError)
+    if(error.type() != QKlipperError::NoError)
         qDebug() << "Error cancelling print." << error.type() << error.errorString();
 }
 
@@ -593,10 +593,10 @@ void QKlipperPrinter::start(QKlipperFile *file)
         return;
     }
 
-    QKlipperConsoleError error;
+    QKlipperError error;
     m_console->printerPrintStart(file, &error);
 
-    if(error.type() != QKlipperConsoleError::NoError)
+    if(error.type() != QKlipperError::NoError)
         qDebug() << "Error cancelling print." << error.type() << error.errorString();
 }
 
