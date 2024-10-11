@@ -111,6 +111,10 @@ void QKlipperServer::setInstanceLocation(const QString &instanceLocation)
         return;
 
     m_instanceLocation = instanceLocation;
+
+    if(!m_instanceLocation.endsWith(QDir::separator()))
+        m_instanceLocation += QDir::separator();
+
     emit instanceLocationChanged();
 }
 
