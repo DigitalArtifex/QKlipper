@@ -44,6 +44,15 @@ void QKlipperConsole::connect()
         if(!((QLocalSocket*)m_rpcUpdateSocket)->waitForConnected())
         {
             qDebug() << QString("Failed to connect to moonraker");
+
+            QKlipperError error;
+            error.setErrorString(QString("Failed to connect to moonraker"));
+            error.setType(QKlipperError::Socket);
+            error.setErrorTitle("Socket Error");
+            error.setOrigin("Console Connect");
+
+            emit errorOccured(error);
+
             //sendError("Could not connect to local socket");
             return;
         }
@@ -95,9 +104,13 @@ void QKlipperConsole::connect()
 
         if(errorOccurred)
         {
-            qDebug() << QString("Failed to connect to moonraker") << m_server->websocketAddress() << m_server->port();
-            qDebug() << socketError;
-            //sendError("Could not connect to local socket");
+            QKlipperError error;
+            error.setErrorString(QString("Failed to connect to moonraker"));
+            error.setType(QKlipperError::Socket);
+            error.setErrorTitle("Socket Error " + QString::number(socketError));
+            error.setOrigin("Console Connect");
+
+            emit errorOccured(error);
             return;
         }
 
@@ -130,246 +143,63 @@ void QKlipperConsole::disconnect()
     removeConnectionState(Syncronized);
 }
 
-void QKlipperConsole::machineShutdown(QKlipperConsoleError *error)
+void QKlipperConsole::machineShutdown(QKlipperError *error)
 {
-    qDebug() << "Sending WS method" << "machine.shutdown";
-
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("machine.shutdown");
 
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QEventLoop loop;
-    QObject::connect(manager, SIGNAL(finished()), &loop, SLOT(quit()));
-
-    QNetworkRequest request(m_server->address() + message->toUri());
-    QNetworkReply *reply = manager->post(request, "");
-    loop.exec();
-
-    if (reply->error())
-    {
-        error->setErrorString(reply->errorString());
-        error->setType(QKlipperConsoleError::Socket);
-        error->setOrigin("printer.emergency_stop");
-    }
+    sendWebSocketMessage(message, error);
 }
 
-void QKlipperConsole::machineReboot(QKlipperConsoleError *error)
+void QKlipperConsole::machineReboot(QKlipperError *error)
 {
-    qDebug() << "Sending WS method" << "machine.reboot";
-
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("machine.reboot");
 
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QEventLoop loop;
-    QObject::connect(manager, SIGNAL(finished()), &loop, SLOT(quit()));
-
-    QNetworkRequest request(m_server->address() + message->toUri());
-    QNetworkReply *reply = manager->post(request, "");
-    loop.exec();
-
-    if (reply->error())
-    {
-        error->setErrorString(reply->errorString());
-        error->setType(QKlipperConsoleError::Socket);
-        error->setOrigin("printer.emergency_stop");
-    }
+    sendWebSocketMessage(message, error);
 }
 
 void QKlipperConsole::machineSystemInfo()
 {
-    qDebug() << "Sending WS method" << "machine.system.info";
-
     QKlipperMessage *message = new QKlipperMessage();
-    message->setMethod("machine.system.info");
+    message->setMethod("machine.system_info");
 
-    m_messageMap.insert(message->id(), message);
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QObject::connect
-    (
-        manager,
-        &QNetworkAccessManager::finished,
-        this, [message, this](QNetworkReply *reply) {
-
-            if (reply->error())
-                message->setErrorString(reply->errorString());
-
-            QByteArray responseData = reply->readAll();
-            QJsonParseError responseDocumentError;
-            QJsonDocument responseDocument(QJsonDocument::fromJson(responseData, &responseDocumentError));
-
-            if(responseDocumentError.error != QJsonParseError::NoError)
-                message->setErrorString("Invalid Response From Server");
-
-            message->setResponse(responseDocument["result"].toObject());
-
-            parseResponse(message);
-        }
-    );
-
-    QString uri = m_server->address() + message->toUri();
-    manager->get(QNetworkRequest(uri));
+    sendWebSocketMessageAsync(message);
 }
 
-bool QKlipperConsole::machineServiceRestart(QString service, QKlipperConsoleError *error)
+bool QKlipperConsole::machineServiceRestart(QString service, QKlipperError *error)
 {
-    qDebug() << "Sending WS method" << "machine.system.info";
-
     QKlipperMessage *message = new QKlipperMessage();
     message->setParam("service", service);
     message->setMethod("machine.service.restart");
 
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QEventLoop loop;
-    QObject::connect(manager, SIGNAL(finished()), &loop, SLOT(quit()));
-
-    QNetworkRequest request(m_server->address() + message->toUri());
-    QNetworkReply *reply = manager->post(request, "");
-    loop.exec();
-
-    if (reply->error())
-    {
-        error->setErrorString(reply->errorString());
-        error->setType(QKlipperConsoleError::Socket);
-        error->setOrigin(message->method());
-    }
-
-    //returns ok
-    QByteArray data = reply->readAll();
-
-    if(data == "ok")
-    {
-        if(error)
-        {
-            error->setErrorString("");
-            error->setType(QKlipperConsoleError::NoError);
-            return true;
-        }
-    }
-
-    return false;
+    return sendWebSocketMessage(message, error);
 }
 
-bool QKlipperConsole::machineServiceStop(QString service, QKlipperConsoleError *error)
+bool QKlipperConsole::machineServiceStop(QString service, QKlipperError *error)
 {
-    qDebug() << "Sending WS method" << "machine.service.stop";
-
     QKlipperMessage *message = new QKlipperMessage();
     message->setParam("service", service);
     message->setMethod("machine.service.stop");
 
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QEventLoop loop;
-    QObject::connect(manager, SIGNAL(finished()), &loop, SLOT(quit()));
-
-    QNetworkRequest request(m_server->address() + message->toUri());
-    QNetworkReply *reply = manager->post(request, "");
-    loop.exec();
-
-    if (reply->error())
-    {
-        error->setErrorString(reply->errorString());
-        error->setType(QKlipperConsoleError::Socket);
-        error->setOrigin(message->method());
-    }
-
-    //returns ok
-    QByteArray data = reply->readAll();
-
-    if(data == "ok")
-    {
-        if(error)
-        {
-            error->setErrorString("");
-            error->setType(QKlipperConsoleError::NoError);
-            return true;
-        }
-    }
-
-    return false;
+    return sendWebSocketMessage(message, error);
 }
 
-bool QKlipperConsole::machineServiceStart(QString service, QKlipperConsoleError *error)
+bool QKlipperConsole::machineServiceStart(QString service, QKlipperError *error)
 {
-    qDebug() << "Sending WS method" << "machine.service.start";
-
     QKlipperMessage *message = new QKlipperMessage();
     message->setParam("service", service);
     message->setMethod("machine.service.start");
 
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QEventLoop loop;
-    QObject::connect(manager, SIGNAL(finished()), &loop, SLOT(quit()));
-
-    QNetworkRequest request(m_server->address() + message->toUri());
-    QNetworkReply *reply = manager->post(request, "");
-    loop.exec();
-
-    if (reply->error())
-    {
-        error->setErrorString(reply->errorString());
-        error->setType(QKlipperConsoleError::Socket);
-        error->setOrigin(message->method());
-    }
-
-    //returns ok
-    QByteArray data = reply->readAll();
-
-    if(data == "ok")
-    {
-        if(error)
-        {
-            error->setErrorString("");
-            error->setType(QKlipperConsoleError::NoError);
-            return true;
-        }
-    }
-
-    return false;
+    return sendWebSocketMessage(message, error);
 }
 
 void QKlipperConsole::machinePeripheralsUSB()
 {
-    qDebug() << "Sending WS method" << "machine.peripherals.usb";
-
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("machine.peripherals.usb");
 
-    m_messageMap.insert(message->id(), message);
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QObject::connect
-    (
-        manager,
-        &QNetworkAccessManager::finished,
-        this, [message, this](QNetworkReply *reply) {
-
-            if (reply->error())
-                message->setErrorString(reply->errorString());
-
-            QByteArray responseData = reply->readAll();
-            QJsonParseError responseDocumentError;
-            QJsonDocument responseDocument(QJsonDocument::fromJson(responseData, &responseDocumentError));
-
-            if(responseDocumentError.error != QJsonParseError::NoError)
-                message->setErrorString("Invalid Response From Server");
-
-            message->setResponse(responseDocument["result"].toObject());
-
-            parseResponse(message);
-        }
-    );
-
-    QString uri = m_server->address() + message->toUri();
-    manager->get(QNetworkRequest(uri));
+    sendWebSocketMessageAsync(message);
 }
 
 void QKlipperConsole::machinePeripheralsSerial()
@@ -377,36 +207,7 @@ void QKlipperConsole::machinePeripheralsSerial()
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("machine.peripherals.serial");
 
-    qDebug() << "Sending WS method" << message->method();
-
-    m_messageMap.insert(message->id(), message);
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QObject::connect
-    (
-        manager,
-        &QNetworkAccessManager::finished,
-        this, [message, this](QNetworkReply *reply) {
-
-            if (reply->error())
-                message->setErrorString(reply->errorString());
-
-            QByteArray responseData = reply->readAll();
-            QJsonParseError responseDocumentError;
-            QJsonDocument responseDocument(QJsonDocument::fromJson(responseData, &responseDocumentError));
-
-            if(responseDocumentError.error != QJsonParseError::NoError)
-                message->setErrorString("Invalid Response From Server");
-
-            message->setResponse(responseDocument["result"].toObject());
-
-            parseResponse(message);
-        }
-    );
-
-    QString uri = m_server->address() + message->toUri();
-    manager->get(QNetworkRequest(uri));
+    sendWebSocketMessageAsync(message);
 }
 
 void QKlipperConsole::machinePeripheralsVideo()
@@ -414,36 +215,7 @@ void QKlipperConsole::machinePeripheralsVideo()
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("machine.peripherals.video");
 
-    qDebug() << "Sending WS method" << message->method();
-
-    m_messageMap.insert(message->id(), message);
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QObject::connect
-    (
-        manager,
-        &QNetworkAccessManager::finished,
-        this, [message, this](QNetworkReply *reply) {
-
-            if (reply->error())
-                message->setErrorString(reply->errorString());
-
-            QByteArray responseData = reply->readAll();
-            QJsonParseError responseDocumentError;
-            QJsonDocument responseDocument(QJsonDocument::fromJson(responseData, &responseDocumentError));
-
-            if(responseDocumentError.error != QJsonParseError::NoError)
-                message->setErrorString("Invalid Response From Server");
-
-            message->setResponse(responseDocument["result"].toObject());
-
-            parseResponse(message);
-        }
-    );
-
-    QString uri = m_server->address() + message->toUri();
-    manager->get(QNetworkRequest(uri));
+    sendWebSocketMessageAsync(message);
 }
 
 void QKlipperConsole::machinePeripheralsCanbus(qint32 canBus)
@@ -452,36 +224,7 @@ void QKlipperConsole::machinePeripheralsCanbus(qint32 canBus)
     message->setParam("interface", canBus);
     message->setMethod("machine.peripherals.canbus");
 
-    m_messageMap.insert(message->id(), message);
-
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QObject::connect
-    (
-        manager,
-        &QNetworkAccessManager::finished,
-        this, [message, this](QNetworkReply *reply) {
-
-            if (reply->error())
-                message->setErrorString(reply->errorString());
-
-            QByteArray responseData = reply->readAll();
-            QJsonParseError responseDocumentError;
-            QJsonDocument responseDocument(QJsonDocument::fromJson(responseData, &responseDocumentError));
-
-            if(responseDocumentError.error != QJsonParseError::NoError)
-                message->setErrorString("Invalid Response From Server");
-
-            message->setResponse(responseDocument["result"].toObject());
-
-            parseResponse(message);
-        }
-    );
-
-    QString uri = m_server->address() + message->toUri();
-    manager->get(QNetworkRequest(uri));
+    sendWebSocketMessageAsync(message);
 }
 
 void QKlipperConsole::machineProcStats()
@@ -489,36 +232,7 @@ void QKlipperConsole::machineProcStats()
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("machine.proc_stats");
 
-    m_messageMap.insert(message->id(), message);
-
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QObject::connect
-    (
-        manager,
-        &QNetworkAccessManager::finished,
-        this, [message, this](QNetworkReply *reply) {
-
-            if (reply->error())
-                message->setErrorString(reply->errorString());
-
-            QByteArray responseData = reply->readAll();
-            QJsonParseError responseDocumentError;
-            QJsonDocument responseDocument(QJsonDocument::fromJson(responseData, &responseDocumentError));
-
-            if(responseDocumentError.error != QJsonParseError::NoError)
-                message->setErrorString("Invalid Response From Server");
-
-            message->setResponse(responseDocument["result"].toObject());
-
-            parseResponse(message);
-        }
-    );
-
-    QString uri = m_server->address() + message->toUri();
-    manager->get(QNetworkRequest(uri));
+    sendWebSocketMessageAsync(message);
 }
 
 void QKlipperConsole::machineUpdateStatus()
@@ -526,36 +240,7 @@ void QKlipperConsole::machineUpdateStatus()
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("machine.update.status");
 
-    m_messageMap.insert(message->id(), message);
-
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QObject::connect
-    (
-        manager,
-        &QNetworkAccessManager::finished,
-        this, [message, this](QNetworkReply *reply) {
-
-            if (reply->error())
-                message->setErrorString(reply->errorString());
-
-            QByteArray responseData = reply->readAll();
-            QJsonParseError responseDocumentError;
-            QJsonDocument responseDocument(QJsonDocument::fromJson(responseData, &responseDocumentError));
-
-            if(responseDocumentError.error != QJsonParseError::NoError)
-                message->setErrorString("Invalid Response From Server");
-
-            message->setResponse(responseDocument["result"].toObject());
-
-            parseResponse(message);
-        }
-    );
-
-    QString uri = m_server->address() + message->toUri();
-    manager->get(QNetworkRequest(uri));
+    sendWebSocketMessageAsync(message);
 }
 
 void QKlipperConsole::machineUpdateRefresh()
@@ -563,313 +248,67 @@ void QKlipperConsole::machineUpdateRefresh()
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("machine.update.refresh");
 
-    m_messageMap.insert(message->id(), message);
-
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QObject::connect
-    (
-        manager,
-        &QNetworkAccessManager::finished,
-        this, [message, this](QNetworkReply *reply) {
-
-            if (reply->error())
-                message->setErrorString(reply->errorString());
-
-            QByteArray responseData = reply->readAll();
-            QJsonParseError responseDocumentError;
-            QJsonDocument responseDocument(QJsonDocument::fromJson(responseData, &responseDocumentError));
-
-            if(responseDocumentError.error != QJsonParseError::NoError)
-                message->setErrorString("Invalid Response From Server");
-
-            message->setResponse(responseDocument["result"].toObject());
-
-            parseResponse(message);
-        }
-    );
-
-    QString uri = m_server->address() + message->toUri();
-    manager->get(QNetworkRequest(uri));
+    sendWebSocketMessageAsync(message);
 }
 
-bool QKlipperConsole::machineUpdateFull(QKlipperConsoleError *error)
+bool QKlipperConsole::machineUpdateFull(QKlipperError *error)
 {
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("machine.update.full");
 
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QEventLoop loop;
-    QObject::connect(manager, SIGNAL(finished()), &loop, SLOT(quit()));
-
-    QNetworkRequest request(m_server->address() + message->toUri());
-    QNetworkReply *reply = manager->post(request, "");
-    loop.exec();
-
-    if (reply->error())
-    {
-        error->setErrorString(reply->errorString());
-        error->setType(QKlipperConsoleError::Socket);
-        error->setOrigin("printer.emergency_stop");
-    }
-
-    //returns ok
-    QByteArray data = reply->readAll();
-
-    if(data == "ok")
-    {
-        if(error)
-        {
-            error->setErrorString("");
-            error->setType(QKlipperConsoleError::NoError);
-            return true;
-        }
-    }
-
-    return false;
+    return sendWebSocketMessage(message, error);
 }
 
-bool QKlipperConsole::machineUpdateMoonraker(QKlipperConsoleError *error)
+bool QKlipperConsole::machineUpdateMoonraker(QKlipperError *error)
 {
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("machine.update.moonraker");
 
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QEventLoop loop;
-    QObject::connect(manager, SIGNAL(finished()), &loop, SLOT(quit()));
-
-    QNetworkRequest request(m_server->address() + message->toUri());
-    QNetworkReply *reply = manager->post(request, "");
-    loop.exec();
-
-    if (reply->error())
-    {
-        error->setErrorString(reply->errorString());
-        error->setType(QKlipperConsoleError::Socket);
-        error->setOrigin("printer.emergency_stop");
-    }
-
-    //returns ok
-    QByteArray data = reply->readAll();
-
-    if(data == "ok")
-    {
-        if(error)
-        {
-            error->setErrorString("");
-            error->setType(QKlipperConsoleError::NoError);
-            return true;
-        }
-    }
-
-    return false;
+    return sendWebSocketMessage(message, error);
 }
 
-bool QKlipperConsole::machineUpdateKlipper(QKlipperConsoleError *error)
+bool QKlipperConsole::machineUpdateKlipper(QKlipperError *error)
 {
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("machine.update.klipper");
 
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QEventLoop loop;
-    QObject::connect(manager, SIGNAL(finished()), &loop, SLOT(quit()));
-
-    QNetworkRequest request(m_server->address() + message->toUri());
-    QNetworkReply *reply = manager->post(request, "");
-    loop.exec();
-
-    if (reply->error())
-    {
-        error->setErrorString(reply->errorString());
-        error->setType(QKlipperConsoleError::Socket);
-        error->setOrigin("printer.emergency_stop");
-    }
-
-    //returns ok
-    QByteArray data = reply->readAll();
-
-    if(data == "ok")
-    {
-        if(error)
-        {
-            error->setErrorString("");
-            error->setType(QKlipperConsoleError::NoError);
-            return true;
-        }
-    }
-
-    return false;
+    return sendWebSocketMessage(message, error);
 }
 
-bool QKlipperConsole::machineUpdateClient(QString client, QKlipperConsoleError *error)
+bool QKlipperConsole::machineUpdateClient(QString client, QKlipperError *error)
 {
     QKlipperMessage *message = new QKlipperMessage();
     message->setParam("name", client);
     message->setMethod("machine.update.client");
 
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QEventLoop loop;
-    QObject::connect(manager, SIGNAL(finished()), &loop, SLOT(quit()));
-
-    QNetworkRequest request(m_server->address() + message->toUri());
-    QNetworkReply *reply = manager->post(request, "");
-    loop.exec();
-
-    if (reply->error())
-    {
-        error->setErrorString(reply->errorString());
-        error->setType(QKlipperConsoleError::Socket);
-        error->setOrigin("printer.emergency_stop");
-    }
-
-    //returns ok
-    QByteArray data = reply->readAll();
-
-    if(data == "ok")
-    {
-        if(error)
-        {
-            error->setErrorString("");
-            error->setType(QKlipperConsoleError::NoError);
-            return true;
-        }
-    }
-
-    return false;
+    return sendWebSocketMessage(message, error);
 }
 
-bool QKlipperConsole::machineUpdateSystem(QKlipperConsoleError *error)
+bool QKlipperConsole::machineUpdateSystem(QKlipperError *error)
 {
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("machine.update.system");
 
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QEventLoop loop;
-    QObject::connect(manager, SIGNAL(finished()), &loop, SLOT(quit()));
-
-    QNetworkRequest request(m_server->address() + message->toUri());
-    QNetworkReply *reply = manager->post(request, "");
-    loop.exec();
-
-    if (reply->error())
-    {
-        error->setErrorString(reply->errorString());
-        error->setType(QKlipperConsoleError::Socket);
-        error->setOrigin("printer.emergency_stop");
-    }
-
-    //returns ok
-    QByteArray data = reply->readAll();
-
-    if(data == "ok")
-    {
-        if(error)
-        {
-            error->setErrorString("");
-            error->setType(QKlipperConsoleError::NoError);
-            return true;
-        }
-    }
-
-    return false;
+    return sendWebSocketMessage(message, error);
 }
 
-bool QKlipperConsole::machineUpdateRecover(QString name, bool hardRecover, QKlipperConsoleError *error)
+bool QKlipperConsole::machineUpdateRecover(QString name, bool hardRecover, QKlipperError *error)
 {
     QKlipperMessage *message = new QKlipperMessage();
     message->setParam("name", name);
     message->setParam("hard", hardRecover);
     message->setMethod("machine.update.recover");
 
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QEventLoop loop;
-    QObject::connect(manager, SIGNAL(finished()), &loop, SLOT(quit()));
-
-    QNetworkRequest request(m_server->address() + message->toUri());
-    QNetworkReply *reply = manager->post(request, "");
-    loop.exec();
-
-    if (reply->error())
-    {
-        error->setErrorString(reply->errorString());
-        error->setType(QKlipperConsoleError::Socket);
-        error->setOrigin("printer.emergency_stop");
-    }
-
-    //returns ok
-    QByteArray data = reply->readAll();
-
-    if(data == "ok")
-    {
-        if(error)
-        {
-            error->setErrorString("");
-            error->setType(QKlipperConsoleError::NoError);
-            return true;
-        }
-    }
-
-    return false;
+    return sendWebSocketMessage(message, error);
 }
 
-bool QKlipperConsole::machineUpdateRollback(QString name, QKlipperConsoleError *error)
+bool QKlipperConsole::machineUpdateRollback(QString name, QKlipperError *error)
 {
     QKlipperMessage *message = new QKlipperMessage();
     message->setParam("name", name);
     message->setMethod("machine.update.rollback");
 
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QEventLoop loop;
-    QObject::connect(manager, SIGNAL(finished()), &loop, SLOT(quit()));
-
-    QNetworkRequest request(m_server->address() + message->toUri());
-    QNetworkReply *reply = manager->post(request, "");
-    loop.exec();
-
-    if (reply->error())
-    {
-        error->setErrorString(reply->errorString());
-        error->setType(QKlipperConsoleError::Socket);
-        error->setOrigin("printer.emergency_stop");
-    }
-
-    //returns ok
-    QByteArray data = reply->readAll();
-
-    if(data == "ok")
-    {
-        if(error)
-        {
-            error->setErrorString("");
-            error->setType(QKlipperConsoleError::NoError);
-            return true;
-        }
-    }
-
-    return false;
+    return sendWebSocketMessage(message, error);
 }
 
 void QKlipperConsole::printerInfo()
@@ -877,40 +316,7 @@ void QKlipperConsole::printerInfo()
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("printer.info");
 
-    m_messageMap.insert(message->id(), message);
-
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QObject::connect
-    (
-        manager,
-        &QNetworkAccessManager::finished,
-        this, [message, this](QNetworkReply *reply) {
-
-            if (reply->error()) {
-                qDebug() << reply->errorString() << message->method() << reply->url() ;
-                return;
-            }
-
-            QByteArray responseData = reply->readAll();
-            QJsonParseError responseDocumentError;
-            QJsonDocument responseDocument(QJsonDocument::fromJson(responseData, &responseDocumentError));
-
-            if(responseDocumentError.error != QJsonParseError::NoError)
-            {
-                //sendError("Invalid response from server");
-                return;
-            }
-            message->setResponse(responseDocument["result"].toObject());
-
-            parseResponse(message);
-        }
-    );
-
-    QString uri = m_server->address() + message->toUri();
-    manager->get(QNetworkRequest(uri));
+    sendWebSocketMessageAsync(message);
 }
 
 void QKlipperConsole::printerMCUInfo()
@@ -924,40 +330,7 @@ void QKlipperConsole::printerObjectsList()
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("printer.objects.list");
 
-    m_messageMap.insert(message->id(), message);
-
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QObject::connect
-    (
-        manager,
-        &QNetworkAccessManager::finished,
-        this, [message, this](QNetworkReply *reply) {
-
-            if (reply->error()) {
-                qDebug() << reply->errorString() << message->method() << reply->url() ;
-                return;
-            }
-
-            QByteArray responseData = reply->readAll();
-            QJsonParseError responseDocumentError;
-            QJsonDocument responseDocument(QJsonDocument::fromJson(responseData, &responseDocumentError));
-
-            if(responseDocumentError.error != QJsonParseError::NoError)
-            {
-                //sendError("Invalid response from server");
-                return;
-            }
-            message->setResponse(responseDocument["result"].toObject());
-
-            parseResponse(message);
-        }
-    );
-
-    QString uri = m_server->address() + message->toUri();
-    manager->get(QNetworkRequest(uri));
+    sendWebSocketMessageAsync(message);
 }
 
 void QKlipperConsole::printerObjectsQuery(QString &object)
@@ -966,36 +339,7 @@ void QKlipperConsole::printerObjectsQuery(QString &object)
     message->setParam(object, QVariant());
     message->setMethod("printer.objects.query");
 
-    m_messageMap.insert(message->id(), message);
-
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QObject::connect
-    (
-        manager,
-        &QNetworkAccessManager::finished,
-        this, [message, this](QNetworkReply *reply) {
-
-            if (reply->error())
-                message->setErrorString(reply->errorString());
-
-            QByteArray responseData = reply->readAll();
-            QJsonParseError responseDocumentError;
-            QJsonDocument responseDocument(QJsonDocument::fromJson(responseData, &responseDocumentError));
-
-            if(responseDocumentError.error != QJsonParseError::NoError)
-                message->setErrorString("Invalid Response From Server");
-
-            message->setResponse(responseDocument["result"].toObject());
-
-            parseResponse(message);
-        }
-    );
-
-    QString uri = m_server->address() + message->toUri();
-    manager->get(QNetworkRequest(uri));
+    sendWebSocketMessageAsync(message);
 }
 
 void QKlipperConsole::printerSubscribe()
@@ -1011,43 +355,12 @@ void QKlipperConsole::printerSubscribe()
     sendRpcMessage(message);
 }
 
-bool QKlipperConsole::printerEmergencyStop(QKlipperConsoleError *error)
+bool QKlipperConsole::printerEmergencyStop(QKlipperError *error)
 {
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("printer.emergency_stop");
 
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QEventLoop loop;
-    QObject::connect(manager, SIGNAL(finished()), &loop, SLOT(quit()));
-
-    QNetworkRequest request(m_server->address() + message->toUri());
-    QNetworkReply *reply = manager->post(request, "");
-    loop.exec();
-
-    if (reply->error())
-    {
-        error->setErrorString(reply->errorString());
-        error->setType(QKlipperConsoleError::Socket);
-        error->setOrigin("printer.emergency_stop");
-    }
-
-    //returns ok
-    QByteArray data = reply->readAll();
-
-    if(data == "ok")
-    {
-        if(error)
-        {
-            error->setErrorString("");
-            error->setType(QKlipperConsoleError::NoError);
-            return true;
-        }
-    }
-
-    return false;
+    return sendWebSocketMessage(message, error);
 }
 
 void QKlipperConsole::printerQueryEndstops()
@@ -1055,391 +368,89 @@ void QKlipperConsole::printerQueryEndstops()
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("printer.query_endstops.status");
 
-    m_messageMap.insert(message->id(), message);
-
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QObject::connect
-    (
-        manager,
-        &QNetworkAccessManager::finished,
-        this, [message, this](QNetworkReply *reply) {
-
-            if (reply->error()) {
-                qDebug() << reply->errorString() << message->method() << reply->url() ;
-                return;
-            }
-
-            QByteArray responseData = reply->readAll();
-            QJsonParseError responseDocumentError;
-            QJsonDocument responseDocument(QJsonDocument::fromJson(responseData, &responseDocumentError));
-
-            if(responseDocumentError.error != QJsonParseError::NoError)
-                message->setErrorString("Invalid Response From Server");
-
-            message->setResponse(responseDocument["result"].toObject());
-
-            parseResponse(message);
-        }
-    );
-
-    QString uri = m_server->address() + message->toUri();
-    manager->get(QNetworkRequest(uri));
+    sendWebSocketMessageAsync(message);
 }
 
-bool QKlipperConsole::printerPrintStart(QString file, QKlipperConsoleError *error)
+bool QKlipperConsole::printerPrintStart(QString file, QKlipperError *error)
 {
     QKlipperMessage *message = new QKlipperMessage();
     message->setParam("filename", file);
     message->setMethod("printer.print.start");
 
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QEventLoop loop;
-    QObject::connect(manager, SIGNAL(finished()), &loop, SLOT(quit()));
-
-    QNetworkRequest request(m_server->address() + message->toUri());
-    QNetworkReply *reply = manager->post(request, "");
-    loop.exec();
-
-    if (reply->error())
-    {
-        error->setErrorString(reply->errorString());
-        error->setType(QKlipperConsoleError::Socket);
-        error->setOrigin("printer.emergency_stop");
-    }
-
-    //returns ok
-    QByteArray data = reply->readAll();
-
-    if(data == "ok")
-    {
-        if(error)
-        {
-            error->setErrorString("");
-            error->setType(QKlipperConsoleError::NoError);
-            return true;
-        }
-    }
-
-    return false;
+    return sendWebSocketMessage(message, error);
 }
 
-bool QKlipperConsole::printerPrintStart(QKlipperFile *file, QKlipperConsoleError *error)
+bool QKlipperConsole::printerPrintStart(QKlipperFile *file, QKlipperError *error)
 {
     QString filename = QString("%1/%2").arg(file->path(), file->filename());
     return printerPrintStart(filename, error);
 }
 
-bool QKlipperConsole::printerPrintPause(QKlipperConsoleError *error)
+bool QKlipperConsole::printerPrintPause(QKlipperError *error)
 {
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("printer.print.pause");
 
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QEventLoop loop;
-    QObject::connect(manager, SIGNAL(finished()), &loop, SLOT(quit()));
-
-    QNetworkRequest request(m_server->address() + message->toUri());
-    QNetworkReply *reply = manager->post(request, "");
-    loop.exec();
-
-    if (reply->error())
-    {
-        error->setErrorString(reply->errorString());
-        error->setType(QKlipperConsoleError::Socket);
-        error->setOrigin("printer.emergency_stop");
-    }
-
-    //returns ok
-    QByteArray data = reply->readAll();
-
-    if(data == "ok")
-    {
-        if(error)
-        {
-            error->setErrorString("");
-            error->setType(QKlipperConsoleError::NoError);
-            return true;
-        }
-    }
-
-    return false;
+    return sendWebSocketMessage(message, error);
 }
 
-bool QKlipperConsole::printerPrintResume(QKlipperConsoleError *error)
+bool QKlipperConsole::printerPrintResume(QKlipperError *error)
 {
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("printer.print.resume");
 
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QEventLoop loop;
-    QObject::connect(manager, SIGNAL(finished()), &loop, SLOT(quit()));
-
-    QNetworkRequest request(m_server->address() + message->toUri());
-    QNetworkReply *reply = manager->post(request, "");
-    loop.exec();
-
-    if (reply->error())
-    {
-        error->setErrorString(reply->errorString());
-        error->setType(QKlipperConsoleError::Socket);
-        error->setOrigin("printer.emergency_stop");
-    }
-
-    //returns ok
-    QByteArray data = reply->readAll();
-
-    if(data == "ok")
-    {
-        if(error)
-        {
-            error->setErrorString("");
-            error->setType(QKlipperConsoleError::NoError);
-            return true;
-        }
-    }
-
-    return false;
+    return sendWebSocketMessage(message, error);
 }
 
-bool QKlipperConsole::printerPrintCancel(QKlipperConsoleError *error)
+bool QKlipperConsole::printerPrintCancel(QKlipperError *error)
 {
 
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("printer.printer.cancel");
 
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QEventLoop loop;
-    QObject::connect(manager, SIGNAL(finished()), &loop, SLOT(quit()));
-
-    QNetworkRequest request(m_server->address() + message->toUri());
-    QNetworkReply *reply = manager->post(request, "");
-    loop.exec();
-
-    if (reply->error())
-    {
-        error->setErrorString(reply->errorString());
-        error->setType(QKlipperConsoleError::Socket);
-        error->setOrigin("printer.emergency_stop");
-    }
-
-    //returns ok
-    QByteArray data = reply->readAll();
-
-    if(data == "ok")
-    {
-        if(error)
-        {
-            error->setErrorString("");
-            error->setType(QKlipperConsoleError::NoError);
-            return true;
-        }
-    }
-
-    return false;
+    return sendWebSocketMessage(message, error);
 }
 
-bool QKlipperConsole::printerGcodeScript(QString gcode, QKlipperConsoleError *error, QKlipperMessage::Origin origin)
+bool QKlipperConsole::printerGcodeScript(QString gcode, QKlipperError *error, QKlipperMessage::Origin origin)
 {
     QKlipperMessage *message = new QKlipperMessage();
     message->setOrigin(origin);
     message->setParam("script", gcode);
     message->setMethod("printer.gcode.script");
 
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QEventLoop loop;
-    QObject::connect(manager, SIGNAL(finished()), &loop, SLOT(quit()));
-
-    QNetworkRequest request(m_server->address() + message->toUri());
-    QNetworkReply *reply = manager->post(request, "");
-    loop.exec();
-
-    if (reply->error())
-    {
-        error->setErrorString(reply->errorString());
-        error->setType(QKlipperConsoleError::Socket);
-        error->setOrigin("printer.gcode.script");
-    }
-
-    //returns ok
-    QByteArray data = reply->readAll();
-
-    if(data == "ok")
-    {
-        if(error)
-        {
-            error->setErrorString("");
-            error->setType(QKlipperConsoleError::NoError);
-            return true;
-        }
-    }
-
-    return false;
+    return sendWebSocketMessage(message, error);
 }
 
-bool QKlipperConsole::restartKlipper(QKlipperConsoleError *error)
+bool QKlipperConsole::restartKlipper(QKlipperError *error)
 {
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("printer.restart");
 
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QEventLoop loop;
-    QObject::connect(manager, SIGNAL(finished()), &loop, SLOT(quit()));
-
-    QNetworkRequest request(m_server->address() + message->toUri());
-    QNetworkReply *reply = manager->get(request);
-    loop.exec();
-
-    if (reply->error()) {
-        qDebug() << reply->errorString() << message->method() << reply->url() ;
-        return false;
-    }
-
-    //returns ok
-    QByteArray data = reply->readAll();
-
-    if(data == "ok")
-    {
-        if(error)
-        {
-            error->setErrorString("");
-            error->setType(QKlipperConsoleError::NoError);
-            return true;
-        }
-    }
-
-    return false;
+    return sendWebSocketMessage(message, error);
 }
 
-bool QKlipperConsole::restartFirmware(QKlipperConsoleError *error)
+bool QKlipperConsole::restartFirmware(QKlipperError *error)
 {
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("printer.restart_firmware");
 
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QEventLoop loop;
-    QObject::connect(manager, SIGNAL(finished()), &loop, SLOT(quit()));
-
-    QNetworkRequest request(m_server->address() + message->toUri());
-    QNetworkReply *reply = manager->get(request);
-    loop.exec();
-
-    if (reply->error()) {
-        qDebug() << reply->errorString() << message->method() << reply->url() ;
-        return false;
-    }
-
-    //returns ok
-    QByteArray data = reply->readAll();
-
-    if(data == "ok")
-    {
-        if(error)
-        {
-            error->setErrorString("");
-            error->setType(QKlipperConsoleError::NoError);
-            return true;
-        }
-    }
-
-    return false;
+    return sendWebSocketMessage(message, error);
 }
 
-bool QKlipperConsole::serverRestart(QKlipperConsoleError *error)
+bool QKlipperConsole::serverRestart(QKlipperError *error)
 {
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("server.restart");
 
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QEventLoop loop;
-    QObject::connect(manager, SIGNAL(finished()), &loop, SLOT(quit()));
-
-    QNetworkRequest request(m_server->address() + message->toUri());
-    QNetworkReply *reply = manager->get(request);
-    loop.exec();
-
-    if (reply->error()) {
-        qDebug() << reply->errorString() << message->method() << reply->url() ;
-        return false;
-    }
-
-    //returns ok
-    QByteArray data = reply->readAll();
-
-    if(data == "ok")
-    {
-        if(error)
-        {
-            error->setErrorString("");
-            error->setType(QKlipperConsoleError::NoError);
-            return true;
-        }
-    }
-
-    return false;
+    return sendWebSocketMessage(message, error);
 }
-
 
 void QKlipperConsole::serverInfo()
 {
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("server.info");
 
-    m_messageMap.insert(message->id(), message);
-
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QObject::connect
-    (
-        manager,
-        &QNetworkAccessManager::finished,
-        this, [message, this](QNetworkReply *reply) {
-
-            if (reply->error())
-                message->setErrorString(reply->errorString());
-
-            QByteArray responseData = reply->readAll();
-            QJsonParseError responseDocumentError;
-            QJsonDocument responseDocument(QJsonDocument::fromJson(responseData, &responseDocumentError));
-
-
-            if(responseDocumentError.error != QJsonParseError::NoError)
-                message->setErrorString("Invalid Response From Server");
-
-            message->setResponse(responseDocument["result"].toObject());
-
-            parseResponse(message);
-        }
-    );
-
-    QString uri = m_server->address() + message->toUri();
-    manager->get(QNetworkRequest(uri));
+    sendWebSocketMessageAsync(message);
 }
 
 void QKlipperConsole::serverConfig()
@@ -1447,36 +458,7 @@ void QKlipperConsole::serverConfig()
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("server.config");
 
-    m_messageMap.insert(message->id(), message);
-
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QObject::connect
-    (
-        manager,
-        &QNetworkAccessManager::finished,
-        this, [message, this](QNetworkReply *reply) {
-
-            if (reply->error())
-                message->setErrorString(reply->errorString());
-
-            QByteArray responseData = reply->readAll();
-            QJsonParseError responseDocumentError;
-            QJsonDocument responseDocument(QJsonDocument::fromJson(responseData, &responseDocumentError));
-
-            if(responseDocumentError.error != QJsonParseError::NoError)
-                message->setErrorString("Invalid Response From Server");
-
-            message->setResponse(responseDocument["result"].toObject());
-
-            parseResponse(message);
-        }
-    );
-
-    QString uri = m_server->address() + message->toUri();
-    manager->get(QNetworkRequest(uri));
+    sendWebSocketMessageAsync(message);
 }
 
 void QKlipperConsole::serverFileRoots()
@@ -1484,75 +466,20 @@ void QKlipperConsole::serverFileRoots()
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("server.files.roots");
 
-    m_messageMap.insert(message->id(), message);
-
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QObject::connect
-    (
-        manager,
-        &QNetworkAccessManager::finished,
-        this, [message, this](QNetworkReply *reply) {
-
-            if (reply->error())
-                message->setErrorString(reply->errorString());
-
-            QByteArray responseData = reply->readAll();
-            QJsonParseError responseDocumentError;
-            QJsonDocument responseDocument(QJsonDocument::fromJson(responseData, &responseDocumentError));
-
-            if(responseDocumentError.error != QJsonParseError::NoError)
-                message->setErrorString("Invalid Response From Server");
-
-            message->setResponse(responseDocument["result"].toObject());
-
-            parseResponse(message);
-        }
-    );
-
-    QString uri = m_server->address() + message->toUri();
-    manager->get(QNetworkRequest(uri));
+    sendWebSocketMessageAsync(message);
 }
 
 void QKlipperConsole::serverFilesMetadata(QString fileName)
 {
+    if(fileName.startsWith("gcodes/", Qt::CaseInsensitive))
+        fileName = fileName.remove(0, 7);
+
     QKlipperMessage *message = new QKlipperMessage();
-    message->setParam("path", fileName);
+    message->setParam("filename", fileName);
     message->setParam("extended", true);
     message->setMethod("server.files.metadata");
 
-    m_messageMap.insert(message->id(), message);
-
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QObject::connect
-    (
-        manager,
-        &QNetworkAccessManager::finished,
-        this, [message, this](QNetworkReply *reply) {
-
-            if (reply->error())
-                message->setErrorString(reply->errorString());
-
-            QByteArray responseData = reply->readAll();
-            QJsonParseError responseDocumentError;
-            QJsonDocument responseDocument(QJsonDocument::fromJson(responseData, &responseDocumentError));
-
-            if(responseDocumentError.error != QJsonParseError::NoError)
-                message->setErrorString("Invalid Response From Server");
-
-            message->setResponse(responseDocument["result"].toObject());
-
-            parseResponse(message);
-        }
-    );
-
-    QString uri = m_server->address() + message->toUri();
-    manager->get(QNetworkRequest(uri));
+    sendWebSocketMessageAsync(message);
 }
 
 void QKlipperConsole::serverFilesMetadata(QKlipperFile *file)
@@ -1565,41 +492,17 @@ void QKlipperConsole::serverFilesMetadata(QKlipperFile *file)
     else
         path = file->filename();
 
+    if(path.startsWith("gcodes/", Qt::CaseInsensitive))
+        path = path.remove(0, 7);
+
+    qDebug() << path;
+
     QKlipperMessage *message = new QKlipperMessage();
-    message->setParam("path", path);
+    message->setParam("filename", path);
     message->setParam("extended", true);
     message->setMethod("server.files.metadata");
 
-    m_messageMap.insert(message->id(), message);
-
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QObject::connect
-    (
-        manager,
-        &QNetworkAccessManager::finished,
-        this, [message, this](QNetworkReply *reply) {
-
-            if (reply->error())
-                message->setErrorString(reply->errorString());
-
-            QByteArray responseData = reply->readAll();
-            QJsonParseError responseDocumentError;
-            QJsonDocument responseDocument(QJsonDocument::fromJson(responseData, &responseDocumentError));
-
-            if(responseDocumentError.error != QJsonParseError::NoError)
-                message->setErrorString("Invalid Response From Server");
-
-            message->setResponse(responseDocument["result"].toObject());
-
-            parseResponse(message);
-        }
-    );
-
-    QString uri = m_server->address() + message->toUri();
-    manager->get(QNetworkRequest(uri));
+    sendWebSocketMessageAsync(message);
 }
 
 void QKlipperConsole::serverFilesList(QString directory)
@@ -1609,36 +512,7 @@ void QKlipperConsole::serverFilesList(QString directory)
     message->setParam("extended", true);
     message->setMethod("server.files.get_directory");
 
-    m_messageMap.insert(message->id(), message);
-
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QObject::connect
-    (
-        manager,
-        &QNetworkAccessManager::finished,
-        this, [message, this](QNetworkReply *reply) {
-
-            if (reply->error())
-                message->setErrorString(reply->errorString());
-
-            QByteArray responseData = reply->readAll();
-            QJsonParseError responseDocumentError;
-            QJsonDocument responseDocument(QJsonDocument::fromJson(responseData, &responseDocumentError));
-
-            if(responseDocumentError.error != QJsonParseError::NoError)
-                message->setErrorString("Invalid Response From Server");
-
-            message->setResponse(responseDocument["result"].toObject());
-
-            parseResponse(message);
-        }
-    );
-
-    QString uri = m_server->address() + message->toUri();
-    manager->get(QNetworkRequest(uri));
+    sendWebSocketMessageAsync(message);
 }
 
 void QKlipperConsole::serverFileDelete(QString file)
@@ -1648,36 +522,7 @@ void QKlipperConsole::serverFileDelete(QString file)
     message->setParam("extended", true);
     message->setMethod("server.files.delete_file");
 
-    m_messageMap.insert(message->id(), message);
-
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QObject::connect
-    (
-        manager,
-        &QNetworkAccessManager::finished,
-        this, [message, this](QNetworkReply *reply) {
-
-            if (reply->error())
-                message->setErrorString(reply->errorString());
-
-            QByteArray responseData = reply->readAll();
-            QJsonParseError responseDocumentError;
-            QJsonDocument responseDocument(QJsonDocument::fromJson(responseData, &responseDocumentError));
-
-            if(responseDocumentError.error != QJsonParseError::NoError)
-                message->setErrorString("Invalid Response From Server");
-
-            message->setResponse(responseDocument["result"].toObject());
-
-            parseResponse(message);
-        }
-    );
-
-    QString uri = m_server->address() + message->toUri();
-    manager->get(QNetworkRequest(uri));
+    sendWebSocketMessageAsync(message);
 }
 
 void QKlipperConsole::serverFileDelete(QKlipperFile *file)
@@ -1687,36 +532,7 @@ void QKlipperConsole::serverFileDelete(QKlipperFile *file)
     message->setParam("extended", true);
     message->setMethod("server.files.delete_file");
 
-    m_messageMap.insert(message->id(), message);
-
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QObject::connect
-    (
-        manager,
-        &QNetworkAccessManager::finished,
-        this, [message, this](QNetworkReply *reply) {
-
-            if (reply->error())
-                message->setErrorString(reply->errorString());
-
-            QByteArray responseData = reply->readAll();
-            QJsonParseError responseDocumentError;
-            QJsonDocument responseDocument(QJsonDocument::fromJson(responseData, &responseDocumentError));
-
-            if(responseDocumentError.error != QJsonParseError::NoError)
-                message->setErrorString("Invalid Response From Server");
-
-            message->setResponse(responseDocument["result"].toObject());
-
-            parseResponse(message);
-        }
-    );
-
-    QString uri = m_server->address() + message->toUri();
-    manager->get(QNetworkRequest(uri));
+    sendWebSocketMessageAsync(message);
 }
 
 void QKlipperConsole::serverFileMove(QString source, QString destination)
@@ -1726,38 +542,7 @@ void QKlipperConsole::serverFileMove(QString source, QString destination)
     message->setParam("dest", destination);
     message->setMethod("server.files.move");
 
-    m_messageMap.insert(message->id(), message);
-
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QObject::connect
-    (
-        manager,
-        &QNetworkAccessManager::finished,
-        this, [message, this](QNetworkReply *reply)
-        {
-
-            if (reply->error())
-                message->setErrorString(reply->errorString());
-
-            QByteArray responseData = reply->readAll();
-            QJsonParseError responseDocumentError;
-            QJsonDocument responseDocument(QJsonDocument::fromJson(responseData, &responseDocumentError));
-
-            if(responseDocumentError.error != QJsonParseError::NoError)
-                message->setErrorString("Invalid Response From Server");
-
-            message->setResponse(responseDocument["result"].toObject());
-
-
-            parseResponse(message);
-        }
-    );
-
-    QString uri = m_server->address() + message->toUri();
-    manager->get(QNetworkRequest(uri));
+    sendWebSocketMessageAsync(message);
 }
 
 void QKlipperConsole::serverFileCopy(QString source, QString destination)
@@ -1767,40 +552,10 @@ void QKlipperConsole::serverFileCopy(QString source, QString destination)
     message->setParam("dest", destination);
     message->setMethod("server.files.copy");
 
-    m_messageMap.insert(message->id(), message);
-
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QObject::connect
-    (
-        manager,
-        &QNetworkAccessManager::finished,
-        this, [message, this](QNetworkReply *reply)
-        {
-            if (reply->error())
-                message->setErrorString(reply->errorString());
-
-            QByteArray responseData = reply->readAll();
-            QJsonParseError responseDocumentError;
-            QJsonDocument responseDocument(QJsonDocument::fromJson(responseData, &responseDocumentError));
-
-            if(responseDocumentError.error != QJsonParseError::NoError)
-                message->setErrorString("Invalid Response From Server");
-
-            message->setResponse(responseDocument["result"].toObject());
-
-
-            parseResponse(message);
-        }
-    );
-
-    QString uri = m_server->address() + message->toUri();
-    manager->get(QNetworkRequest(uri));
+    sendWebSocketMessageAsync(message);
 }
 
-QByteArray QKlipperConsole::serverFileDownload(QKlipperFile *file, QKlipperConsoleError *error)
+QByteArray QKlipperConsole::serverFileDownload(QKlipperFile *file, QKlipperError *error)
 {
     QByteArray fileData;
 
@@ -1814,9 +569,9 @@ QByteArray QKlipperConsole::serverFileDownload(QKlipperFile *file, QKlipperConso
             rootLocation = m_server->configLocation();
 
         if(file->path().length() > 0)
-            rootLocation += QDir::separator() + file->path();
+            rootLocation += file->path();
 
-        rootLocation += QDir::separator() + file->filename();
+        rootLocation = m_server->instanceLocation() + rootLocation + file->filename();
 
         QFile localFile(rootLocation);
 
@@ -1826,11 +581,11 @@ QByteArray QKlipperConsole::serverFileDownload(QKlipperFile *file, QKlipperConso
             fileData = localFile.readAll();
             localFile.close();
         }
-        else
+        else if(error)
         {
             error->setErrorString(localFile.errorString());
             error->setOrigin("Console - Server.Files.Download");
-            error->setType(QKlipperConsoleError::File);
+            error->setType(QKlipperError::File);
         }
     }
     else if(m_server->connectionType() == QKlipperServer::Remote)
@@ -1846,24 +601,24 @@ QByteArray QKlipperConsole::serverFileDownload(QKlipperFile *file, QKlipperConso
         QNetworkReply *reply = manager->get(request);
         loop.exec();
 
-        if(reply->errorString().length() > 0)
+        if(reply->errorString().length() > 0 && error)
         {
             error->setErrorString(reply->errorString());
             error->setOrigin("Console - Server.Files.Download");
-            error->setType(QKlipperConsoleError::Socket);
+            error->setType(QKlipperError::Socket);
         }
-        else
+        else if(error)
         {
             error->setErrorString("");
             error->setOrigin("");
-            error->setType(QKlipperConsoleError::NoError);
+            error->setType(QKlipperError::NoError);
         }
     }
 
     return fileData;
 }
 
-bool QKlipperConsole::serverFileUpload(QString root, QString directory, QString name, QByteArray data, QKlipperConsoleError *error)
+bool QKlipperConsole::serverFileUpload(QString root, QString directory, QString name, QByteArray data, QKlipperError *error)
 {
     if(m_server->connectionType() == QKlipperServer::Local)
     {
@@ -1894,16 +649,24 @@ bool QKlipperConsole::serverFileUpload(QString root, QString directory, QString 
             localFile.write(data);
             localFile.close();
 
-            error->setErrorString("");
-            error->setOrigin("");
-            error->setType(QKlipperConsoleError::NoError);
+            if(error)
+            {
+                error->setErrorString("");
+                error->setOrigin("");
+                error->setType(QKlipperError::NoError);
+            }
+
             return true;
         }
         else
         {
-            error->setErrorString(localFile.errorString());
-            error->setOrigin("Console - Server.Files.Upload");
-            error->setType(QKlipperConsoleError::File);
+            if(error)
+            {
+                error->setErrorString(localFile.errorString());
+                error->setOrigin("Console - Server.Files.Upload");
+                error->setType(QKlipperError::File);
+            }
+
             return false;
         }
     }
@@ -1937,23 +700,35 @@ bool QKlipperConsole::serverFileUpload(QString root, QString directory, QString 
 
         if(reply->errorString().length() > 0)
         {
-            error->setErrorString(reply->errorString());
-            error->setOrigin("Console - Server.Files.Upload");
-            error->setType(QKlipperConsoleError::Socket);
+            if(error)
+            {
+                error->setErrorString(reply->errorString());
+                error->setOrigin("Console - Server.Files.Upload");
+                error->setType(QKlipperError::Socket);
+            }
+
             return false;
         }
         else
         {
-            error->setErrorString("");
-            error->setOrigin("");
-            error->setType(QKlipperConsoleError::NoError);
+            if(error)
+            {
+                error->setErrorString("");
+                error->setOrigin("");
+                error->setType(QKlipperError::NoError);
+            }
+
             return true;
         }
     }
 
-    error->setErrorString("Unknown Error");
-    error->setOrigin("Console - Server.Files.Upload");
-    error->setType(QKlipperConsoleError::Unspecified);
+    if(error)
+    {
+        error->setErrorString("Unknown Error");
+        error->setOrigin("Console - Server.Files.Upload");
+        error->setType(QKlipperError::Unspecified);
+    }
+
     return false;
 }
 
@@ -1963,36 +738,7 @@ void QKlipperConsole::serverDirectoryPost(QString directory)
     message->setParam("path", directory);
     message->setMethod("server.files.post_directory");
 
-    m_messageMap.insert(message->id(), message);
-
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QObject::connect
-    (
-        manager,
-        &QNetworkAccessManager::finished,
-        this, [message, this](QNetworkReply *reply)
-        {
-            if (reply->error())
-                message->setErrorString(reply->errorString());
-
-            QByteArray responseData = reply->readAll();
-            QJsonParseError responseDocumentError;
-            QJsonDocument responseDocument(QJsonDocument::fromJson(responseData, &responseDocumentError));
-
-            if(responseDocumentError.error != QJsonParseError::NoError)
-                message->setErrorString("Invalid Response From Server");
-
-            message->setResponse(responseDocument["result"].toObject());
-
-            parseResponse(message);
-        }
-    );
-
-    QString uri = m_server->address() + message->toUri();
-    manager->get(QNetworkRequest(uri));
+    sendWebSocketMessageAsync(message);
 }
 
 void QKlipperConsole::serverDirectoryDelete(QString directory)
@@ -2003,34 +749,7 @@ void QKlipperConsole::serverDirectoryDelete(QString directory)
 
     m_messageMap.insert(message->id(), message);
 
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QObject::connect
-    (
-        manager,
-        &QNetworkAccessManager::finished,
-        this, [message, this](QNetworkReply *reply)
-        {
-            if (reply->error())
-                message->setErrorString(reply->errorString());
-
-            QByteArray responseData = reply->readAll();
-            QJsonParseError responseDocumentError;
-            QJsonDocument responseDocument(QJsonDocument::fromJson(responseData, &responseDocumentError));
-
-            if(responseDocumentError.error != QJsonParseError::NoError)
-                message->setErrorString("Invalid Response From Server");
-
-            message->setResponse(responseDocument["result"].toObject());
-
-            parseResponse(message);
-        }
-    );
-
-    QString uri = m_server->address() + message->toUri();
-    manager->get(QNetworkRequest(uri));
+    sendWebSocketMessageAsync(message);
 }
 
 void QKlipperConsole::serverTemperatureStore()
@@ -2039,36 +758,7 @@ void QKlipperConsole::serverTemperatureStore()
     message->setParam("include_monitors", false);
     message->setMethod("server.temperature_store");
 
-    m_messageMap.insert(message->id(), message);
-
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QObject::connect
-    (
-        manager,
-        &QNetworkAccessManager::finished,
-        this, [message, this](QNetworkReply *reply)
-        {
-            if (reply->error())
-                message->setErrorString(reply->errorString());
-
-            QByteArray responseData = reply->readAll();
-            QJsonParseError responseDocumentError;
-            QJsonDocument responseDocument(QJsonDocument::fromJson(responseData, &responseDocumentError));
-
-            if(responseDocumentError.error != QJsonParseError::NoError)
-                message->setErrorString("Invalid Response From Server");
-
-            message->setResponse(responseDocument["result"].toObject());
-
-            parseResponse(message);
-        }
-    );
-
-    QString uri = m_server->address() + message->toUri();
-    manager->get(QNetworkRequest(uri));
+    sendWebSocketMessageAsync(message);
 }
 
 void QKlipperConsole::serverGcodeStore()
@@ -2077,36 +767,7 @@ void QKlipperConsole::serverGcodeStore()
     message->setParam("count", 100);
     message->setMethod("server.gcode_store");
 
-    m_messageMap.insert(message->id(), message);
-
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QObject::connect
-    (
-        manager,
-        &QNetworkAccessManager::finished,
-        this, [message, this](QNetworkReply *reply)
-        {
-            if (reply->error())
-                message->setErrorString(reply->errorString());
-
-            QByteArray responseData = reply->readAll();
-            QJsonParseError responseDocumentError;
-            QJsonDocument responseDocument(QJsonDocument::fromJson(responseData, &responseDocumentError));
-
-            if(responseDocumentError.error != QJsonParseError::NoError)
-                message->setErrorString("Invalid Response From Server");
-
-            message->setResponse(responseDocument["result"].toObject());
-
-            parseResponse(message);
-        }
-    );
-
-    QString uri = m_server->address() + message->toUri();
-    manager->get(QNetworkRequest(uri));
+    sendWebSocketMessageAsync(message);
 }
 
 void QKlipperConsole::serverLogsRollover()
@@ -2114,36 +775,7 @@ void QKlipperConsole::serverLogsRollover()
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("server.logs.rollover");
 
-    m_messageMap.insert(message->id(), message);
-
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QObject::connect
-    (
-        manager,
-        &QNetworkAccessManager::finished,
-        this, [message, this](QNetworkReply *reply)
-        {
-            if (reply->error())
-                message->setErrorString(reply->errorString());
-
-            QByteArray responseData = reply->readAll();
-            QJsonParseError responseDocumentError;
-            QJsonDocument responseDocument(QJsonDocument::fromJson(responseData, &responseDocumentError));
-
-            if(responseDocumentError.error != QJsonParseError::NoError)
-                message->setErrorString("Invalid Response From Server");
-
-            message->setResponse(responseDocument["result"].toObject());
-
-            parseResponse(message);
-        }
-    );
-
-    QString uri = m_server->address() + message->toUri();
-    manager->get(QNetworkRequest(uri));
+    sendWebSocketMessageAsync(message);
 }
 
 void QKlipperConsole::serverLogsRollover(QString &application)
@@ -2152,36 +784,7 @@ void QKlipperConsole::serverLogsRollover(QString &application)
     message->setParam("application", application);
     message->setMethod("server.logs.rollover");
 
-    m_messageMap.insert(message->id(), message);
-
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QObject::connect
-    (
-        manager,
-        &QNetworkAccessManager::finished,
-        this, [message, this](QNetworkReply *reply)
-        {
-            if (reply->error())
-                message->setErrorString(reply->errorString());
-
-            QByteArray responseData = reply->readAll();
-            QJsonParseError responseDocumentError;
-            QJsonDocument responseDocument(QJsonDocument::fromJson(responseData, &responseDocumentError));
-
-            if(responseDocumentError.error != QJsonParseError::NoError)
-                message->setErrorString("Invalid Response From Server");
-
-            message->setResponse(responseDocument["result"].toObject());
-
-            parseResponse(message);
-        }
-    );
-
-    QString uri = m_server->address() + message->toUri();
-    manager->get(QNetworkRequest(uri));
+    sendWebSocketMessageAsync(message);
 }
 
 void QKlipperConsole::serverWebsocketId()
@@ -2189,36 +792,7 @@ void QKlipperConsole::serverWebsocketId()
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("server.websocket.id");
 
-    m_messageMap.insert(message->id(), message);
-
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QObject::connect
-    (
-        manager,
-        &QNetworkAccessManager::finished,
-        this, [message, this](QNetworkReply *reply)
-        {
-            if (reply->error())
-                message->setErrorString(reply->errorString());
-
-            QByteArray responseData = reply->readAll();
-            QJsonParseError responseDocumentError;
-            QJsonDocument responseDocument(QJsonDocument::fromJson(responseData, &responseDocumentError));
-
-            if(responseDocumentError.error != QJsonParseError::NoError)
-                message->setErrorString("Invalid Response From Server");
-
-            message->setResponse(responseDocument["result"].toObject());
-
-            parseResponse(message);
-        }
-    );
-
-    QString uri = m_server->address() + message->toUri();
-    manager->get(QNetworkRequest(uri));
+    sendWebSocketMessageAsync(message);
 }
 
 void QKlipperConsole::serverWebcamList()
@@ -2226,36 +800,7 @@ void QKlipperConsole::serverWebcamList()
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("server.webcams.list");
 
-    m_messageMap.insert(message->id(), message);
-
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QObject::connect
-    (
-        manager,
-        &QNetworkAccessManager::finished,
-        this, [message, this](QNetworkReply *reply)
-        {
-            if (reply->error())
-                message->setErrorString(reply->errorString());
-
-            QByteArray responseData = reply->readAll();
-            QJsonParseError responseDocumentError;
-            QJsonDocument responseDocument(QJsonDocument::fromJson(responseData, &responseDocumentError));
-
-            if(responseDocumentError.error != QJsonParseError::NoError)
-                message->setErrorString("Invalid Response From Server");
-
-            message->setResponse(responseDocument["result"].toObject());
-
-            parseResponse(message);
-        }
-    );
-
-    QString uri = m_server->address() + message->toUri();
-    manager->get(QNetworkRequest(uri));
+    sendWebSocketMessageAsync(message);
 }
 
 void QKlipperConsole::serverWebcamCreate(QKlipperWebcam *webcam)
@@ -2277,36 +822,7 @@ void QKlipperConsole::serverWebcamCreate(QKlipperWebcam *webcam)
     message->setParam("source", webcam->source());
     message->setMethod("server.webcams.post_item");
 
-    m_messageMap.insert(message->id(), message);
-
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QObject::connect
-    (
-        manager,
-        &QNetworkAccessManager::finished,
-        this, [message, this](QNetworkReply *reply)
-        {
-            if (reply->error())
-                message->setErrorString(reply->errorString());
-
-            QByteArray responseData = reply->readAll();
-            QJsonParseError responseDocumentError;
-            QJsonDocument responseDocument(QJsonDocument::fromJson(responseData, &responseDocumentError));
-
-            if(responseDocumentError.error != QJsonParseError::NoError)
-                message->setErrorString("Invalid Response From Server");
-
-            message->setResponse(responseDocument["result"].toObject());
-
-            parseResponse(message);
-        }
-    );
-
-    QString uri = m_server->address() + message->toUri();
-    manager->get(QNetworkRequest(uri));
+    sendWebSocketMessageAsync(message);
 }
 
 void QKlipperConsole::serverWebcamUpdate(QKlipperWebcam *webcam)
@@ -2329,36 +845,7 @@ void QKlipperConsole::serverWebcamUpdate(QKlipperWebcam *webcam)
     message->setParam("uid", webcam->uid());
     message->setMethod("server.webcams.post_item");
 
-    m_messageMap.insert(message->id(), message);
-
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QObject::connect
-    (
-        manager,
-        &QNetworkAccessManager::finished,
-        this, [message, this](QNetworkReply *reply)
-        {
-            if (reply->error())
-                message->setErrorString(reply->errorString());
-
-            QByteArray responseData = reply->readAll();
-            QJsonParseError responseDocumentError;
-            QJsonDocument responseDocument(QJsonDocument::fromJson(responseData, &responseDocumentError));
-
-            if(responseDocumentError.error != QJsonParseError::NoError)
-                message->setErrorString("Invalid Response From Server");
-
-            message->setResponse(responseDocument["result"].toObject());
-
-            parseResponse(message);
-        }
-    );
-
-    QString uri = m_server->address() + message->toUri();
-    manager->get(QNetworkRequest(uri));
+    sendWebSocketMessageAsync(message);
 }
 
 void QKlipperConsole::serverWebcamDelete(QKlipperWebcam *webcam)
@@ -2367,36 +854,7 @@ void QKlipperConsole::serverWebcamDelete(QKlipperWebcam *webcam)
     message->setParam("uid", webcam->uid());
     message->setMethod("server.webcams.delete_item");
 
-    m_messageMap.insert(message->id(), message);
-
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QObject::connect
-    (
-        manager,
-        &QNetworkAccessManager::finished,
-        this, [message, this](QNetworkReply *reply)
-        {
-            if (reply->error())
-                message->setErrorString(reply->errorString());
-
-            QByteArray responseData = reply->readAll();
-            QJsonParseError responseDocumentError;
-            QJsonDocument responseDocument(QJsonDocument::fromJson(responseData, &responseDocumentError));
-
-            if(responseDocumentError.error != QJsonParseError::NoError)
-                message->setErrorString("Invalid Response From Server");
-
-            message->setResponse(responseDocument["result"].toObject());
-
-            parseResponse(message);
-        }
-    );
-
-    QString uri = m_server->address() + message->toUri();
-    manager->get(QNetworkRequest(uri));
+    sendWebSocketMessageAsync(message);
 }
 
 void QKlipperConsole::serverAnnouncementsList(bool includeDismissed)
@@ -2405,36 +863,7 @@ void QKlipperConsole::serverAnnouncementsList(bool includeDismissed)
     message->setParam("include_dismissed", includeDismissed);
     message->setMethod("server.announcements.list");
 
-    m_messageMap.insert(message->id(), message);
-
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QObject::connect
-    (
-        manager,
-        &QNetworkAccessManager::finished,
-        this, [message, this](QNetworkReply *reply)
-        {
-            if (reply->error())
-                message->setErrorString(reply->errorString());
-
-            QByteArray responseData = reply->readAll();
-            QJsonParseError responseDocumentError;
-            QJsonDocument responseDocument(QJsonDocument::fromJson(responseData, &responseDocumentError));
-
-            if(responseDocumentError.error != QJsonParseError::NoError)
-                message->setErrorString("Invalid Response From Server");
-
-            message->setResponse(responseDocument["result"].toObject());
-
-            parseResponse(message);
-        }
-    );
-
-    QString uri = m_server->address() + message->toUri();
-    manager->get(QNetworkRequest(uri));
+    sendWebSocketMessageAsync(message);
 }
 
 void QKlipperConsole::serverAnnouncementsUpdate()
@@ -2442,36 +871,7 @@ void QKlipperConsole::serverAnnouncementsUpdate()
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("server.announcements.update");
 
-    m_messageMap.insert(message->id(), message);
-
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QObject::connect
-    (
-        manager,
-        &QNetworkAccessManager::finished,
-        this, [message, this](QNetworkReply *reply)
-        {
-            if (reply->error())
-                message->setErrorString(reply->errorString());
-
-            QByteArray responseData = reply->readAll();
-            QJsonParseError responseDocumentError;
-            QJsonDocument responseDocument(QJsonDocument::fromJson(responseData, &responseDocumentError));
-
-            if(responseDocumentError.error != QJsonParseError::NoError)
-                message->setErrorString("Invalid Response From Server");
-
-            message->setResponse(responseDocument["result"].toObject());
-
-            parseResponse(message);
-        }
-    );
-
-    QString uri = m_server->address() + message->toUri();
-    manager->get(QNetworkRequest(uri));
+    sendWebSocketMessageAsync(message);
 }
 
 void QKlipperConsole::serverAnnouncementDismiss(QString entryId, qint64 waketime)
@@ -2481,36 +881,7 @@ void QKlipperConsole::serverAnnouncementDismiss(QString entryId, qint64 waketime
     message->setParam("waketime", waketime);
     message->setMethod("server.announcements.dismiss");
 
-    m_messageMap.insert(message->id(), message);
-
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QObject::connect
-    (
-        manager,
-        &QNetworkAccessManager::finished,
-        this, [message, this](QNetworkReply *reply)
-        {
-            if (reply->error())
-                message->setErrorString(reply->errorString());
-
-            QByteArray responseData = reply->readAll();
-            QJsonParseError responseDocumentError;
-            QJsonDocument responseDocument(QJsonDocument::fromJson(responseData, &responseDocumentError));
-
-            if(responseDocumentError.error != QJsonParseError::NoError)
-                message->setErrorString("Invalid Response From Server");
-
-            message->setResponse(responseDocument["result"].toObject());
-
-            parseResponse(message);
-        }
-    );
-
-    QString uri = m_server->address() + message->toUri();
-    manager->get(QNetworkRequest(uri));
+    sendWebSocketMessageAsync(message);
 }
 
 void QKlipperConsole::serverJobQueueStatus()
@@ -2518,36 +889,7 @@ void QKlipperConsole::serverJobQueueStatus()
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("server.job_queue.status");
 
-    m_messageMap.insert(message->id(), message);
-
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QObject::connect
-    (
-        manager,
-        &QNetworkAccessManager::finished,
-        this, [message, this](QNetworkReply *reply)
-        {
-            if (reply->error())
-                message->setErrorString(reply->errorString());
-
-            QByteArray responseData = reply->readAll();
-            QJsonParseError responseDocumentError;
-            QJsonDocument responseDocument(QJsonDocument::fromJson(responseData, &responseDocumentError));
-
-            if(responseDocumentError.error != QJsonParseError::NoError)
-                message->setErrorString("Invalid Response From Server");
-
-            message->setResponse(responseDocument["result"].toObject());
-
-            parseResponse(message);
-        }
-    );
-
-    QString uri = m_server->address() + message->toUri();
-    manager->get(QNetworkRequest(uri));
+    sendWebSocketMessageAsync(message);
 }
 
 void QKlipperConsole::serverJobQueueStart()
@@ -2555,36 +897,7 @@ void QKlipperConsole::serverJobQueueStart()
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("server.job_queue.start");
 
-    m_messageMap.insert(message->id(), message);
-
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QObject::connect
-    (
-        manager,
-        &QNetworkAccessManager::finished,
-        this, [message, this](QNetworkReply *reply)
-        {
-            if (reply->error())
-                message->setErrorString(reply->errorString());
-
-            QByteArray responseData = reply->readAll();
-            QJsonParseError responseDocumentError;
-            QJsonDocument responseDocument(QJsonDocument::fromJson(responseData, &responseDocumentError));
-
-            if(responseDocumentError.error != QJsonParseError::NoError)
-                message->setErrorString("Invalid Response From Server");
-
-            message->setResponse(responseDocument["result"].toObject());
-
-            parseResponse(message);
-        }
-    );
-
-    QString uri = m_server->address() + message->toUri();
-    manager->get(QNetworkRequest(uri));
+    sendWebSocketMessageAsync(message);
 }
 
 void QKlipperConsole::serverJobQueuePause()
@@ -2592,36 +905,7 @@ void QKlipperConsole::serverJobQueuePause()
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("server.job_queue.pause");
 
-    m_messageMap.insert(message->id(), message);
-
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QObject::connect
-    (
-        manager,
-        &QNetworkAccessManager::finished,
-        this, [message, this](QNetworkReply *reply)
-        {
-            if (reply->error())
-                message->setErrorString(reply->errorString());
-
-            QByteArray responseData = reply->readAll();
-            QJsonParseError responseDocumentError;
-            QJsonDocument responseDocument(QJsonDocument::fromJson(responseData, &responseDocumentError));
-
-            if(responseDocumentError.error != QJsonParseError::NoError)
-                message->setErrorString("Invalid Response From Server");
-
-            message->setResponse(responseDocument["result"].toObject());
-
-            parseResponse(message);
-        }
-    );
-
-    QString uri = m_server->address() + message->toUri();
-    manager->get(QNetworkRequest(uri));
+    sendWebSocketMessageAsync(message);
 }
 
 void QKlipperConsole::serverJobQueueJump(QString id)
@@ -2630,36 +914,7 @@ void QKlipperConsole::serverJobQueueJump(QString id)
     message->setParam("job_id", id);
     message->setMethod("server.job_queue.jump");
 
-    m_messageMap.insert(message->id(), message);
-
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QObject::connect
-    (
-        manager,
-        &QNetworkAccessManager::finished,
-        this, [message, this](QNetworkReply *reply)
-        {
-            if (reply->error())
-                message->setErrorString(reply->errorString());
-
-            QByteArray responseData = reply->readAll();
-            QJsonParseError responseDocumentError;
-            QJsonDocument responseDocument(QJsonDocument::fromJson(responseData, &responseDocumentError));
-
-            if(responseDocumentError.error != QJsonParseError::NoError)
-                message->setErrorString("Invalid Response From Server");
-
-            message->setResponse(responseDocument["result"].toObject());
-
-            parseResponse(message);
-        }
-    );
-
-    QString uri = m_server->address() + message->toUri();
-    manager->get(QNetworkRequest(uri));
+    sendWebSocketMessageAsync(message);
 }
 
 void QKlipperConsole::serverJobQueueAdd(QStringList filenames)
@@ -2668,36 +923,7 @@ void QKlipperConsole::serverJobQueueAdd(QStringList filenames)
     message->setParam("filenames", filenames);
     message->setMethod("server.job_queue.post_job");
 
-    m_messageMap.insert(message->id(), message);
-
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QObject::connect
-    (
-        manager,
-        &QNetworkAccessManager::finished,
-        this, [message, this](QNetworkReply *reply)
-        {
-            if (reply->error())
-                message->setErrorString(reply->errorString());
-
-            QByteArray responseData = reply->readAll();
-            QJsonParseError responseDocumentError;
-            QJsonDocument responseDocument(QJsonDocument::fromJson(responseData, &responseDocumentError));
-
-            if(responseDocumentError.error != QJsonParseError::NoError)
-                message->setErrorString("Invalid Response From Server");
-
-            message->setResponse(responseDocument["result"].toObject());
-
-            parseResponse(message);
-        }
-    );
-
-    QString uri = m_server->address() + message->toUri();
-    manager->get(QNetworkRequest(uri));
+    sendWebSocketMessageAsync(message);
 }
 
 void QKlipperConsole::serverJobQueueDelete(QStringList ids)
@@ -2706,36 +932,7 @@ void QKlipperConsole::serverJobQueueDelete(QStringList ids)
     message->setParam("job_ids", ids);
     message->setMethod("server.job_queue.jump");
 
-    m_messageMap.insert(message->id(), message);
-
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QObject::connect
-    (
-        manager,
-        &QNetworkAccessManager::finished,
-        this, [message, this](QNetworkReply *reply)
-        {
-            if (reply->error())
-                message->setErrorString(reply->errorString());
-
-            QByteArray responseData = reply->readAll();
-            QJsonParseError responseDocumentError;
-            QJsonDocument responseDocument(QJsonDocument::fromJson(responseData, &responseDocumentError));
-
-            if(responseDocumentError.error != QJsonParseError::NoError)
-                message->setErrorString("Invalid Response From Server");
-
-            message->setResponse(responseDocument["result"].toObject());
-
-            parseResponse(message);
-        }
-    );
-
-    QString uri = m_server->address() + message->toUri();
-    manager->get(QNetworkRequest(uri));
+    sendWebSocketMessageAsync(message);
 }
 
 void QKlipperConsole::clientIdentifier()
@@ -2808,38 +1005,7 @@ void QKlipperConsole::accessUsersList()
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("access.users.list");
 
-    m_messageMap.insert(message->id(), message);
-
-    qDebug() << "Sending WS method" << message->method();
-
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-
-    QObject::connect
-    (
-        manager,
-        &QNetworkAccessManager::finished,
-        this, [message, this](QNetworkReply *reply) mutable
-        {
-            if (reply->error()) {
-                qDebug() << reply->errorString() << message->method() << reply->url() ;
-                return;
-            }
-
-            QByteArray responseData = reply->readAll();
-            QJsonParseError responseDocumentError;
-            QJsonDocument responseDocument(QJsonDocument::fromJson(responseData, &responseDocumentError));
-
-            if(responseDocumentError.error != QJsonParseError::NoError)
-                message->setErrorString("Invalid Response From Server");
-
-            message->setResponse(responseDocument["result"].toObject());
-
-            parseResponse(message);
-        }
-    );
-
-    QString uri = m_server->address() + message->toUri();
-    manager->get(QNetworkRequest(uri));
+    sendWebSocketMessageAsync(message);
 }
 
 void QKlipperConsole::accessUserPasswordReset(QString password, QString newPassword)
@@ -2906,7 +1072,18 @@ void QKlipperConsole::rpcUpdateSocketDataReceived(QString data)
     }
 
     if(responseObject.contains("error"))
-        message->setErrorString(responseObject["error"].toString());
+    {
+        QKlipperError error;
+
+        QString errorString(responseObject["error"].toString());
+        QString errorTitle = errorString.right(errorString.lastIndexOf('\n'));
+        errorString = errorString.left(errorString.lastIndexOf('\n'));
+
+        error.setErrorString(errorString);
+        error.setErrorTitle(errorTitle);
+
+        message->setError(error);
+    }
 
     if(responseObject["method"].toString().startsWith("notify"))
     {
@@ -2996,7 +1173,18 @@ void QKlipperConsole::scanRpcUpdateBuffer()
         }
 
         if(responseObject.contains("error"))
-            message->setErrorString(responseObject["error"].toString());
+        {
+            QKlipperError error;
+
+            QString errorString(responseObject["error"].toString());
+            QString errorTitle = errorString.right(errorString.lastIndexOf('\n'));
+            errorString = errorString.left(errorString.lastIndexOf('\n'));
+
+            error.setErrorString(errorString);
+            error.setErrorTitle(errorTitle);
+
+            message->setError(error);
+        }
 
         if(responseObject["method"].toString().startsWith("notify"))
         {
@@ -3249,19 +1437,6 @@ void QKlipperConsole::setPrinter(QKlipperPrinter *printer)
     m_printer->setConsole(this);
 }
 
-QString QKlipperConsole::errorMessage() const
-{
-    return m_errorMessage;
-}
-
-void QKlipperConsole::setErrorMessage(const QString &errorMessage)
-{
-    if (m_errorMessage == errorMessage)
-        return;
-    m_errorMessage = errorMessage;
-    emit errorMessageChanged();
-}
-
 qreal QKlipperConsole::startupSequenceProgress() const
 {
     return m_startupSequenceProgress;
@@ -3304,6 +1479,113 @@ void QKlipperConsole::sendRpcMessage(QKlipperMessage *message)
             }
         }
     }
+}
+
+void QKlipperConsole::sendWebSocketMessageAsync(QKlipperMessage *message)
+{
+    if(!m_messageMap.contains(message->id()))
+        m_messageMap.insert(message->id(), message);
+
+    QNetworkAccessManager *manager = new QNetworkAccessManager();
+
+    QObject::connect
+        (
+            manager,
+            &QNetworkAccessManager::finished,
+            this, [message, this](QNetworkReply *reply) {
+
+                if (reply->error())
+                {
+                    QKlipperError error;
+
+                    qDebug() << "Error: " + reply->errorString() << message->method() << reply->url() ;
+
+                    error.setErrorString(reply->errorString());
+                    error.setType(QKlipperError::Socket);
+                    error.setOrigin(message->method());
+                    error.setErrorTitle("Error Sending Websocket Command");
+
+                    message->setError(error);
+
+                    emit errorOccured(error);
+
+                    return;
+                }
+
+                QByteArray responseData = reply->readAll();
+                QJsonParseError responseDocumentError;
+                QJsonDocument responseDocument(QJsonDocument::fromJson(responseData, &responseDocumentError));
+
+                if(responseDocumentError.error != QJsonParseError::NoError)
+                {
+                    QKlipperError error;
+
+                    qDebug() << "Error: " + reply->errorString() << message->method() << reply->url() ;
+
+                    error.setErrorString(reply->errorString());
+                    error.setType(QKlipperError::Socket);
+                    error.setOrigin(message->method());
+                    error.setErrorTitle("Invalid Response From Server");
+
+                    message->setError(error);
+
+                    emit errorOccured(error);
+
+                    return;
+                }
+
+                message->setResponse(responseDocument["result"].toObject());
+
+                parseResponse(message);
+            }
+            );
+
+    QString uri = m_server->address() + message->toUri();
+    manager->get(QNetworkRequest(uri));
+}
+
+bool QKlipperConsole::sendWebSocketMessage(QKlipperMessage *message, QKlipperError *error)
+{
+    qDebug() << "Sending WS method" << message->method();
+
+    QNetworkAccessManager *manager = new QNetworkAccessManager();
+
+    QEventLoop loop;
+    QObject::connect(manager, SIGNAL(finished()), &loop, SLOT(quit()));
+
+    QNetworkRequest request(m_server->address() + message->toUri());
+    QNetworkReply *reply = manager->get(request);
+    loop.exec();
+
+    if (reply->error())
+    {
+        qDebug() << "Error: " + reply->errorString() << message->method() << reply->url() ;
+
+        if(!error)
+            *error = QKlipperError();
+
+        error->setErrorString(reply->errorString());
+        error->setType(QKlipperError::Socket);
+        error->setOrigin(message->method());
+        error->setErrorTitle("Error Sending Websocket Command");
+
+        emit errorOccured(*error);
+    }
+
+    //returns ok
+    QByteArray data = reply->readAll();
+
+    if(data == "ok")
+    {
+        if(error)
+        {
+            error->setErrorString("");
+            error->setType(QKlipperError::NoError);
+            return true;
+        }
+    }
+
+    return false;
 }
 
 /*
@@ -6109,9 +4391,12 @@ void QKlipperConsole::serverLogsRolloverParser(QKlipperMessage *message)
             QString application = failureIterator.key();
             QString value = failureIterator.value().toString();
 
-            QString error = QString("Could not rollover logfile %1: %2").arg(application, value);
-
-            setErrorMessage(error);
+            QString errorMessage = QString("Could not rollover logfile %1: %2").arg(application, value);
+            QKlipperError error;
+            error.setErrorString(errorMessage);
+            error.setErrorTitle(message->method());
+            error.setOrigin(message->method());
+            error.setType(QKlipperError::Moonraker);
         }
     }
 }
@@ -6124,13 +4409,10 @@ void QKlipperConsole::serverWebsocketIdParser(QKlipperMessage *message)
 
 void QKlipperConsole::serverFilesMetadataParser(QKlipperMessage *message)
 {
-    QString path = QString("%1").arg(message->param("path").toString());
+    QString path = QString("gcodes/%1").arg(message->param("filename").toString());
 
     QKlipperFile *file = m_server->file(path);
     QKlipperMetadata metadata;
-
-    if(file)
-        metadata = file->metadata();
 
     metadata.printStartTime = message->response()["print_start_time"].toDouble();
     metadata.jobId = message->response()["job_id"].toInt();

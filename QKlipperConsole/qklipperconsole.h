@@ -44,7 +44,7 @@
 
 #include "../QKlipperPrinter/qklipperprinter.h"
 
-#include "qklipperconsoleerror.h"
+#include "../qklippererror.h"
 
 class QKlipperConsole;
 class QKlipperInstance;
@@ -58,7 +58,7 @@ typedef void(QKlipperConsole::*ParserFunction)(QKlipperMessage*);
   instance.
 
   Prior to connecting, it is required to pass instance references to QKlipperPrinter, QKlipperSystem
-  and QKlipperServer that have been setup and configured.
+  and QKlipperServer that have been setup and configured. This is handled by the QKlipperInstance class.
 */
 class QKlipperConsole : public QObject
 {
@@ -160,13 +160,6 @@ public:
      */
     QString startupSequenceText() const;
 
-    /*!
-     * Error message, if available
-     *
-     * \returns Error message, if available
-     */
-    QString errorMessage() const;
-
     QKlipperPrinter *printer() const;
 
     QKlipperSystem *system() const;
@@ -232,12 +225,12 @@ public slots:
     /*!
      * Sends command to shutdown machine. Server will disconnect
      */
-    void machineShutdown(QKlipperConsoleError *error = nullptr);
+    void machineShutdown(QKlipperError *error = nullptr);
 
     /*!
      * Sends command to reboot machine. Server will disconnect
      */
-    void machineReboot(QKlipperConsoleError *error = nullptr);
+    void machineReboot(QKlipperError *error = nullptr);
 
     /*!
      * Asyncronously queries machine info
@@ -251,9 +244,9 @@ public slots:
      *
      * \param service The name of the service
      *
-     * \param error Optional reference to the QKlipperConsoleError object
+     * \param error Optional reference to the QKlipperError object
      */
-    bool machineServiceRestart(QString service, QKlipperConsoleError *error = nullptr);
+    bool machineServiceRestart(QString service, QKlipperError *error = nullptr);
 
     /*!
      * Sends a command to stop a klipper service
@@ -262,9 +255,9 @@ public slots:
      *
      * \param service The name of the service
      *
-     * \param error Optional reference to the QKlipperConsoleError object
+     * \param error Optional reference to the QKlipperError object
      */
-    bool machineServiceStop(QString service, QKlipperConsoleError *error = nullptr);
+    bool machineServiceStop(QString service, QKlipperError *error = nullptr);
 
     /*!
      * Sends a command to start a klipper service
@@ -273,9 +266,9 @@ public slots:
      *
      * \param service The name of the service
      *
-     * \param error Optional reference to the QKlipperConsoleError object
+     * \param error Optional reference to the QKlipperError object
      */
-    bool machineServiceStart(QString service, QKlipperConsoleError *error = nullptr);
+    bool machineServiceStart(QString service, QKlipperError *error = nullptr);
 
     /*!
      * Asyncronously queries a list of USB devices
@@ -320,27 +313,27 @@ public slots:
      *
      * This is a blocking method
      *
-     * \param error Optional reference to the QKlipperConsoleError object
+     * \param error Optional reference to the QKlipperError object
      */
-    bool machineUpdateFull(QKlipperConsoleError *error = nullptr);
+    bool machineUpdateFull(QKlipperError *error = nullptr);
 
     /*!
      * Sends a command to perform an update on Moonraker
      *
      * This is a blocking method
      *
-     * \param error Optional reference to the QKlipperConsoleError object
+     * \param error Optional reference to the QKlipperError object
      */
-    bool machineUpdateMoonraker(QKlipperConsoleError *error = nullptr);
+    bool machineUpdateMoonraker(QKlipperError *error = nullptr);
 
     /*!
      * Sends a command to perform an update on Klipper
      *
      * This is a blocking method
      *
-     * \param error Optional reference to the QKlipperConsoleError object
+     * \param error Optional reference to the QKlipperError object
      */
-    bool machineUpdateKlipper(QKlipperConsoleError *error = nullptr);
+    bool machineUpdateKlipper(QKlipperError *error = nullptr);
 
     /*!
      * Sends a command to perform an update on the specified client
@@ -349,18 +342,18 @@ public slots:
      *
      * \param client Name of the client to update
      *
-     * \param error Optional reference to the QKlipperConsoleError object
+     * \param error Optional reference to the QKlipperError object
      */
-    bool machineUpdateClient(QString client, QKlipperConsoleError *error = nullptr);
+    bool machineUpdateClient(QString client, QKlipperError *error = nullptr);
 
     /*!
      * Sends a command to perform an update on the system
      *
      * This is a blocking method
      *
-     * \param error Optional reference to the QKlipperConsoleError object
+     * \param error Optional reference to the QKlipperError object
      */
-    bool machineUpdateSystem(QKlipperConsoleError *error = nullptr);
+    bool machineUpdateSystem(QKlipperError *error = nullptr);
 
     /*!
      * Sends a command to perform an update on the specified client
@@ -371,9 +364,9 @@ public slots:
      *
      * \param hardRecover Performs a hard reset (default is false)
      *
-     * \param error Optional reference to the QKlipperConsoleError object
+     * \param error Optional reference to the QKlipperError object
      */
-    bool machineUpdateRecover(QString name, bool hardRecover = false, QKlipperConsoleError *error = nullptr);
+    bool machineUpdateRecover(QString name, bool hardRecover = false, QKlipperError *error = nullptr);
 
     /*!
      * Sends a command to perform an update rollback on specified client
@@ -382,9 +375,9 @@ public slots:
      *
      * \param name Name of the client to rollback
      *
-     * \param error Optional reference to the QKlipperConsoleError object
+     * \param error Optional reference to the QKlipperError object
      */
-    bool machineUpdateRollback(QString name, QKlipperConsoleError *error = nullptr);
+    bool machineUpdateRollback(QString name, QKlipperError *error = nullptr);
 
     /*!
      * Asyncronously queries printer info
@@ -424,9 +417,9 @@ public slots:
      *
      * \param gcode The gcode script to run
      *
-     * \param error Optional reference to the QKlipperConsoleError object
+     * \param error Optional reference to the QKlipperError object
      */
-    bool printerPrintStart(QString file, QKlipperConsoleError *error = nullptr);
+    bool printerPrintStart(QString file, QKlipperError *error = nullptr);
 
     /*!
      * Sends a command to start a print job
@@ -435,9 +428,9 @@ public slots:
      *
      * \param gcode The gcode script to run
      *
-     * \param error Optional reference to the QKlipperConsoleError object
+     * \param error Optional reference to the QKlipperError object
      */
-    bool printerPrintStart(QKlipperFile *file, QKlipperConsoleError *error = nullptr);
+    bool printerPrintStart(QKlipperFile *file, QKlipperError *error = nullptr);
 
     /*!
      * Sends a command to pause the printer's current print job
@@ -446,9 +439,9 @@ public slots:
      *
      * \param gcode The gcode script to run
      *
-     * \param error Optional reference to the QKlipperConsoleError object
+     * \param error Optional reference to the QKlipperError object
      */
-    bool printerPrintPause(QKlipperConsoleError *error = nullptr);
+    bool printerPrintPause(QKlipperError *error = nullptr);
 
     /*!
      * Sends a command to resume the printer's current print job
@@ -457,9 +450,9 @@ public slots:
      *
      * \param gcode The gcode script to run
      *
-     * \param error Optional reference to the QKlipperConsoleError object
+     * \param error Optional reference to the QKlipperError object
      */
-    bool printerPrintResume(QKlipperConsoleError *error = nullptr);
+    bool printerPrintResume(QKlipperError *error = nullptr);
 
     /*!
      * Sends a command to cancel the printer's current print job
@@ -468,9 +461,9 @@ public slots:
      *
      * \param gcode The gcode script to run
      *
-     * \param error Optional reference to the QKlipperConsoleError object
+     * \param error Optional reference to the QKlipperError object
      */
-    bool printerPrintCancel(QKlipperConsoleError *error = nullptr);
+    bool printerPrintCancel(QKlipperError *error = nullptr);
 
     /*!
      * Sends an emergency stop command to the printer
@@ -479,9 +472,9 @@ public slots:
      *
      * \param gcode The gcode script to run
      *
-     * \param error Optional reference to the QKlipperConsoleError object
+     * \param error Optional reference to the QKlipperError object
      */
-    bool printerEmergencyStop(QKlipperConsoleError *error = nullptr);
+    bool printerEmergencyStop(QKlipperError *error = nullptr);
 
     /*!
      * Sends the requested gcode command and returns when it is completed
@@ -490,12 +483,12 @@ public slots:
      *
      * \param gcode The gcode script to run
      *
-     * \param error Optional reference to the QKlipperConsoleError object
+     * \param error Optional reference to the QKlipperError object
      *
      * \param origin Optional declaration of source. If the origin is set to anything other than 'User' the message
      * will automatically be deleted
      */
-    bool printerGcodeScript(QString gcode, QKlipperConsoleError *error = nullptr, QKlipperMessage::Origin origin = QKlipperMessage::System);
+    bool printerGcodeScript(QString gcode, QKlipperError *error = nullptr, QKlipperMessage::Origin origin = QKlipperMessage::System);
 
     /*!
      * Sends a restart command to klipper and returns if it was successful
@@ -503,9 +496,9 @@ public slots:
      *
      * This is a blocking method
      *
-     * \param error Optional reference to the QKlipperConsoleError object
+     * \param error Optional reference to the QKlipperError object
      */
-    bool restartKlipper(QKlipperConsoleError *error = nullptr);
+    bool restartKlipper(QKlipperError *error = nullptr);
 
     /*!
      * Sends a reset firmware command and returns if it was successful
@@ -513,9 +506,9 @@ public slots:
      *
      * This is a blocking method
      *
-     * \param error Optional reference to the QKlipperConsoleError object
+     * \param error Optional reference to the QKlipperError object
      */
-    bool restartFirmware(QKlipperConsoleError *error = nullptr);
+    bool restartFirmware(QKlipperError *error = nullptr);
 
     /*!
      * Sends a restart command to the server and returns if it was successful
@@ -523,9 +516,9 @@ public slots:
      *
      * This is a blocking method
      *
-     * \param error Optional reference to the QKlipperConsoleError object
+     * \param error Optional reference to the QKlipperError object
      */
-    bool serverRestart(QKlipperConsoleError *error = nullptr);
+    bool serverRestart(QKlipperError *error = nullptr);
 
     /*!
      * Asyncronously queries server info
@@ -602,11 +595,11 @@ public slots:
      *
      * \param file QKlipperFile object of the file to download
      *
-     * \param error Optional reference to the QKlipperConsoleError object
+     * \param error Optional reference to the QKlipperError object
      *
      * \returns QByteArray of the file contents
      */
-    QByteArray serverFileDownload(QKlipperFile *file, QKlipperConsoleError *error = nullptr);
+    QByteArray serverFileDownload(QKlipperFile *file, QKlipperError *error = nullptr);
 
     /*!
      * Uploads the specified data to the server
@@ -622,9 +615,9 @@ public slots:
      *
      * \param data The data to be uploaded
      *
-     * \param error Optional reference to the QKlipperConsoleError object
+     * \param error Optional reference to the QKlipperError object
      */
-    bool serverFileUpload(QString root, QString directory, QString name, QByteArray data, QKlipperConsoleError *error = nullptr);
+    bool serverFileUpload(QString root, QString directory, QString name, QByteArray data, QKlipperError *error = nullptr);
 
     /*!
      * Asyncronously requests creation of specified directory
@@ -758,10 +751,8 @@ signals:
     void connectionStateChanged();
 
     void startupSequenceProgressChanged();
-
     void startupSequenceTextChanged();
-
-    void errorMessageChanged();
+    void errorOccured(QKlipperError &error);
 
 private slots:
 
@@ -770,8 +761,11 @@ private slots:
     void setSystem(QKlipperSystem *system);
 
     void setServer(QKlipperServer *server);
-    void setErrorMessage(const QString &errorMessage);
+
     void sendRpcMessage(QKlipperMessage *message);
+    void sendWebSocketMessageAsync(QKlipperMessage *message);
+    bool sendWebSocketMessage(QKlipperMessage *message, QKlipperError *error = nullptr);
+
     void rpcUpdateSocketDataReady();
     void rpcUpdateSocketDataReceived(QString data);
     void rpcUpdateSocketDataReceived(QByteArray data);
@@ -874,7 +868,6 @@ private:
     Q_PROPERTY(ConnectionState connectionState READ connectionState WRITE setConnectionState RESET resetConnectionState NOTIFY connectionStateChanged FINAL)
     Q_PROPERTY(qreal startupSequenceProgress READ startupSequenceProgress WRITE setStartupSequenceProgress RESET resetStartupSequenceProgress NOTIFY startupSequenceProgressChanged FINAL)
     Q_PROPERTY(QString startupSequenceText READ startupSequenceText WRITE setStartupSequenceText RESET resetStartupSequenceText NOTIFY startupSequenceTextChanged FINAL)
-    Q_PROPERTY(QString errorMessage READ errorMessage WRITE setErrorMessage NOTIFY errorMessageChanged FINAL)
 };
 
 #endif // QKLIPPERCONSOLE_H
