@@ -16,14 +16,15 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef QKLIPPERCONSOLEERROR_H
-#define QKLIPPERCONSOLEERROR_H
+#ifndef QKlipperError_H
+#define QKlipperError_H
 
 #include <QObject>
+#include <QUuid>
 
-class QKlipperConsoleError : public QObject
+class QKlipperError
 {
-    Q_OBJECT
+    Q_GADGET
 public:
 
     enum Type
@@ -32,45 +33,42 @@ public:
         Command = 1,
         Socket = 2,
         File = 3,
-        NoError = 4
+        Klipper = 4,
+        Moonraker = 5,
+        NoError = 6
     };
 
-    explicit QKlipperConsoleError(QObject *parent = nullptr);
+    explicit QKlipperError();
 
-    QKlipperConsoleError(const QKlipperConsoleError &value);
-    QKlipperConsoleError(QKlipperConsoleError &&value);
-    QKlipperConsoleError &operator=(const QKlipperConsoleError &value);
-    QKlipperConsoleError &operator=(QKlipperConsoleError &&value);
+    bool operator==(const QKlipperError &value);
+    bool operator==(QKlipperError &&value);
+
+    bool operator!=(const QKlipperError &value);
+    bool operator!=(QKlipperError &&value);
 
     QString errorString() const;
-
-    QString origin() const;
-
-    Type type() const;
-
-public slots:
     void setErrorString(const QString &errorString);
 
+    QString origin() const;
     void setOrigin(const QString &origin);
 
+    Type type() const;
     void setType(Type type);
 
-signals:
+    QString errorTitle() const;
+    void setErrorTitle(const QString &errorTitle);
 
-    void errorStringChanged();
-
-    void originChanged();
-
-    void typeChanged();
+    QString id() const;
+    void setId(const QString &id);
 
 private:
+    QString m_id;
+    QString m_errorTitle;
     QString m_errorString;
     QString m_origin;
     Type m_type = Unspecified;
-
-    Q_PROPERTY(QString errorString READ errorString WRITE setErrorString NOTIFY errorStringChanged FINAL)
-    Q_PROPERTY(QString origin READ origin WRITE setOrigin NOTIFY originChanged FINAL)
-    Q_PROPERTY(Type type READ type WRITE setType NOTIFY typeChanged FINAL)
 };
 
-#endif // QKLIPPERCONSOLEERROR_H
+typedef QList<QKlipperError> QKlipperErrorList;
+
+#endif // QKlipperError_H
