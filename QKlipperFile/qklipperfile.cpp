@@ -88,6 +88,7 @@ void QKlipperFile::setPath(const QString &path)
 {
     if (m_path == path)
         return;
+
     m_path = path;
     emit pathChanged();
 }
