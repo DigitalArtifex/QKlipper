@@ -72,7 +72,12 @@ void QKlipperServer::setGcodesLocation(const QString &gcodesLocation)
 {
     if (m_gcodesLocation == gcodesLocation)
         return;
+
     m_gcodesLocation = gcodesLocation;
+
+    if(!m_gcodesLocation.endsWith("/"))
+        m_gcodesLocation += "/";
+
     emit gcodesLocationChanged();
 }
 
@@ -92,6 +97,10 @@ void QKlipperServer::setConfigLocation(const QString &configLocation)
         return;
 
     m_configLocation = configLocation;
+
+    if(!m_configLocation.endsWith("/"))
+        m_configLocation += "/";
+
     emit configLocationChanged();
 }
 

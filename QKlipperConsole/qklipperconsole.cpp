@@ -571,7 +571,7 @@ QByteArray QKlipperConsole::serverFileDownload(QKlipperFile *file, QKlipperError
         if(file->path().length() > 0)
             rootLocation += file->path();
 
-        rootLocation = m_server->instanceLocation() + rootLocation + file->filename();
+        rootLocation = rootLocation + file->filename();
 
         QFile localFile(rootLocation);
 
@@ -588,6 +588,7 @@ QByteArray QKlipperConsole::serverFileDownload(QKlipperFile *file, QKlipperError
             error->setType(QKlipperError::File);
         }
     }
+
     else if(m_server->connectionType() == QKlipperServer::Remote)
     {
         QString address = m_server->address() + file->uri();
@@ -1494,6 +1495,10 @@ void QKlipperConsole::sendWebSocketMessageAsync(QKlipperMessage *message)
             &QNetworkAccessManager::finished,
             this, [message, this](QNetworkReply *reply) {
 
+                if(message->method() == QString("server.files.roots"))
+                {
+                    qDebug() << message->method();
+                }
                 if (reply->error())
                 {
                     QKlipperError error;
@@ -1534,7 +1539,7 @@ void QKlipperConsole::sendWebSocketMessageAsync(QKlipperMessage *message)
                     return;
                 }
 
-                message->setResponse(responseDocument["result"].toObject());
+                message->setResponse(responseDocument["result"]);
 
                 parseResponse(message);
             }
@@ -4486,8 +4491,14 @@ void QKlipperConsole::serverFilesListParser(QKlipperMessage *message)
     QString directory = message->param("path").toString();
     QString root = rootInfo["name"].toString();
 
+    if(!root.endsWith("/"))
+        root += "/";
+
     if(!directory.endsWith("/"))
         directory += "/";
+
+    if(directory.startsWith(root))
+        directory.remove(0, root.length());
 
     foreach(QJsonValueConstRef directoryRef, directories)
     {
@@ -4533,16 +4544,16 @@ void QKlipperConsole::serverFilesListParser(QKlipperMessage *message)
             file->setDateModified(directoryObject["modified"].toDouble());
             file->setFileType(QKlipperFile::Directory);
 
-            if(root == QString("gcodes"))
+            if(root == QString("gcodes/"))
                 file->setFileType(QKlipperFile::GCode);
-            else if(root == QString("config"))
+            else if(root == QString("config/"))
                 file->setFileType(QKlipperFile::Config);
 
             fileList += file;
         }
     }
 
-    m_server->setFileList(directory, fileList);
+    m_server->setFileList(root + directory, fileList);
 }
 
 void QKlipperConsole::serverDirectoryPostParser(QKlipperMessage *message)
