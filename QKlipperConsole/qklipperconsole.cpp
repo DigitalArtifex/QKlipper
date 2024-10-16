@@ -591,28 +591,51 @@ QByteArray QKlipperConsole::serverFileDownload(QKlipperFile *file, QKlipperError
 
     else if(m_server->connectionType() == QKlipperServer::Remote)
     {
-        QString address = m_server->address() + file->uri();
+        QString address = QString("%1/server/files/%2").arg(m_server->address(), file->uri());
 
         QNetworkAccessManager *manager = new QNetworkAccessManager();
 
         QEventLoop loop;
-        QObject::connect(manager, SIGNAL(finished()), &loop, SLOT(quit()));
+
+        QObject::connect
+        (
+            manager,
+            &QNetworkAccessManager::finished,
+            this, [&loop, this](QNetworkReply *reply)
+            {
+                loop.quit();
+            }
+        );
 
         QNetworkRequest request(address);
         QNetworkReply *reply = manager->get(request);
         loop.exec();
 
-        if(reply->errorString().length() > 0 && error)
+
+        if (reply->error())
         {
+            qDebug() << "Error: " + reply->errorString() << reply->url() ;
+
+            if(!error)
+                *error = QKlipperError();
+
             error->setErrorString(reply->errorString());
-            error->setOrigin("Console - Server.Files.Download");
             error->setType(QKlipperError::Socket);
+            error->setOrigin("Server Files Download");
+            error->setErrorTitle("Error Sending Websocket Command");
+
+            emit errorOccured(*error);
         }
-        else if(error)
+        else
         {
-            error->setErrorString("");
-            error->setOrigin("");
-            error->setType(QKlipperError::NoError);
+            if(error)
+            {
+                error->setErrorString("");
+                error->setOrigin("");
+                error->setType(QKlipperError::NoError);
+            }
+
+            fileData = reply->readAll();
         }
     }
 
@@ -1445,9 +1468,6 @@ qreal QKlipperConsole::startupSequenceProgress() const
 
 void QKlipperConsole::setStartupSequenceProgress(qreal startupSequenceProgress)
 {
-    if (qFuzzyCompare(m_startupSequenceProgress, startupSequenceProgress))
-        return;
-
     m_startupSequenceProgress = startupSequenceProgress;
     emit startupSequenceProgressChanged();
 }
@@ -1543,7 +1563,7 @@ void QKlipperConsole::sendWebSocketMessageAsync(QKlipperMessage *message)
 
                 parseResponse(message);
             }
-            );
+        );
 
     QString uri = m_server->address() + message->toUri();
     manager->get(QNetworkRequest(uri));
@@ -1556,7 +1576,32 @@ bool QKlipperConsole::sendWebSocketMessage(QKlipperMessage *message, QKlipperErr
     QNetworkAccessManager *manager = new QNetworkAccessManager();
 
     QEventLoop loop;
-    QObject::connect(manager, SIGNAL(finished()), &loop, SLOT(quit()));
+
+    QObject::connect
+    (
+        manager,
+        &QNetworkAccessManager::finished,
+        this, [&loop, this](QNetworkReply *reply)
+        {
+            if (reply->error())
+            {
+                QKlipperError error;
+
+                qDebug() << "Error: " + reply->errorString() << reply->url() ;
+
+                error.setErrorString(reply->errorString());
+                error.setType(QKlipperError::Socket);
+                error.setOrigin("Server Files Download");
+                error.setErrorTitle("Error Sending Websocket Command");
+
+                emit errorOccured(error);
+
+                return;
+            }
+
+            loop.quit();
+        }
+    );
 
     QNetworkRequest request(m_server->address() + message->toUri());
     QNetworkReply *reply = manager->get(request);
@@ -2030,7 +2075,6 @@ void QKlipperConsole::processStartupSequence()
 {
     if(hasConnectionState(Startup))
     {
-
         if(m_startupSequence.isEmpty())
         {
             qDebug() << QString("Completed Startup Sequence");
@@ -2041,6 +2085,11 @@ void QKlipperConsole::processStartupSequence()
         }
         else
         {
+            qreal progress = 1.0 - ((qreal)m_startupSequence.count() / m_startupSequenceCount);
+            setStartupSequenceProgress(progress);
+
+            qDebug() << progress;
+
             StartupFunction function = m_startupSequence.dequeue();
             (this->*function)();
         }

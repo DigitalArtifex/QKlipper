@@ -142,11 +142,19 @@ void QKlipperFile::setDateModified(qreal dateModified)
 QString QKlipperFile::uri() const
 {
     QString uri;
+    QString root = m_root;
+    QString path = m_path;
 
-    if(m_path.isEmpty())
-        uri = QString("%1/%2/%3").arg(m_root, m_path, m_filename);
+    if(root.endsWith("/"))
+        root.removeLast();
+
+    if(path.endsWith("/"))
+        path.removeLast();
+
+    if(!m_path.isEmpty())
+        uri = QString("%1/%2/%3").arg(root, path, m_filename);
     else
-        uri = QString("%1/%2").arg(m_root, m_filename);
+        uri = QString("%1/%2").arg(root, m_filename);
 
     return uri;
 }

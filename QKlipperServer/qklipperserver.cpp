@@ -195,6 +195,10 @@ void QKlipperServer::setAddress(const QString &address)
         return;
 
     m_address = address;
+
+    if(m_address.startsWith("http://"))
+        m_address = m_address.remove(0, 7);
+
     emit addressChanged();
 }
 
