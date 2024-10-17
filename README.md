@@ -9,9 +9,9 @@ Qt based Klipper/Moonraker library (ALPHA - convenience methods still being port
 ```
     QT += core network websockets
 ```
-- Include QKlipperInstance
+- Include QKlipper
 ```
-    #include "QKlipper/QKlipperInstance/qklipperinstance.h"
+    #include "QKlipper/qklipper.h"
 ```
 ##
 ### Local connections
