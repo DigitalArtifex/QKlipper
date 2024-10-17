@@ -36,6 +36,7 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QNetworkRequest>
+#include <QHttpMultiPart>
 
 #include "../QKlipperMessage/qklippermessage.h"
 #include "../QKlipperFile/qklipperfile.h"

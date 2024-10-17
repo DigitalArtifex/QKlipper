@@ -696,40 +696,62 @@ bool QKlipperConsole::serverFileUpload(QString root, QString directory, QString 
     }
     else if(m_server->connectionType() == QKlipperServer::Remote)
     {
-        QString address = m_server->address();
-
-        if(directory.isEmpty())
-            address += root + QDir::separator() + name;
-        else
-            address += root + QDir::separator() + directory + QDir::separator() + name;
+        QString address = QString("%1/server/files/upload").arg(m_server->address());
 
         QNetworkAccessManager *manager = new QNetworkAccessManager();
 
-        QEventLoop loop;
-        QObject::connect(manager, SIGNAL(finished()), &loop, SLOT(quit()));
-
         QNetworkRequest request(address);
-        request.setHeader(QNetworkRequest::ContentTypeHeader, "multipart/form-data");
+        request.setHeader(QNetworkRequest::ContentTypeHeader, "multipart/form-data; boundary=FormBoundaryemap3PkuvKX0B3HH");
 
         QString contentDisposition;
 
         if(directory.length() > 0)
-            contentDisposition = QString("form-data; name=\"file\"; path=\"%1\" filename=\"%2\"").arg(directory, name);
+            contentDisposition = QString("form-data; root=\"%1\"; name=\"file\"; path=\"%2\"; filename=\"%3\"").arg(root, directory, name);
         else
-            contentDisposition = QString("form-data; name=\"file\"; filename=\"%1\"").arg(name);
+            contentDisposition = QString("form-data; root=\"%1\"; name=\"file\"; filename=\"%2\"").arg(root, name);
 
-        request.setHeader(QNetworkRequest::ContentDispositionHeader, contentDisposition);
-        QNetworkReply *reply = manager->post(request, data);
+        //create multipart form for file upload
+        QHttpMultiPart *multiPart = new QHttpMultiPart(QHttpMultiPart::FormDataType);
+        multiPart->setBoundary("FormBoundaryemap3PkuvKX0B3HH"); //taken directly from Klipper docs
+
+        // Add parts to the multipart message
+        QHttpPart fileData;
+        fileData.setHeader(QNetworkRequest::ContentDispositionHeader, contentDisposition);
+        fileData.setHeader(QNetworkRequest::ContentTypeHeader, QString("application/octet-stream"));
+        fileData.setBody(data);
+
+        //add file data part to multipart
+        multiPart->append(fileData);
+
+        QEventLoop loop;
+
+        QObject::connect
+        (
+            manager,
+            &QNetworkAccessManager::finished,
+            this, [&loop](QNetworkReply *reply)
+            {
+                loop.quit();
+            }
+        );
+
+        QNetworkReply *reply = manager->post(request, multiPart);
+        multiPart->setParent(reply);
         loop.exec();
 
-        if(reply->errorString().length() > 0)
+        if (reply->error())
         {
-            if(error)
-            {
-                error->setErrorString(reply->errorString());
-                error->setOrigin("Console - Server.Files.Upload");
-                error->setType(QKlipperError::Socket);
-            }
+            qDebug() << "Error: " + reply->errorString() << reply->url() ;
+
+            if(!error)
+                error = new QKlipperError();
+
+            error->setErrorString(reply->errorString());
+            error->setType(QKlipperError::Socket);
+            error->setOrigin("Server Files Upload");
+            error->setErrorTitle("Error Sending Websocket Command");
+
+            emit errorOccured(*error);
 
             return false;
         }
