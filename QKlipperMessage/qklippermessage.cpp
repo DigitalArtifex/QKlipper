@@ -366,10 +366,11 @@ QByteArray QKlipperMessage::toRpc() const
 
     rootObject["method"] = m_method;
     rootObject["id"] = m_id;
+    rootObject["jsonrpc"] = QString("2.0");
 
     document.setObject(rootObject);
 
-    QByteArray data = document.toJson(QJsonDocument::Compact) + QKLIPPER_RPC_EOF;
+    QByteArray data = document.toJson(QJsonDocument::Indented) + QKLIPPER_RPC_EOF;
 
     return data;
 }

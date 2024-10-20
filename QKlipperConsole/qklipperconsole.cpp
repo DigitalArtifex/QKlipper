@@ -66,6 +66,8 @@ void QKlipperConsole::connect()
         if(!m_rpcUpdateSocket)
             m_rpcUpdateSocket = (QAbstractSocket*)(new QWebSocket());
 
+        m_server->setConnectionType(QKlipperServer::Remote);
+
         QWebSocket *socket = qobject_cast<QWebSocket*>(m_rpcUpdateSocket);
 
         QEventLoop loop;
@@ -98,6 +100,8 @@ void QKlipperConsole::connect()
 
         QObject::connect(socket, SIGNAL(binaryMessageReceived(QByteArray)), this, SLOT(rpcUpdateSocketDataReceived(QByteArray)));
         QObject::connect(socket, SIGNAL(textMessageReceived(QString)), this, SLOT(rpcUpdateSocketDataReceived(QString)));
+
+        qDebug() << "Connecting to " << m_server->websocketAddress();
 
         socket->open(m_server->websocketAddress());
         loop.exec();
@@ -601,8 +605,10 @@ QByteArray QKlipperConsole::serverFileDownload(QKlipperFile *file, QKlipperError
         (
             manager,
             &QNetworkAccessManager::finished,
-            this, [&loop, this](QNetworkReply *reply)
+            this, [&loop](QNetworkReply *reply)
             {
+                Q_UNUSED(reply)
+
                 loop.quit();
             }
         );
@@ -610,7 +616,6 @@ QByteArray QKlipperConsole::serverFileDownload(QKlipperFile *file, QKlipperError
         QNetworkRequest request(address);
         QNetworkReply *reply = manager->get(request);
         loop.exec();
-
 
         if (reply->error())
         {
@@ -1512,13 +1517,16 @@ void QKlipperConsole::sendRpcMessage(QKlipperMessage *message)
         {
             QWebSocket *socket = qobject_cast<QWebSocket*>(m_rpcUpdateSocket);
 
-            data = data.removeLast();
-
-            qint64 sent = socket->sendTextMessage(data);
-
-            if(sent != data.length())
+            if(socket)
             {
-                qDebug() << QString("Sent %1 of %2").arg(QString::number(sent), QString::number(data.length()));
+                data = data.removeLast();
+
+                qint64 sent = socket->sendTextMessage(data);
+
+                if(sent != data.length())
+                {
+                    qDebug() << QString("Sent %1 of %2").arg(QString::number(sent), QString::number(data.length()));
+                }
             }
         }
     }
