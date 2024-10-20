@@ -56,7 +56,42 @@ public:
 
     bool operator==(const QKlipperMetadata &value)
     {
-        return memcmp(this, &value, sizeof(QKlipperMetadata));
+        if(thumbnails.count() != value.thumbnails.count())
+            return false;
+
+        for(int i = 0; i < thumbnails.count(); i++)
+        {
+            if(!value.thumbnails.contains(thumbnails[i]))
+                return false;
+        }
+
+        if(estimatedTime != value.estimatedTime) return false;
+        if(gcodeEndByte != value.gcodeEndByte) return false;
+        if(gcodeStartByte != value.gcodeStartByte) return false;
+        if(jobId != value.jobId) return false;
+        if(size != value.size) return false;
+        if(filamentName != value.filamentName) return false;
+        if(filamentTotal != value.filamentTotal) return false;
+        if(filamentTotalWeight != value.filamentTotalWeight) return false;
+        if(filename != value.filename) return false;
+        if(firstLayerBedTemp != value.firstLayerBedTemp) return false;
+        if(firstLayerExtruderTemp != value.firstLayerExtruderTemp) return false;
+        if(firstLayerHeight != value.firstLayerHeight) return false;
+        if(layerHeight != value.layerHeight) return false;
+        if(objectHeight != value.objectHeight) return false;
+        if(modified != value.modified) return false;
+        if(nozzleDiameter != value.nozzleDiameter) return false;
+        if(printStartTime != value.printStartTime) return false;
+        if(slicer != value.slicer) return false;
+        if(slicerVersion != value.slicerVersion) return false;
+        if(uuid != value.uuid) return false;
+
+        return true;
+    }
+
+    bool operator!=(const QKlipperMetadata &value)
+    {
+        return !(*this == value);
     }
 };
 
