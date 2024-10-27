@@ -401,6 +401,16 @@ public slots:
     void printerObjectsQuery(QString &object);
 
     /*!
+     * Asyncronously queries a list of printer objects
+     */
+    void printerObjectsQuery(QStringList &objects);
+
+    /*!
+     * Asyncronously queries all available printer objects
+     */
+    void printerObjectsQuery();
+
+    /*!
      * Asyncronously subscribes to all available printer objects for update. Must be called during startup
      * sequence, after printer.objects.list
      */
@@ -841,6 +851,8 @@ private slots:
 
     void generateParserMap();
 
+    void setupNetworkAccessManager();
+
 private:
     QMap<qint32, QKlipperMessage*> m_messageMap;
     QQueue<QKlipperMessage*> m_messageOutbox;
@@ -864,7 +876,8 @@ private:
     QKlipperSystem *m_system = nullptr;
     QKlipperServer *m_server = nullptr;
 
-    QStringList m_availableObjects;
+    QNetworkAccessManager *m_networkManager = nullptr;
+    QList<QNetworkReply*> m_networkAsynReplies;
 
     Q_PROPERTY(ConnectionState connectionState READ connectionState WRITE setConnectionState RESET resetConnectionState NOTIFY connectionStateChanged FINAL)
     Q_PROPERTY(qreal startupSequenceProgress READ startupSequenceProgress WRITE setStartupSequenceProgress RESET resetStartupSequenceProgress NOTIFY startupSequenceProgressChanged FINAL)
