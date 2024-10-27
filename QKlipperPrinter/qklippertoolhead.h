@@ -274,9 +274,12 @@ signals:
 
     void minPositionChanged();
 
-    void consoleChanged();
-
     void isHomedChanged();
+
+    void homing();
+    void homingFinished();
+    void calibrating();
+    void calibratingFinished();
 
 private:
 

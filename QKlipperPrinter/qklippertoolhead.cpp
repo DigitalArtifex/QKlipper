@@ -228,7 +228,11 @@ void QKlipperToolHead::setPositionZ(qreal position, qreal speed)
 
 void QKlipperToolHead::home()
 {
+    emit homing();
     setIsHoming(true);
+    setXHomed(false);
+    setYHomed(false);
+    setZHomed(false);
     setIsHomed(false);
 
     //send homing command
@@ -236,6 +240,7 @@ void QKlipperToolHead::home()
     m_console->printerGcodeScript(gcode);
 
     setIsHoming(false);
+    emit homingFinished();
 }
 
 void QKlipperToolHead::move(qreal x, qreal y, qreal z, qreal speed)
@@ -376,7 +381,6 @@ void QKlipperToolHead::setConsole(QKlipperConsole *console)
     }
 
     m_console = console;
-    emit consoleChanged();
 }
 
 bool QKlipperToolHead::isHomed() const
@@ -533,6 +537,7 @@ void QKlipperToolHead::setXHomed(bool xHomed)
         return;
 
     m_xHomed = xHomed;
+
     emit xHomedChanged();
 
     if(m_xHomed && m_yHomed && m_zHomed)
@@ -550,6 +555,7 @@ void QKlipperToolHead::setYHomed(bool yHomed)
         return;
 
     m_yHomed = yHomed;
+
     emit yHomedChanged();
 
     if(m_xHomed && m_yHomed && m_zHomed)
@@ -567,6 +573,7 @@ void QKlipperToolHead::setZHomed(bool zHomed)
         return;
 
     m_zHomed = zHomed;
+
     emit zHomedChanged();
 
     if(m_xHomed && m_yHomed && m_zHomed)
