@@ -256,7 +256,9 @@ signals:
     void sensorTypeChanged();
 
     void adjustmentScrewsCalibrating();
+    void adjustmentScrewsCalibratingFinished();
     void bedMeshCalibrating();
+    void bedMeshCalibratingFinished();
 
 private:
     qreal m_currentTemp = 0;

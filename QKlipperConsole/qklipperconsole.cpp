@@ -3236,7 +3236,7 @@ void QKlipperConsole::printerSubscribeParser(QKlipperMessage *message)
                     adjustmentScrew->setThread(thread);
 
                     if(newScrew)
-                        m_printer->bed()->setAdjustmentScrew(screwNameString, adjustmentScrew);
+                        m_printer->bed()->setAdjustmentScrew(screwString, adjustmentScrew);
                 }
             }
 
@@ -4116,6 +4116,8 @@ void QKlipperConsole::printerSubscribeParser(QKlipperMessage *message)
             profiles += profilesArray[i].toString();
 
         bedMesh->setProfiles(profiles);
+
+        m_printer->bed()->setHasBedMeshResult(true);
     }
 
     //Parse stepper motor activity
@@ -4329,8 +4331,10 @@ void QKlipperConsole::printerSubscribeParser(QKlipperMessage *message)
             adjustmentScrew->setAdjustment(adjustment);
 
             if(newScrew)
-                adjustmentScrews[screwString] = adjustmentScrew;
+                m_printer->bed()->setAdjustmentScrew(screwString, adjustmentScrew);
         }
+
+        m_printer->bed()->setHasAdjustmentScrewResult(true);
     }
 }
 

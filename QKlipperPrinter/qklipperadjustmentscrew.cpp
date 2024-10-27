@@ -63,9 +63,6 @@ QKlipperAdjustmentScrew::Adjustment QKlipperAdjustmentScrew::adjustment() const
 
 void QKlipperAdjustmentScrew::setAdjustment(const Adjustment &adjustment)
 {
-    if (memcmp(&m_adjustment, &adjustment, sizeof(Adjustment)))
-        return;
-
     m_adjustment = adjustment;
     emit adjustmentChanged();
 }

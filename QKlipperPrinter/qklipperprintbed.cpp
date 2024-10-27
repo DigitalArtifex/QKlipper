@@ -56,20 +56,24 @@ void QKlipperPrintBed::calibratePid(qreal target)
 
 void QKlipperPrintBed::calibrateAdjustmentScrews()
 {
-    m_hasAdjustmentScrewResult = false;
+    setHasAdjustmentScrewResult(false);
     emit adjustmentScrewsCalibrating();
 
     QString gcode("SCREWS_TILT_CALCULATE");
     m_console->printerGcodeScript(gcode);
+
+    emit adjustmentScrewsCalibratingFinished();
 }
 
 void QKlipperPrintBed::calibrateBedMesh()
 {
-    m_bedMeshCalibrating = true;
+    setHasBedMeshResult(false);
     emit bedMeshCalibrating();
 
     QString gcode("BED_MESH_CALIBRATE");
     m_console->printerGcodeScript(gcode);
+
+    emit bedMeshCalibratingFinished();
 }
 
 void QKlipperPrintBed::setTargetTempData(qreal targetTemp)
