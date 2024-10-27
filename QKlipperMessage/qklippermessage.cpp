@@ -313,9 +313,6 @@ QByteArray QKlipperMessage::toRpc() const
             case QMetaType::QUuid:
             case QMetaType::QVariant:
             case QMetaType::QRegularExpression:
-            case QMetaType::QJsonValue:
-            case QMetaType::QJsonObject:
-            case QMetaType::QJsonArray:
             case QMetaType::QJsonDocument:
             case QMetaType::QCborValue:
             case QMetaType::QCborArray:
@@ -357,6 +354,15 @@ QByteArray QKlipperMessage::toRpc() const
             case QMetaType::User:
             case QMetaType::QCborSimpleType:
                 paramsObject[param];
+                break;
+            case QMetaType::QJsonValue:
+                paramsObject[param] = m_params[param].toJsonValue();
+                break;
+            case QMetaType::QJsonObject:
+                paramsObject[param] = m_params[param].toJsonObject();
+                break;
+            case QMetaType::QJsonArray:
+                paramsObject[param] = m_params[param].toJsonArray();
                 break;
             }
         }
@@ -458,6 +464,8 @@ void QKlipperMessage::startTimer()
 
 void QKlipperMessage::on_responseTimerTimeout()
 {
+    qDebug() << "Response Timeout" << m_method;
+
     emit responseTimeout();
 }
 
