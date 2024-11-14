@@ -20,6 +20,7 @@
 #define QKLIPPERINSTANCE_H
 
 #include <QObject>
+#include <QImage>
 
 #include <QQueue>
 #include <QByteArray>
@@ -81,6 +82,12 @@ public:
 
     bool isConnected() const;
 
+    bool autoConnect() const;
+
+    QImage thumbnail() const;
+
+    bool hasUpdate() const;
+
 public slots:
     void setName(const QString &name);
     void setAddress(const QString &address);
@@ -96,6 +103,12 @@ public slots:
     void setConsole(QKlipperConsole *console);
 
     void setProfileColor(const QString &profileColor);
+
+    void setAutoConnect(bool autoConnect);
+
+    void setThumbnail(const QImage &thumbnail);
+
+    void setHasUpdate(bool hasUpdate);
 
 signals:
 
@@ -127,6 +140,12 @@ signals:
 
     void error(QKlipperInstance*, QKlipperError&);
 
+    void autoConnectChanged();
+
+    void thumbnailChanged();
+
+    void hasUpdateChanged();
+
 protected slots:
     void setIsConnected(bool isConnected);
     void onConsoleConnectionStateChanged();
@@ -135,6 +154,8 @@ protected slots:
     void onConsoleError(QKlipperError &error);
 
 private:
+    QImage m_thumbnail;
+
     QKlipperConsole *m_console = nullptr;
     QKlipperServer *m_server = nullptr;
     QKlipperSystem *m_system = nullptr;
@@ -155,6 +176,8 @@ private:
 
     bool m_isConnected = false;
     bool m_hasError = false;
+    bool m_autoConnect = false;
+    bool m_hasUpdate = false;
 
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged FINAL)
     Q_PROPERTY(QString address READ address WRITE setAddress NOTIFY addressChanged FINAL)
@@ -166,6 +189,9 @@ private:
     Q_PROPERTY(QKlipperConsole *console READ console WRITE setConsole NOTIFY consoleChanged FINAL)
     Q_PROPERTY(QString profileColor READ profileColor WRITE setProfileColor NOTIFY profileColorChanged FINAL)
     Q_PROPERTY(bool isConnected READ isConnected WRITE setIsConnected NOTIFY isConnectedChanged FINAL)
+    Q_PROPERTY(bool autoConnect READ autoConnect WRITE setAutoConnect NOTIFY autoConnectChanged FINAL)
+    Q_PROPERTY(QImage thumbnail READ thumbnail WRITE setThumbnail NOTIFY thumbnailChanged FINAL)
+    Q_PROPERTY(bool hasUpdate READ hasUpdate WRITE setHasUpdate NOTIFY hasUpdateChanged FINAL)
 };
 
 #endif // QKLIPPERINSTANCE_H

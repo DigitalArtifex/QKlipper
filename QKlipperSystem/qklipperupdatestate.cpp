@@ -89,30 +89,6 @@ QMultiMap<QString, QKlipperUpdatePackage> QKlipperUpdateState::packages() const
 
 void QKlipperUpdateState::setPackages(const QMultiMap<QString, QKlipperUpdatePackage> &packages)
 {
-    bool changed = false;
-    QStringList keys = packages.keys();
-
-    foreach(QString key, keys)
-    {
-        QList<QKlipperUpdatePackage> packageListA = m_packages.values(key);
-        QList<QKlipperUpdatePackage> packageListB = packages.values(key);
-
-        foreach(QKlipperUpdatePackage package, packageListB)
-        {
-            if(!packageListA.contains(package))
-            {
-                changed = true;
-                break;
-            }
-        }
-
-        if(changed)
-            break;
-    }
-
-    if(!changed)
-        return;
-
     m_packages = packages;
     emit packagesChanged();
 }

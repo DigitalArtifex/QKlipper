@@ -20,8 +20,9 @@
 #define QKLIPPERTHUMBNAIL_H
 
 #include <QObject>
+#include <QVariant>
 
-class QKlipperThumbnail
+class QKlipperThumbnail : public QVariant
 {
     Q_GADGET
 public:
@@ -33,7 +34,21 @@ public:
 
     bool operator==(const QKlipperThumbnail &value)
     {
-        return memcmp(this, &value, sizeof(QKlipperThumbnail));
+        if(width != value.width)
+            return false;
+        if(height != value.height)
+            return false;
+        if(size != value.size)
+            return false;
+        if(relativePath != value.relativePath)
+            return false;
+
+        return true;
+    }
+
+    bool operator!=(const QKlipperThumbnail &value)
+    {
+        return !(*this == value);
     }
 };
 

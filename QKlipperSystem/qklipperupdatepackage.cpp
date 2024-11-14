@@ -627,20 +627,6 @@ QList<QKlipperUpdateCommit> QKlipperUpdatePackage::commitsBehind() const
 
 void QKlipperUpdatePackage::setCommitsBehind(const QList<QKlipperUpdateCommit> &commitsBehind)
 {
-    bool changed = false;
-
-    foreach(QKlipperUpdateCommit commit, commitsBehind)
-    {
-        if(m_commitsBehind.contains(commit))
-        {
-            changed = true;
-            break;
-        }
-    }
-
-    if(!changed)
-        return;
-
     m_commitsBehind = commitsBehind;
     emit commitsBehindChanged();
 }

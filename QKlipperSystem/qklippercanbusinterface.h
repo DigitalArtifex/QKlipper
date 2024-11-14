@@ -19,20 +19,37 @@
 #ifndef QKLIPPERCANBUSINTERFACE_H
 #define QKLIPPERCANBUSINTERFACE_H
 
-#include <QObject>
+#include <QVariant>
 
-class QKlipperCanBusInterface
+class QKlipperCanBusInterface : public QVariant
 {
-    Q_GADGET
-
 public:
     QString uuid;
     QString application;
+
+    QKlipperCanBusInterface() : QVariant()
+    {
+
+    }
+
+    QKlipperCanBusInterface(const QKlipperCanBusInterface &interface) : QVariant()
+    {
+        uuid = interface.uuid;
+        application = interface.application;
+    }
 
     bool operator==(const QKlipperCanBusInterface &interface)
     {
         if(uuid != interface.uuid) return false;
         if(application != interface.application) return false;
+
+        return true;
+    }
+
+    bool operator!=(const QKlipperCanBusInterface &interface)
+    {
+        if(uuid == interface.uuid) return false;
+        if(application == interface.application) return false;
 
         return true;
     }

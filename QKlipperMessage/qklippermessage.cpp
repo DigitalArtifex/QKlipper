@@ -19,7 +19,7 @@ QKlipperMessage::QKlipperMessage(QObject *parent)
 QKlipperMessage::~QKlipperMessage()
 {
     if(m_responseTimer)
-        delete m_responseTimer;
+        m_responseTimer->deleteLater();
 }
 
 qint32 QKlipperMessage::id() const

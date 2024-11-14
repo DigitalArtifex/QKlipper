@@ -20,8 +20,9 @@
 #define QKLIPPERTEMPERATURESTORE_H
 
 #include <QObject>
+#include <QVariant>
 
-class QKlipperTemperatureStoreValue
+class QKlipperTemperatureStoreValue : public QVariant
 {
     Q_GADGET
 public:

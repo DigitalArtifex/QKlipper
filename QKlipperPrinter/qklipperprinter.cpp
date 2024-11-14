@@ -16,23 +16,23 @@ QKlipperPrinter::QKlipperPrinter(QObject *parent)
 QKlipperPrinter::~QKlipperPrinter()
 {
     if(m_mcu)
-        delete m_mcu;
+        m_mcu->deleteLater();
     if(m_chamber)
-        delete m_chamber;
+        m_chamber->deleteLater();
     if(m_toolhead)
-        delete m_toolhead;
+        m_toolhead->deleteLater();
     if(m_printJob)
-        delete m_printJob;
+        m_printJob->deleteLater();
     if(m_safeZHome)
-        delete m_safeZHome;
+        m_safeZHome->deleteLater();
     if(m_gCodeStore)
-        delete m_gCodeStore;
+        m_gCodeStore->deleteLater();
 
-    foreach(QKlipperFan *fan, m_fans)
-        delete fan;
+    for(QKlipperFan *fan : m_fans)
+        fan->deleteLater();
 
-    foreach(QKlipperStepperMotor *motor, m_stepperMotors)
-        delete motor;
+    for(QKlipperStepperMotor *motor : m_stepperMotors)
+        motor->deleteLater();
 }
 
 QKlipperToolHead *QKlipperPrinter::toolhead() const
@@ -462,7 +462,7 @@ void QKlipperPrinter::setFan(const QString &name, QKlipperFan *fan)
         QKlipperFan *current = m_fans[name];
         m_fans.remove(name);
 
-        delete current;
+        current->deleteLater();
     }
 
     m_fans[name] = fan;
@@ -514,7 +514,7 @@ void QKlipperPrinter::setStepperMotor(const QString &name, QKlipperStepperMotor 
         QKlipperStepperMotor *current = m_stepperMotors[name];
         m_stepperMotors.remove(name);
 
-        delete current;
+        current->deleteLater();
     }
 
     m_stepperMotors[name] = motor;
@@ -612,4 +612,18 @@ void QKlipperPrinter::setEndstopStatus(const QKlipperEndstopStatus &endstopStatu
 
     m_endstopStatus = endstopStatus;
     emit endstopStatusChanged();
+}
+
+bool QKlipperPrinter::hasChamber() const
+{
+    return m_hasChamber;
+}
+
+void QKlipperPrinter::setHasChamber(bool hasChamber)
+{
+    if (m_hasChamber == hasChamber)
+        return;
+
+    m_hasChamber = hasChamber;
+    emit hasChamberChanged();
 }

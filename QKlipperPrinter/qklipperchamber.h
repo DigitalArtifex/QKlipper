@@ -27,7 +27,32 @@ class QKlipperChamber : public QObject
 public:
     explicit QKlipperChamber(QObject *parent = nullptr);
 
+    qreal currentTemperature() const;
+    qreal targetTemperature() const;
+
+    qreal maxWatts() const;
+
+public slots:
+    void setCurrentTemperature(qreal currentTemperature);
+    void setTargetTemperature(qreal targetTemperature);
+
+    void setMaxWatts(qreal maxWatts);
+
 signals:
+    void currentTemperatureChanged();
+    void targetTemperatureChanged();
+
+    void maxWattsChanged();
+
+private:
+    qreal m_currentTemperature = 0.0;
+    qreal m_targetTemperature = 0.0;
+    qreal m_maxWatts = 0.0;
+    qreal m_power = 0.0;
+
+    Q_PROPERTY(qreal currentTemperature READ currentTemperature WRITE setCurrentTemperature NOTIFY currentTemperatureChanged FINAL)
+    Q_PROPERTY(qreal targetTemperature READ targetTemperature WRITE setTargetTemperature NOTIFY targetTemperatureChanged FINAL)
+    Q_PROPERTY(qreal maxWatts READ maxWatts WRITE setMaxWatts NOTIFY maxWattsChanged FINAL)
 };
 
 #endif // QKLIPPERCHAMBER_H

@@ -19,29 +19,23 @@
 #ifndef QKLIPPERSERIALPERIPHERAL_H
 #define QKLIPPERSERIALPERIPHERAL_H
 
-#include <QObject>
+#include <QVariant>
 class QKlipperSystem;
 class QKlipperConsole;
 /*!
  * \brief Filled by machine.peripherals.serial
  */
-class QKlipperSerialPeripheral : public QObject
+class QKlipperSerialPeripheral : public QVariant
 {
-    Q_OBJECT
-
     friend QKlipperSystem;
     friend QKlipperConsole;
 public:
-    explicit QKlipperSerialPeripheral(QObject *parent = nullptr);
+    QKlipperSerialPeripheral();
 
     QKlipperSerialPeripheral(const QKlipperSerialPeripheral &value);
-    QKlipperSerialPeripheral(QKlipperSerialPeripheral &&value);
     QKlipperSerialPeripheral &operator=(const QKlipperSerialPeripheral &value);
-    QKlipperSerialPeripheral &operator=(QKlipperSerialPeripheral &&value);
     bool operator==(const QKlipperSerialPeripheral &value);
-    bool operator==(QKlipperSerialPeripheral &&value);
     bool operator!=(const QKlipperSerialPeripheral &value);
-    bool operator!=(QKlipperSerialPeripheral &&value);
 
     QString type() const;
 
@@ -57,7 +51,6 @@ public:
 
     QString usbLocation() const;
 
-public slots:
     void setType(const QString &type);
 
     void setPath(const QString &path);
@@ -72,18 +65,6 @@ public slots:
 
     void setUsbLocation(const QString &usbLocation);
 
-private slots:
-
-signals:
-
-    void typeChanged();
-    void pathChanged();
-    void nameChanged();
-    void driverChanged();
-    void hardwarePathChanged();
-    void pathByIdChanged();
-    void usbLocationChanged();
-
 private:
     QString m_type;
     QString m_path;
@@ -92,14 +73,6 @@ private:
     QString m_hardwarePath;
     QString m_pathById;
     QString m_usbLocation;
-
-    Q_PROPERTY(QString type READ type WRITE setType NOTIFY typeChanged FINAL)
-    Q_PROPERTY(QString path READ path WRITE setPath NOTIFY pathChanged FINAL)
-    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged FINAL)
-    Q_PROPERTY(QString driver READ driver WRITE setDriver NOTIFY driverChanged FINAL)
-    Q_PROPERTY(QString hardwarePath READ hardwarePath WRITE setHardwarePath NOTIFY hardwarePathChanged FINAL)
-    Q_PROPERTY(QString pathById READ pathById WRITE setPathById NOTIFY pathByIdChanged FINAL)
-    Q_PROPERTY(QString usbLocation READ usbLocation WRITE setUsbLocation NOTIFY usbLocationChanged FINAL)
 };
 
 #endif // QKLIPPERSERIALPERIPHERAL_H

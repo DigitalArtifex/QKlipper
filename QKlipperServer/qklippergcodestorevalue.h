@@ -20,9 +20,10 @@
 #define QKLIPPERGCODESTOREVALUE_H
 
 #include <QObject>
+#include <QVariant>
 #include <QList>
 
-class QKlipperGCodeStoreValue
+class QKlipperGCodeStoreValue : public QVariant
 {
     Q_GADGET
 public:
@@ -32,9 +33,7 @@ public:
     };
 
     bool operator==(const QKlipperGCodeStoreValue &value);
-    bool operator==(QKlipperGCodeStoreValue &&value);
     bool operator!=(const QKlipperGCodeStoreValue &value);
-    bool operator!=(QKlipperGCodeStoreValue &&value);
 
     QString message() const;
 
@@ -42,7 +41,6 @@ public:
 
     qreal time() const;
 
-public slots:
     void setMessage(const QString &message);
 
     void setGcodeType(GCodeType gcodeType);

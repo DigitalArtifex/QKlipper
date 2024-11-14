@@ -35,6 +35,9 @@ class QKlipperVirtualizationState : public QObject
 public:
     explicit QKlipperVirtualizationState(QObject *parent = nullptr);
 
+    bool operator==(const QKlipperVirtualizationState &value);
+    bool operator!=(const QKlipperVirtualizationState &value);
+
     QString type() const;
 
     QString identifier() const;

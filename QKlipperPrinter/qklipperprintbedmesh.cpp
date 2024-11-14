@@ -1,4 +1,5 @@
 #include "qklipperprintbedmesh.h"
+#include "qdebug.h"
 
 QKlipperPrintBedMesh::QKlipperPrintBedMesh(QObject *parent)
     : QObject{parent}
@@ -186,10 +187,6 @@ QKlipperPrintBedMesh::Limit QKlipperPrintBedMesh::probeCount() const
 
 void QKlipperPrintBedMesh::setProbeCount(const Limit &probeCount)
 {
-    if (m_probeCount.x == probeCount.x &&
-        m_probeCount.y == probeCount.y)
-        return;
-
     m_probeCount = probeCount;
     emit probeCountChanged();
 }
@@ -199,10 +196,9 @@ QList<QList<qreal> > QKlipperPrintBedMesh::matrix() const
     return m_matrix;
 }
 
-void QKlipperPrintBedMesh::setMatrix(const QList<QList<qreal> > &matrix)
+void QKlipperPrintBedMesh::setMatrix(const QList<QList<qreal> > matrix)
 {
-    if (m_matrix == matrix)
-        return;
+    qDebug() << "setting probed";
     m_matrix = matrix;
     emit matrixChanged();
 }
@@ -212,10 +208,9 @@ QList<QList<qreal> > QKlipperPrintBedMesh::probed() const
     return m_probed;
 }
 
-void QKlipperPrintBedMesh::setProbed(const QList<QList<qreal> > &probed)
+void QKlipperPrintBedMesh::setProbed(const QList<QList<qreal> > probed)
 {
-    if (m_probed == probed)
-        return;
+    qDebug() << "setting probed";
     m_probed = probed;
     emit probedChanged();
 }

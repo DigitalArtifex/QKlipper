@@ -11,10 +11,10 @@ QKlipperPrintBed::QKlipperPrintBed(QObject *parent)
 QKlipperPrintBed::~QKlipperPrintBed()
 {
     if(m_bedMesh)
-        delete m_bedMesh;
+        m_bedMesh->deleteLater();
 
     foreach(QKlipperAdjustmentScrew *screw, m_adjustmentScrews)
-        delete screw;
+        screw->deleteLater();
 }
 
 qreal QKlipperPrintBed::currentTemp() const
@@ -325,7 +325,7 @@ void QKlipperPrintBed::setAdjustmentScrew(QString name, QKlipperAdjustmentScrew 
         QKlipperAdjustmentScrew *screw = m_adjustmentScrews[name];
         m_adjustmentScrews.remove(name);
 
-        delete screw;
+        screw->deleteLater();
         screw = nullptr;
     }
 

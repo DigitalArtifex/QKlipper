@@ -19,49 +19,28 @@
 #ifndef QKLIPPERV412MODE_H
 #define QKLIPPERV412MODE_H
 
-#include <QObject>
+#include <QVariant>
 
-class QKlipperV412Mode : public QObject
+class QKlipperV412Mode : public QVariant
 {
-    Q_OBJECT
 public:
-    explicit QKlipperV412Mode(QObject *parent = nullptr);
-
+    QKlipperV412Mode();
     QKlipperV412Mode(const QKlipperV412Mode &value);
-    QKlipperV412Mode(QKlipperV412Mode &&value);
+
     QKlipperV412Mode &operator=(const QKlipperV412Mode &value);
-    QKlipperV412Mode &operator=(QKlipperV412Mode &&value);
     bool operator==(const QKlipperV412Mode &value);
-    bool operator==(QKlipperV412Mode &&value);
     bool operator!=(const QKlipperV412Mode &value);
-    bool operator!=(QKlipperV412Mode &&value);
 
     QString description() const;
-
     QString format() const;
 
     QStringList flags() const;
-
     QStringList resolutions() const;
 
-public slots:
     void setDescription(const QString &description);
-
     void setFormat(const QString &format);
-
     void setFlags(const QStringList &flags);
-
     void setResolutions(const QStringList &resolutions);
-
-signals:
-
-    void descriptionChanged();
-
-    void formatChanged();
-
-    void flagsChanged();
-
-    void resolutionsChanged();
 
 private:
     QString m_description;
@@ -69,11 +48,6 @@ private:
 
     QStringList m_flags;
     QStringList m_resolutions;
-
-    Q_PROPERTY(QString description READ description WRITE setDescription NOTIFY descriptionChanged FINAL)
-    Q_PROPERTY(QString format READ format WRITE setFormat NOTIFY formatChanged FINAL)
-    Q_PROPERTY(QStringList flags READ flags WRITE setFlags NOTIFY flagsChanged FINAL)
-    Q_PROPERTY(QStringList resolutions READ resolutions WRITE setResolutions NOTIFY resolutionsChanged FINAL)
 };
 
 #endif // QKLIPPERV412MODE_H

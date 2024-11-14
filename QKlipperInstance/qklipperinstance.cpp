@@ -11,25 +11,25 @@ QKlipperInstance::QKlipperInstance(QObject *parent)
 QKlipperInstance::~QKlipperInstance()
 {
     if(m_system)
-        delete m_system;
+        m_system->deleteLater();
     if(m_printer)
-        delete m_printer;
+        m_printer->deleteLater();
     if(m_server)
-        delete m_server;
+        m_server->deleteLater();
     if(m_console)
-        delete m_console;
+        m_console->deleteLater();
 }
 
 void QKlipperInstance::reset()
 {
     if(m_system)
-        delete m_system;
+        m_system->deleteLater();
     if(m_printer)
-        delete m_printer;
+        m_printer->deleteLater();
     if(m_server)
-        delete m_server;
+        m_server->deleteLater();
     if(m_console)
-        delete m_console;
+        m_console->deleteLater();
 
     m_console = new QKlipperConsole(this);
     m_system = new QKlipperSystem(this);
@@ -53,6 +53,8 @@ void QKlipperInstance::setName(const QString &name)
 
     m_name = name;
     emit nameChanged();
+
+    setHasUpdate(true);
 }
 
 QString QKlipperInstance::address() const
@@ -70,6 +72,8 @@ void QKlipperInstance::setAddress(const QString &address)
 
     m_address = address;
     emit addressChanged();
+
+    setHasUpdate(true);
 }
 
 QString QKlipperInstance::id() const
@@ -84,6 +88,8 @@ void QKlipperInstance::setId(const QString &id)
 
     m_id = id;
     emit idChanged();
+
+    setHasUpdate(true);
 }
 
 QString QKlipperInstance::apiKey() const
@@ -101,6 +107,8 @@ void QKlipperInstance::setApiKey(const QString &apiKey)
 
     m_apiKey = apiKey;
     emit apiKeyChanged();
+
+    setHasUpdate(true);
 }
 
 qint16 QKlipperInstance::port() const
@@ -115,6 +123,8 @@ void QKlipperInstance::setPort(qint16 port)
 
     m_port = port;
     emit portChanged();
+
+    setHasUpdate(true);
 }
 
 QString QKlipperInstance::instanceLocation() const
@@ -129,6 +139,8 @@ void QKlipperInstance::setInstanceLocation(const QString &instanceLocation)
 
     m_instanceLocation = instanceLocation;
     emit instanceLocationChanged();
+
+    setHasUpdate(true);
 }
 
 void QKlipperInstance::printerStateChanged()
@@ -189,6 +201,7 @@ void QKlipperInstance::connect()
 
     QObject::connect(m_server->jobQueue(), SIGNAL(jobAdded(QKlipperPrintJob*)), this, SLOT(onServerPrintJobAdded(QKlipperPrintJob*)));
     QObject::connect(m_server->jobQueue(), SIGNAL(jobRemoved(QKlipperPrintJob*)), this, SLOT(onServerPrintJobRemoved(QKlipperPrintJob*)));
+    QObject::connect(m_console, SIGNAL(errorOccured(QKlipperError&)), this, SLOT(onConsoleError(QKlipperError&)));
 
     if(m_console)
         m_console->connect();
@@ -210,6 +223,8 @@ void QKlipperInstance::setConnectionType(QKlipperServer::ConnectionType connecti
 
     m_connectionType = connectionType;
     emit connectionTypeChanged();
+
+    setHasUpdate(true);
 }
 
 void QKlipperInstance::setConsole(QKlipperConsole *console)
@@ -233,6 +248,8 @@ void QKlipperInstance::setProfileColor(const QString &profileColor)
 
     m_profileColor = profileColor;
     emit profileColorChanged();
+
+    setHasUpdate(true);
 }
 
 void QKlipperInstance::onConsoleConnectionStateChanged()
@@ -260,6 +277,52 @@ void QKlipperInstance::onConsoleError(QKlipperError &error)
         m_errors.insert(error.id(), error);
         emit this->error(this, error);
     }
+}
+
+bool QKlipperInstance::hasUpdate() const
+{
+    return m_hasUpdate;
+}
+
+void QKlipperInstance::setHasUpdate(bool hasUpdate)
+{
+    if (m_hasUpdate == hasUpdate)
+        return;
+
+    m_hasUpdate = hasUpdate;
+    emit hasUpdateChanged();
+}
+
+QImage QKlipperInstance::thumbnail() const
+{
+    return m_thumbnail;
+}
+
+void QKlipperInstance::setThumbnail(const QImage &thumbnail)
+{
+    if (m_thumbnail == thumbnail)
+        return;
+
+    m_thumbnail = thumbnail;
+    emit thumbnailChanged();
+
+    setHasUpdate(true);
+}
+
+bool QKlipperInstance::autoConnect() const
+{
+    return m_autoConnect;
+}
+
+void QKlipperInstance::setAutoConnect(bool autoConnect)
+{
+    if (m_autoConnect == autoConnect)
+        return;
+
+    m_autoConnect = autoConnect;
+    emit autoConnectChanged();
+
+    setHasUpdate(true);
 }
 
 bool QKlipperInstance::isConnected() const

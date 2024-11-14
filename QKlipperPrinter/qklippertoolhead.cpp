@@ -16,10 +16,10 @@ QKlipperToolHead::QKlipperToolHead(QObject *parent)
 QKlipperToolHead::~QKlipperToolHead()
 {
     if(m_partsFan)
-        delete m_partsFan;
+        m_partsFan->deleteLater();
 
     foreach(QKlipperExtruder *extruder, m_extruderMap)
-        delete extruder;
+        extruder->deleteLater();
 }
 
 QKlipperFan *QKlipperToolHead::partsFan() const
@@ -31,9 +31,6 @@ void QKlipperToolHead::setPartsFan(QKlipperFan *partsFan)
 {
     if (m_partsFan == partsFan)
         return;
-
-    if(m_partsFan)
-        delete m_partsFan;
 
     m_partsFan = partsFan;
     emit partsFanChanged();
@@ -78,7 +75,7 @@ void QKlipperToolHead::setExtruder(QString name, QKlipperExtruder *extruder)
         QKlipperExtruder *current = m_extruderMap[name];
         m_extruderMap.remove(name);
 
-        delete current;
+        current->deleteLater();
     }
 
     m_extruderMap[name] = extruder;
@@ -230,10 +227,6 @@ void QKlipperToolHead::home()
 {
     emit homing();
     setIsHoming(true);
-    setXHomed(false);
-    setYHomed(false);
-    setZHomed(false);
-    setIsHomed(false);
 
     //send homing command
     QString gcode("G28");
@@ -542,6 +535,8 @@ void QKlipperToolHead::setXHomed(bool xHomed)
 
     if(m_xHomed && m_yHomed && m_zHomed)
         setIsHomed(true);
+    else
+        setIsHomed(false);
 }
 
 bool QKlipperToolHead::yHomed() const
@@ -560,6 +555,8 @@ void QKlipperToolHead::setYHomed(bool yHomed)
 
     if(m_xHomed && m_yHomed && m_zHomed)
         setIsHomed(true);
+    else
+        setIsHomed(false);
 }
 
 bool QKlipperToolHead::zHomed() const
@@ -578,6 +575,8 @@ void QKlipperToolHead::setZHomed(bool zHomed)
 
     if(m_xHomed && m_yHomed && m_zHomed)
         setIsHomed(true);
+    else
+        setIsHomed(false);
 }
 
 QString QKlipperToolHead::currentExtruderName() const

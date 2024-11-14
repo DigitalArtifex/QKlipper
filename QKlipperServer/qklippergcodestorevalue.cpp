@@ -9,26 +9,7 @@ bool QKlipperGCodeStoreValue::operator==(const QKlipperGCodeStoreValue &value)
     return true;
 }
 
-bool QKlipperGCodeStoreValue::operator==(QKlipperGCodeStoreValue &&value)
-{
-    if(m_gcodeType != value.m_gcodeType) return false;
-    if(m_time != value.m_time) return false;
-    if(m_message != value.m_message) return false;
-
-    return true;
-}
-
 bool QKlipperGCodeStoreValue::operator!=(const QKlipperGCodeStoreValue &value)
-{
-    if(m_gcodeType == value.m_gcodeType &&
-        m_time == value.m_time &&
-        m_message == value.m_message)
-        return false;
-
-    return true;
-}
-
-bool QKlipperGCodeStoreValue::operator!=(QKlipperGCodeStoreValue &&value)
 {
     if(m_gcodeType == value.m_gcodeType &&
         m_time == value.m_time &&

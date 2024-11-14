@@ -20,27 +20,22 @@
 #define QKLIPPERWEBCAM_H
 
 #include <QObject>
+#include <QVariant>
 
 class QKlipperSystem;
 class QKlipperConsole;
 
-class QKlipperWebcam : public QObject
+class QKlipperWebcam : public QVariant
 {
-    Q_OBJECT
-
     friend QKlipperSystem;
     friend QKlipperConsole;
 public:
-    explicit QKlipperWebcam(QObject *parent = nullptr);
-
+    QKlipperWebcam();
     QKlipperWebcam(const QKlipperWebcam &value);
-    QKlipperWebcam(QKlipperWebcam &&value);
+
     QKlipperWebcam &operator=(const QKlipperWebcam &value);
-    QKlipperWebcam &operator=(QKlipperWebcam &&value);
     bool operator==(const QKlipperWebcam &value);
-    bool operator==(QKlipperWebcam &&value);
     bool operator!=(const QKlipperWebcam &value);
-    bool operator!=(QKlipperWebcam &&value);
 
     QString name() const;
 
@@ -72,7 +67,6 @@ public:
 
     qint16 targetFpsIdle() const;
 
-public slots:
     void setName(const QString &name);
 
     void setLocation(const QString &location);
@@ -103,40 +97,6 @@ public slots:
 
     void setTargetFpsIdle(qint16 targetFpsIdle);
 
-private slots:
-
-signals:
-
-    void nameChanged();
-
-    void locationChanged();
-
-    void serviceChanged();
-
-    void iconStringChanged();
-
-    void streamUrlChanged();
-
-    void snapshotUrlChanged();
-
-    void aspectRatioChanged();
-
-    void sourceChanged();
-
-    void uidChanged();
-
-    void targetFpsChanged();
-
-    void rotationChanged();
-
-    void enabledChanged();
-
-    void flipVerticalChanged();
-
-    void flipHorizontalChanged();
-
-    void targetFpsIdleChanged();
-
 private:
     QString m_name;
     QString m_location;
@@ -155,22 +115,6 @@ private:
     bool m_enabled = false;
     bool m_flipVertical = false;
     bool m_flipHorizontal = false;
-
-    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged FINAL)
-    Q_PROPERTY(QString location READ location WRITE setLocation NOTIFY locationChanged FINAL)
-    Q_PROPERTY(QString service READ service WRITE setService NOTIFY serviceChanged FINAL)
-    Q_PROPERTY(QString iconString READ iconString WRITE setIconString NOTIFY iconStringChanged FINAL)
-    Q_PROPERTY(QString streamUrl READ streamUrl WRITE setStreamUrl NOTIFY streamUrlChanged FINAL)
-    Q_PROPERTY(QString snapshotUrl READ snapshotUrl WRITE setSnapshotUrl NOTIFY snapshotUrlChanged FINAL)
-    Q_PROPERTY(QString aspectRatio READ aspectRatio WRITE setAspectRatio NOTIFY aspectRatioChanged FINAL)
-    Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged FINAL)
-    Q_PROPERTY(QString uid READ uid WRITE setUid NOTIFY uidChanged FINAL)
-    Q_PROPERTY(qint16 targetFps READ targetFps WRITE setTargetFps NOTIFY targetFpsChanged FINAL)
-    Q_PROPERTY(qint16 rotation READ rotation WRITE setRotation NOTIFY rotationChanged FINAL)
-    Q_PROPERTY(bool enabled READ enabled WRITE setEnabled NOTIFY enabledChanged FINAL)
-    Q_PROPERTY(bool flipVertical READ flipVertical WRITE setFlipVertical NOTIFY flipVerticalChanged FINAL)
-    Q_PROPERTY(bool flipHorizontal READ flipHorizontal WRITE setFlipHorizontal NOTIFY flipHorizontalChanged FINAL)
-    Q_PROPERTY(qint16 targetFpsIdle READ targetFpsIdle WRITE setTargetFpsIdle NOTIFY targetFpsIdleChanged FINAL)
 };
 
 typedef QList<QKlipperWebcam> QKlipperWebcamList;

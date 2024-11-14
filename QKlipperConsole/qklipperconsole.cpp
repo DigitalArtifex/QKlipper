@@ -4,7 +4,6 @@
 QKlipperConsole::QKlipperConsole(QObject *parent)
     : QObject{parent}
 {
-    setupNetworkAccessManager();
     generateParserMap();
     resetStartupSequence();
 }
@@ -17,17 +16,19 @@ QKlipperConsole::~QKlipperConsole()
     {
         QKlipperMessage *message = m_messageMap[key];
         m_messageMap.remove(key);
-        delete message;
+        message->deleteLater();
     }
 
     if(m_rpcUpdateSocket)
-        delete m_rpcUpdateSocket;
+        m_rpcUpdateSocket->deleteLater();
 }
 
 void QKlipperConsole::connect()
 {
     if(m_rpcUpdateSocket && m_rpcUpdateSocket->isOpen())
         return;
+
+    setupNetworkAccessManager();
 
     addConnectionState(Connecting);
     addConnectionState(Startup);
@@ -59,6 +60,7 @@ void QKlipperConsole::connect()
         }
 
         addConnectionState(MoonrakerConnected);
+        startConnectionTimer();
 
         QObject::connect(m_rpcUpdateSocket, SIGNAL(readyRead()), this, SLOT(rpcUpdateSocketDataReady()));
     }
@@ -99,7 +101,6 @@ void QKlipperConsole::connect()
             }
         );
 
-        QObject::connect(socket, SIGNAL(binaryMessageReceived(QByteArray)), this, SLOT(rpcUpdateSocketDataReceived(QByteArray)));
         QObject::connect(socket, SIGNAL(textMessageReceived(QString)), this, SLOT(rpcUpdateSocketDataReceived(QString)));
 
         qDebug() << "Connecting to " << m_server->websocketAddress();
@@ -120,6 +121,7 @@ void QKlipperConsole::connect()
         }
 
         addConnectionState(MoonrakerConnected);
+        startConnectionTimer();
     }
 
     if(m_startupSequence.count())
@@ -132,18 +134,28 @@ void QKlipperConsole::connect()
 
 void QKlipperConsole::disconnect()
 {
-    if(!m_rpcUpdateSocket)
-        return;
-
-    m_rpcUpdateSocket->disconnectFromHost();
-
-    if(!m_rpcUpdateSocket->waitForDisconnected())
+    if(m_rpcUpdateSocket)
     {
-        qDebug() << "Timeout waiting for disconnect";
+        if(m_server->connectionType() == QKlipperServer::Local)
+        {
+            QLocalSocket *socket = qobject_cast<QLocalSocket*>(m_rpcUpdateSocket);
+            socket->close();
+        }
+        else if(m_server->connectionType() == QKlipperServer::Remote)
+        {
+            QWebSocket *socket = qobject_cast<QWebSocket*>(m_rpcUpdateSocket);
+            socket->close();
+        }
+
+        m_rpcUpdateSocket->deleteLater();
+        m_rpcUpdateSocket = nullptr;
     }
 
-    delete m_rpcUpdateSocket;
-    m_rpcUpdateSocket = nullptr;
+    if(m_networkManager)
+    {
+        m_networkManager->deleteLater();
+        m_networkManager = nullptr;
+    }
 
     removeConnectionState(Syncronized);
 }
@@ -465,7 +477,7 @@ bool QKlipperConsole::restartKlipper(QKlipperError *error)
 bool QKlipperConsole::restartFirmware(QKlipperError *error)
 {
     QKlipperMessage *message = new QKlipperMessage();
-    message->setMethod("printer.restart_firmware");
+    message->setMethod("printer.firmware_restart");
 
     return sendWebSocketMessage(message, error);
 }
@@ -648,7 +660,7 @@ QByteArray QKlipperConsole::serverFileDownload(QKlipperFile *file, QKlipperError
             qDebug() << "Error: " + reply->errorString() << reply->url() ;
 
             if(!error)
-                *error = QKlipperError();
+                error = new QKlipperError();
 
             error->setErrorString(reply->errorString());
             error->setType(QKlipperError::Socket);
@@ -1102,6 +1114,8 @@ void QKlipperConsole::accessUserPasswordReset(QString password, QString newPassw
 
 void QKlipperConsole::rpcUpdateSocketDataReady()
 {
+    resetConnectionTimer();
+
     if(m_rpcUpdateSocket->isOpen())
     {
         QByteArray incoming = m_rpcUpdateSocket->readAll();
@@ -1113,6 +1127,8 @@ void QKlipperConsole::rpcUpdateSocketDataReady()
 
 void QKlipperConsole::rpcUpdateSocketDataReceived(QString data)
 {
+    resetConnectionTimer();
+
     //EOF is either not being sent or being filtered out by QWebSocket
     //We need to do the same thing without scanning for EOF
     QJsonParseError responseDocumentError;
@@ -1201,12 +1217,6 @@ void QKlipperConsole::rpcUpdateSocketDataReceived(QString data)
         message->setResponse(responseObject);
         parseResponse(message);
     }
-}
-
-void QKlipperConsole::rpcUpdateSocketDataReceived(QByteArray data)
-{
-    //m_rpcDataBuffer += data;
-    //scanRpcUpdateBuffer();
 }
 
 void QKlipperConsole::scanRpcUpdateBuffer()
@@ -1310,8 +1320,7 @@ void QKlipperConsole::deleteMessage(QKlipperMessage *message)
     if(message)
     {
         m_messageMap.remove(message->id());
-        delete message;
-        message = nullptr;
+        message->deleteLater();
     }
 }
 
@@ -1485,6 +1494,44 @@ void QKlipperConsole::setupNetworkAccessManager()
         m_networkManager = new QNetworkAccessManager(this);
 }
 
+void QKlipperConsole::resetConnectionTimer()
+{
+    stopConnectionTimer();
+    startConnectionTimer();
+}
+
+void QKlipperConsole::startConnectionTimer()
+{
+    if(!m_rpcConnectionTimer)
+    {
+        m_rpcConnectionTimer = new QTimer(this);
+        QObject::connect(m_rpcConnectionTimer, SIGNAL(timeout()), this, SLOT(onRpcConnectionTimeout()));
+    }
+
+    if(!m_rpcConnectionTimer->isActive())
+    {
+        m_rpcConnectionTimer->setInterval(m_rpcConnectionTimeoutValue);
+        m_rpcConnectionTimer->setSingleShot(true);
+        m_rpcConnectionTimer->start();
+    }
+}
+
+void QKlipperConsole::stopConnectionTimer()
+{
+    if(m_rpcConnectionTimer && m_rpcConnectionTimer->isActive())
+    {
+        m_rpcConnectionTimer->stop();
+    }
+}
+
+void QKlipperConsole::onRpcConnectionTimeout()
+{
+    disconnect();
+    resetStartupSequence();
+    setStartupSequenceText("Datastream Interrupted..");
+    connect();
+}
+
 QKlipperServer *QKlipperConsole::server() const
 {
     return m_server;
@@ -1624,9 +1671,6 @@ void QKlipperConsole::sendWebSocketMessageAsync(QKlipperMessage *message)
             }
 
             message->setResponse(responseDocument["result"]);
-
-            reply->deleteLater();
-
             parseResponse(message);
         }
     );
@@ -1658,7 +1702,7 @@ bool QKlipperConsole::sendWebSocketMessage(QKlipperMessage *message, QKlipperErr
         qDebug() << "Error: " + reply->errorString() << reply->url() ;
 
         if(!error)
-            *error = QKlipperError();
+            error = new QKlipperError();
 
         error->setErrorString(reply->errorString());
         error->setType(QKlipperError::Socket);
@@ -2942,6 +2986,8 @@ void QKlipperConsole::machineUpdateStatusParser(QKlipperMessage *message)
                 commit.setSubject(commitObject["subject"].toString());
                 commit.setMessage(commitObject["message"].toString());
                 commit.setTag(commitObject["tag"].toString());
+
+                commits.append(commit);
             }
 
             packageState.setCommitsBehind(commits);
@@ -4074,6 +4120,7 @@ void QKlipperConsole::printerSubscribeParser(QKlipperMessage *message)
         QJsonArray probedArray = bedMeshObject["probed_matrix"].toArray();
 
         QList<QList<qreal>> probed(probedArray.count());
+        bool hasResult = false;
 
         for(int i = 0; i < probedArray.count(); i++)
         {
@@ -4083,6 +4130,8 @@ void QKlipperConsole::printerSubscribeParser(QKlipperMessage *message)
             for(int e = 0; e < probedEntriesArray.count(); e++)
             {
                 probed[i][e] = probedEntriesArray[e].toDouble();
+
+                hasResult = true;
             }
         }
 
@@ -4101,6 +4150,8 @@ void QKlipperConsole::printerSubscribeParser(QKlipperMessage *message)
             for(int e = 0; e < matrixEntriesArray.count(); e++)
             {
                 matrix[i][e] = matrixEntriesArray[e].toDouble();
+
+                hasResult = true;
             }
         }
 
@@ -4116,8 +4167,7 @@ void QKlipperConsole::printerSubscribeParser(QKlipperMessage *message)
             profiles += profilesArray[i].toString();
 
         bedMesh->setProfiles(profiles);
-
-        m_printer->bed()->setHasBedMeshResult(true);
+        m_printer->bed()->setHasBedMeshResult(hasResult);
     }
 
     //Parse stepper motor activity
@@ -4288,6 +4338,7 @@ void QKlipperConsole::printerSubscribeParser(QKlipperMessage *message)
             m_printer->bed()->setAdjustmentScrewsMaxDeviation(screwsTiltResultsObject["max_deviation"].toDouble());
 
         QMap<QString, QKlipperAdjustmentScrew*> adjustmentScrews = m_printer->bed()->adjustmentScrews();
+        bool hasResult = false;
 
         for(int i = 1; ; i++)
         {
@@ -4332,9 +4383,12 @@ void QKlipperConsole::printerSubscribeParser(QKlipperMessage *message)
 
             if(newScrew)
                 m_printer->bed()->setAdjustmentScrew(screwString, adjustmentScrew);
+
+            hasResult = true;
         }
 
-        m_printer->bed()->setHasAdjustmentScrewResult(true);
+        if(hasResult)
+            m_printer->bed()->setHasAdjustmentScrewResult(true);
     }
 }
 
@@ -4368,7 +4422,7 @@ void QKlipperConsole::serverInfoParser(QKlipperMessage *message)
             /*if(m_klipperRestartTimer)
             {
                 m_klipperRestartTimer->stop();
-                delete m_klipperRestartTimer;
+                m_klipperRestartTimer->deleteLater();
 
                 m_klipperRestartTimer = nullptr;
             }*/
@@ -5000,7 +5054,7 @@ void QKlipperConsole::serverJobQueueDeleteParser(QKlipperMessage *message)
         if(job)
         {
             m_server->jobQueue()->removeJob(key);
-            delete job;
+            job->deleteLater();
         }
     }
 }

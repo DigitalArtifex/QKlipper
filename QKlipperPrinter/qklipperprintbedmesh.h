@@ -113,9 +113,9 @@ private slots:
 
     void setProbeCount(const Limit &probeCount);
 
-    void setMatrix(const QList<QList<qreal> > &matrix);
+    void setMatrix(const QList<QList<qreal> > matrix);
 
-    void setProbed(const QList<QList<qreal> > &probed);
+    void setProbed(const QList<QList<qreal> > probed);
 
     void setAlgorithm(const QString &algorithm);
 

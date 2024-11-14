@@ -146,7 +146,11 @@ public:
 
     qreal watts();
 
+    bool hasChamber() const;
+
 public slots:
+
+    void setHasChamber(bool hasChamber);
 
 private slots:
 
@@ -288,6 +292,8 @@ signals:
 
     void endstopStatusChanged();
 
+    void hasChamberChanged();
+
 private:
     QKlipperToolHead                                *m_toolhead = nullptr;
     QKlipperPrintBed                                *m_bed = nullptr;
@@ -338,6 +344,8 @@ private:
     QMap<QString,QKlipperFan*>                       m_fans;
 
     QKlipperSafeZHome                               *m_safeZHome = nullptr;
+    bool                                             m_hasChamber = false;
+
     Q_PROPERTY(QKlipperSafeZHome *safeZHome READ safeZHome WRITE setSafeZHome NOTIFY safeZHomeChanged FINAL)
     Q_PROPERTY(QMap<QString, QKlipperFan *> fans READ fans WRITE setFans NOTIFY fansChanged FINAL)
     Q_PROPERTY(QKlipperProbeData probeData READ probeData WRITE setProbeData NOTIFY probeDataChanged FINAL)
@@ -350,6 +358,7 @@ private:
     Q_PROPERTY(QDateTime printEnding READ printEnding WRITE setPrintEnding NOTIFY printEndingChanged FINAL)
     Q_PROPERTY(QDateTime printStarted READ printStarted WRITE setPrintStarted NOTIFY printStartedChanged FINAL)
     Q_PROPERTY(QKlipperFile *currentFile READ currentFile WRITE setCurrentFile NOTIFY currentFileChanged FINAL)
+    Q_PROPERTY(bool hasChamber READ hasChamber WRITE setHasChamber NOTIFY hasChamberChanged FINAL)
 };
 
 #endif // QKLIPPERPRINTER_H

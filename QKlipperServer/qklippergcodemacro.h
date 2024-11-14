@@ -22,8 +22,10 @@
 #include <QObject>
 #include <QList>
 #include <QMap>
+#include <QVariant>
 
-class QKlipperGCodeMacro {
+class QKlipperGCodeMacro : public QVariant
+{
     Q_GADGET
 
 public:
@@ -48,29 +50,7 @@ public:
         return true;
     }
 
-    bool operator==(QKlipperGCodeMacro &&value)
-    {
-        if(macro != value.macro ||
-            description != value.description ||
-            gcode != value.gcode ||
-            replaces != value.replaces)
-            return false;
-
-        return true;
-    }
-
     bool operator!=(const QKlipperGCodeMacro &value)
-    {
-        if(macro == value.macro &&
-            description == value.description &&
-            gcode == value.gcode &&
-            replaces == value.replaces)
-            return false;
-
-        return true;
-    }
-
-    bool operator!=(QKlipperGCodeMacro &&value)
     {
         if(macro == value.macro &&
             description == value.description &&

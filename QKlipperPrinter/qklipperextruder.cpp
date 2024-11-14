@@ -610,7 +610,7 @@ void QKlipperExtruder::setTemperatureStore(const QKlipperTemperatureStore &tempe
 {
     bool changed = false;
 
-    foreach(QKlipperTemperatureStoreValue value, temperatureStore)
+    for(QKlipperTemperatureStoreValue value : temperatureStore)
     {
         if(!m_temperatureStore.contains(value))
         {

@@ -11,16 +11,16 @@ QKlipperServer::QKlipperServer(QObject *parent)
 QKlipperServer::~QKlipperServer()
 {
     if(m_gcodeStore)
-        delete m_gcodeStore;
+        m_gcodeStore->deleteLater();
 
     if(m_jobQueue)
-        delete m_jobQueue;
+        m_jobQueue->deleteLater();
 
     foreach(QKlipperFile *file, m_fileSystem)
     {
         if(file)
         {
-            delete file;
+            file->deleteLater();
             file = nullptr;
         }
     }
@@ -213,7 +213,7 @@ void QKlipperServer::setGcodeStore(QKlipperGCodeStore *gcodeStore)
         return;
 
     if(m_gcodeStore)
-        delete m_gcodeStore;
+        m_gcodeStore->deleteLater();
 
     m_gcodeStore = gcodeStore;
     emit gcodeStoreChanged();

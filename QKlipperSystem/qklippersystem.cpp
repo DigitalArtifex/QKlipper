@@ -16,20 +16,20 @@ QKlipperSystem::QKlipperSystem(QObject *parent)
 QKlipperSystem::~QKlipperSystem()
 {
     if(m_throttleState)
-        delete m_throttleState;
+        m_throttleState->deleteLater();
     if(m_memoryStats)
-        delete m_memoryStats;
+        m_memoryStats->deleteLater();
     if(m_virtualizationState)
-        delete m_virtualizationState;
+        m_virtualizationState->deleteLater();
     if(m_canBus)
-        delete m_canBus;
+        m_canBus->deleteLater();
     if(m_updateState)
-        delete m_updateState;
+        m_updateState->deleteLater();
     if(m_virtualSDCard)
-        delete m_virtualSDCard;
+        m_virtualSDCard->deleteLater();
 
     foreach(QKlipperCanBus *bus, m_canBusses)
-        delete bus;
+        bus->deleteLater();
 }
 
 qint64 QKlipperSystem::driveCapacity() const

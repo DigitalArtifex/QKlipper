@@ -1,7 +1,7 @@
 #include "qklipperupdatecommit.h"
 
-QKlipperUpdateCommit::QKlipperUpdateCommit(QObject *parent)
-    : QObject{parent}
+QKlipperUpdateCommit::QKlipperUpdateCommit()
+    : QVariant{}
 {}
 
 QKlipperUpdateCommit::QKlipperUpdateCommit(const QKlipperUpdateCommit &value)
@@ -14,29 +14,7 @@ QKlipperUpdateCommit::QKlipperUpdateCommit(const QKlipperUpdateCommit &value)
     m_tag = value.m_tag;
 }
 
-QKlipperUpdateCommit::QKlipperUpdateCommit(QKlipperUpdateCommit &&value)
-{
-    m_sha = value.m_sha;
-    m_author = value.m_author;
-    m_date = value.m_date;
-    m_subject = value.m_subject;
-    m_message = value.m_message;
-    m_tag = value.m_tag;
-}
-
 QKlipperUpdateCommit &QKlipperUpdateCommit::operator=(const QKlipperUpdateCommit &value)
-{
-    m_sha = value.m_sha;
-    m_author = value.m_author;
-    m_date = value.m_date;
-    m_subject = value.m_subject;
-    m_message = value.m_message;
-    m_tag = value.m_tag;
-
-    return *this;
-}
-
-QKlipperUpdateCommit &QKlipperUpdateCommit::operator=(QKlipperUpdateCommit &&value)
 {
     m_sha = value.m_sha;
     m_author = value.m_author;
@@ -60,18 +38,6 @@ bool QKlipperUpdateCommit::operator==(const QKlipperUpdateCommit &value)
     return true;
 }
 
-bool QKlipperUpdateCommit::operator==(QKlipperUpdateCommit &&value)
-{
-    if(m_sha != value.m_sha) return false;
-    if(m_author != value.m_author) return false;
-    if(m_date != value.m_date) return false;
-    if(m_subject != value.m_subject) return false;
-    if(m_message != value.m_message) return false;
-    if(m_tag != value.m_tag) return false;
-
-    return true;
-}
-
 bool QKlipperUpdateCommit::operator!=(const QKlipperUpdateCommit &value)
 {
     if(m_sha == value.m_sha &&
@@ -84,18 +50,6 @@ bool QKlipperUpdateCommit::operator!=(const QKlipperUpdateCommit &value)
     return true;
 }
 
-bool QKlipperUpdateCommit::operator!=(QKlipperUpdateCommit &&value)
-{
-    if(m_sha == value.m_sha &&
-    m_author == value.m_author &&
-    m_date == value.m_date &&
-    m_subject == value.m_subject &&
-    m_message == value.m_message &&
-    m_tag == value.m_tag) return false;
-
-    return true;
-}
-
 QString QKlipperUpdateCommit::sha() const
 {
     return m_sha;
@@ -103,10 +57,7 @@ QString QKlipperUpdateCommit::sha() const
 
 void QKlipperUpdateCommit::setSha(const QString &sha)
 {
-    if (m_sha == sha)
-        return;
     m_sha = sha;
-    emit shaChanged();
 }
 
 QString QKlipperUpdateCommit::author() const
@@ -116,10 +67,7 @@ QString QKlipperUpdateCommit::author() const
 
 void QKlipperUpdateCommit::setAuthor(const QString &author)
 {
-    if (m_author == author)
-        return;
     m_author = author;
-    emit authorChanged();
 }
 
 QString QKlipperUpdateCommit::date() const
@@ -129,10 +77,7 @@ QString QKlipperUpdateCommit::date() const
 
 void QKlipperUpdateCommit::setDate(const QString &date)
 {
-    if (m_date == date)
-        return;
     m_date = date;
-    emit dateChanged();
 }
 
 QString QKlipperUpdateCommit::subject() const
@@ -142,10 +87,7 @@ QString QKlipperUpdateCommit::subject() const
 
 void QKlipperUpdateCommit::setSubject(const QString &subject)
 {
-    if (m_subject == subject)
-        return;
     m_subject = subject;
-    emit subjectChanged();
 }
 
 QString QKlipperUpdateCommit::message() const
@@ -155,10 +97,7 @@ QString QKlipperUpdateCommit::message() const
 
 void QKlipperUpdateCommit::setMessage(const QString &message)
 {
-    if (m_message == message)
-        return;
     m_message = message;
-    emit messageChanged();
 }
 
 QString QKlipperUpdateCommit::tag() const
@@ -168,8 +107,5 @@ QString QKlipperUpdateCommit::tag() const
 
 void QKlipperUpdateCommit::setTag(const QString &tag)
 {
-    if (m_tag == tag)
-        return;
     m_tag = tag;
-    emit tagChanged();
 }

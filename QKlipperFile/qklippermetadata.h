@@ -52,16 +52,19 @@ public:
     QString slicerVersion;
     QString uuid;
 
-    QList<const QKlipperThumbnail> thumbnails;
+    QList<QKlipperThumbnail> thumbnails;
 
     bool operator==(const QKlipperMetadata &value)
     {
-        if(thumbnails.count() != value.thumbnails.count())
-            return false;
-
-        for(int i = 0; i < thumbnails.count(); i++)
+        for(QKlipperThumbnail thumbnail : value.thumbnails)
         {
-            if(!value.thumbnails.contains(thumbnails[i]))
+            if(!thumbnails.contains(thumbnail))
+                return false;
+        }
+
+        for(QKlipperThumbnail thumbnail : thumbnails)
+        {
+            if(!value.thumbnails.contains(thumbnail))
                 return false;
         }
 

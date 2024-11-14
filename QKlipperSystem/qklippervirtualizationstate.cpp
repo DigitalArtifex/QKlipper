@@ -5,6 +5,22 @@ QKlipperVirtualizationState::QKlipperVirtualizationState(QObject *parent) : QObj
 
 }
 
+bool QKlipperVirtualizationState::operator==(const QKlipperVirtualizationState &value)
+{
+    if(m_type != value.m_type)
+        return false;
+
+    if(m_identifier != value.m_identifier)
+        return false;
+
+    return true;
+}
+
+bool QKlipperVirtualizationState::operator!=(const QKlipperVirtualizationState &value)
+{
+    return !(*this == value);
+}
+
 QString QKlipperVirtualizationState::type() const
 {
     return m_type;
@@ -12,10 +28,7 @@ QString QKlipperVirtualizationState::type() const
 
 void QKlipperVirtualizationState::setType(const QString &type)
 {
-    if (m_type == type)
-        return;
     m_type = type;
-    emit typeChanged();
 }
 
 QString QKlipperVirtualizationState::identifier() const
@@ -25,8 +38,5 @@ QString QKlipperVirtualizationState::identifier() const
 
 void QKlipperVirtualizationState::setIdentifier(const QString &identifier)
 {
-    if (m_identifier == identifier)
-        return;
     m_identifier = identifier;
-    emit identifierChanged();
 }

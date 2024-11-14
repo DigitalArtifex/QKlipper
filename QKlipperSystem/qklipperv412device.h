@@ -19,31 +19,25 @@
 #ifndef QKLIPPERV412DEVICE_H
 #define QKLIPPERV412DEVICE_H
 
-#include <QObject>
+#include <QVariant>
 
 #include "qklipperv412mode.h"
 
 class QKlipperSystem;
 class QKlipperConsole;
 
-class QKlipperV412Device : public QObject
+class QKlipperV412Device : public QVariant
 {
-    Q_OBJECT
-
     friend QKlipperSystem;
     friend QKlipperConsole;
 public:
 
-    explicit QKlipperV412Device(QObject *parent = nullptr);
+    QKlipperV412Device();
 
     QKlipperV412Device(const QKlipperV412Device &value);
-    QKlipperV412Device(QKlipperV412Device &&value);
     QKlipperV412Device &operator=(const QKlipperV412Device &value);
-    QKlipperV412Device &operator=(QKlipperV412Device &&value);
     bool operator==(const QKlipperV412Device &value);
-    bool operator==(QKlipperV412Device &&value);
     bool operator!=(const QKlipperV412Device &value);
-    bool operator!=(QKlipperV412Device &&value);
 
     QString name() const;
 
@@ -69,7 +63,6 @@ public:
 
     QList<QKlipperV412Mode> modes() const;
 
-public slots:
     void setName(const QString &name);
 
     void setPath(const QString &path);
@@ -94,34 +87,6 @@ public slots:
 
     void setModes(const QList<QKlipperV412Mode> &modes);
 
-private slots:
-
-signals:
-
-    void nameChanged();
-
-    void pathChanged();
-
-    void cameraNameChanged();
-
-    void driverChanged();
-
-    void altNameChanged();
-
-    void hardwareBusChanged();
-
-    void versionChanged();
-
-    void hardwarePathChanged();
-
-    void pathByIdChanged();
-
-    void usbLocationChanged();
-
-    void capabilitiesChanged();
-
-    void modesChanged();
-
 private:
     QString m_name;
     QString m_path;
@@ -136,19 +101,6 @@ private:
 
     QStringList m_capabilities;
     QList<QKlipperV412Mode> m_modes;
-
-    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged FINAL)
-    Q_PROPERTY(QString path READ path WRITE setPath NOTIFY pathChanged FINAL)
-    Q_PROPERTY(QString cameraName READ cameraName WRITE setCameraName NOTIFY cameraNameChanged FINAL)
-    Q_PROPERTY(QString driver READ driver WRITE setDriver NOTIFY driverChanged FINAL)
-    Q_PROPERTY(QString altName READ altName WRITE setAltName NOTIFY altNameChanged FINAL)
-    Q_PROPERTY(QString hardwareBus READ hardwareBus WRITE setHardwareBus NOTIFY hardwareBusChanged FINAL)
-    Q_PROPERTY(QString version READ version WRITE setVersion NOTIFY versionChanged FINAL)
-    Q_PROPERTY(QString hardwarePath READ hardwarePath WRITE setHardwarePath NOTIFY hardwarePathChanged FINAL)
-    Q_PROPERTY(QString pathById READ pathById WRITE setPathById NOTIFY pathByIdChanged FINAL)
-    Q_PROPERTY(QString usbLocation READ usbLocation WRITE setUsbLocation NOTIFY usbLocationChanged FINAL)
-    Q_PROPERTY(QStringList capabilities READ capabilities WRITE setCapabilities NOTIFY capabilitiesChanged FINAL)
-    Q_PROPERTY(QList<QKlipperV412Mode> modes READ modes WRITE setModes NOTIFY modesChanged FINAL)
 };
 
 #endif // QKLIPPERV412DEVICE_H

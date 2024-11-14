@@ -777,9 +777,8 @@ private slots:
     void sendWebSocketMessageAsync(QKlipperMessage *message);
     bool sendWebSocketMessage(QKlipperMessage *message, QKlipperError *error = nullptr);
 
-    void rpcUpdateSocketDataReady();
-    void rpcUpdateSocketDataReceived(QString data);
-    void rpcUpdateSocketDataReceived(QByteArray data);
+    void rpcUpdateSocketDataReady(); //local socket
+    void rpcUpdateSocketDataReceived(QString data); //websocket
     void scanRpcUpdateBuffer();
 
     void parseNotification(QKlipperMessage *message);
@@ -853,6 +852,11 @@ private slots:
 
     void setupNetworkAccessManager();
 
+    void resetConnectionTimer();
+    void startConnectionTimer();
+    void stopConnectionTimer();
+    void onRpcConnectionTimeout();
+
 private:
     QMap<qint32, QKlipperMessage*> m_messageMap;
     QQueue<QKlipperMessage*> m_messageOutbox;
@@ -877,7 +881,9 @@ private:
     QKlipperServer *m_server = nullptr;
 
     QNetworkAccessManager *m_networkManager = nullptr;
-    QList<QNetworkReply*> m_networkAsynReplies;
+
+    QTimer *m_rpcConnectionTimer = nullptr;
+    qint16 m_rpcConnectionTimeoutValue = 10000; //in ms
 
     Q_PROPERTY(ConnectionState connectionState READ connectionState WRITE setConnectionState RESET resetConnectionState NOTIFY connectionStateChanged FINAL)
     Q_PROPERTY(qreal startupSequenceProgress READ startupSequenceProgress WRITE setStartupSequenceProgress RESET resetStartupSequenceProgress NOTIFY startupSequenceProgressChanged FINAL)

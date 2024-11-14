@@ -17,7 +17,7 @@ void QKlipperJobQueue::setQueue(const QList<QKlipperPrintJob *> &queue)
     foreach(QKlipperPrintJob *job, m_queue)
     {
         m_queue.removeAll(job);
-        delete job;
+        job->deleteLater();
     }
 
     m_queue = queue;
@@ -44,7 +44,7 @@ void QKlipperJobQueue::removeJob(QKlipperPrintJob *job)
         emit jobRemoved(job);
         emit queueChanged();
 
-        delete job;
+        job->deleteLater();
         job = nullptr;
     }
 }
@@ -58,7 +58,7 @@ void QKlipperJobQueue::removeJob(const QString &jobId)
             m_queue.removeAll(job);
             emit queueChanged();
 
-            delete job;
+            job->deleteLater();
             job = nullptr;
 
             break;
@@ -71,7 +71,7 @@ void QKlipperJobQueue::clearJobs()
     foreach(QKlipperPrintJob *job, m_queue)
     {
         m_queue.removeAll(job);
-        delete job;
+        job->deleteLater();
     }
 }
 

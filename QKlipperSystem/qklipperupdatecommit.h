@@ -19,22 +19,17 @@
 #ifndef QKLIPPERUPDATECOMMIT_H
 #define QKLIPPERUPDATECOMMIT_H
 
-#include <QObject>
+#include <QVariant>
 
-class QKlipperUpdateCommit : public QObject
+class QKlipperUpdateCommit : public QVariant
 {
-    Q_OBJECT
 public:
-    explicit QKlipperUpdateCommit(QObject *parent = nullptr);
+    explicit QKlipperUpdateCommit();
 
     QKlipperUpdateCommit(const QKlipperUpdateCommit &value);
-    QKlipperUpdateCommit(QKlipperUpdateCommit &&value);
     QKlipperUpdateCommit &operator=(const QKlipperUpdateCommit &value);
-    QKlipperUpdateCommit &operator=(QKlipperUpdateCommit &&value);
     bool operator==(const QKlipperUpdateCommit &value);
-    bool operator==(QKlipperUpdateCommit &&value);
     bool operator!=(const QKlipperUpdateCommit &value);
-    bool operator!=(QKlipperUpdateCommit &&value);
 
     QString sha() const;
 
@@ -48,7 +43,6 @@ public:
 
     QString tag() const;
 
-public slots:
     void setSha(const QString &sha);
 
     void setAuthor(const QString &author);
@@ -61,20 +55,6 @@ public slots:
 
     void setTag(const QString &tag);
 
-signals:
-
-    void shaChanged();
-
-    void authorChanged();
-
-    void dateChanged();
-
-    void subjectChanged();
-
-    void messageChanged();
-
-    void tagChanged();
-
 private:
     QString m_sha;
     QString m_author;
@@ -82,13 +62,6 @@ private:
     QString m_subject;
     QString m_message;
     QString m_tag;
-
-    Q_PROPERTY(QString sha READ sha WRITE setSha NOTIFY shaChanged FINAL)
-    Q_PROPERTY(QString author READ author WRITE setAuthor NOTIFY authorChanged FINAL)
-    Q_PROPERTY(QString date READ date WRITE setDate NOTIFY dateChanged FINAL)
-    Q_PROPERTY(QString subject READ subject WRITE setSubject NOTIFY subjectChanged FINAL)
-    Q_PROPERTY(QString message READ message WRITE setMessage NOTIFY messageChanged FINAL)
-    Q_PROPERTY(QString tag READ tag WRITE setTag NOTIFY tagChanged FINAL)
 };
 
 #endif // QKLIPPERUPDATECOMMIT_H
