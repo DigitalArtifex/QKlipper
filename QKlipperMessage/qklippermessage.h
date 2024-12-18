@@ -43,7 +43,9 @@ public:
     enum Protocol
     {
         RpcProtocol = 1,
-        HttpProtocol = 2
+        HttpProtocol = 2,
+        HttpPostProtocol = 3,
+        HttpDeleteProtocol = 4
     };
 
     enum State
@@ -88,6 +90,10 @@ public:
 
     QKlipperError error() const;
 
+    QJsonValue bodyData() const;
+
+    bool isGcode() const;
+
 public slots:
 
     void setId(qint32 id);
@@ -121,6 +127,10 @@ public slots:
 
     void setError(const QKlipperError &error);
 
+    void setBodyData(const QJsonValue &bodyData);
+
+    void setIsGcode(bool isGcode);
+
 protected slots:
     void on_responseTimerTimeout();
 
@@ -141,6 +151,10 @@ signals:
 
     void errorChanged();
 
+    void bodyDataChanged();
+
+    void isGcodeChanged();
+
 private:
     static qint32 s_currentId;
 
@@ -156,11 +170,14 @@ private:
 
     QMap<QString,QVariant> m_params;
 
+    QJsonValue m_bodyData;
     QJsonValue m_response;
     QDateTime m_timestamp;
     QDateTime m_responseTimestamp;
 
     QKlipperError m_error;
+
+    bool m_isGcode = false;
 
     Q_PROPERTY(qint32 id READ id WRITE setId RESET resetId NOTIFY idChanged FINAL)
     Q_PROPERTY(Protocol protocol READ protocol WRITE setProtocol RESET resetProtocol NOTIFY protocolChanged FINAL)
@@ -172,6 +189,8 @@ private:
     Q_PROPERTY(QDateTime timestamp READ timestamp WRITE setTimestamp NOTIFY timestampChanged FINAL)
     Q_PROPERTY(QDateTime responseTimestamp READ responseTimestamp WRITE setResponseTimestamp NOTIFY responseTimestampChanged FINAL)
     Q_PROPERTY(QKlipperError error READ error WRITE setError NOTIFY errorChanged FINAL)
+    Q_PROPERTY(QJsonValue bodyData READ bodyData WRITE setBodyData NOTIFY bodyDataChanged FINAL)
+    Q_PROPERTY(bool isGcode READ isGcode WRITE setIsGcode NOTIFY isGcodeChanged FINAL)
 };
 
 #endif // QKLIPPERMESSAGE_H

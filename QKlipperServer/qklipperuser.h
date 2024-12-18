@@ -24,23 +24,19 @@
 class QKlipperSystem;
 class QKlipperConsole;
 
-class QKlipperUser : public QObject
+class QKlipperUser
 {
-    Q_OBJECT
 
     friend QKlipperSystem;
     friend QKlipperConsole;
 public:
-    explicit QKlipperUser(QObject *parent = nullptr);
+    QKlipperUser() = default;
+    ~QKlipperUser() = default;
+    QKlipperUser(const QKlipperUser &user);
 
-    QKlipperUser(const QKlipperUser &value);
-    QKlipperUser(QKlipperUser &&value);
-    QKlipperUser &operator=(const QKlipperUser &value);
-    QKlipperUser &operator=(QKlipperUser &&value);
-    bool operator==(const QKlipperUser &value);
-    bool operator==(QKlipperUser &&value);
-    bool operator!=(const QKlipperUser &value);
-    bool operator!=(QKlipperUser &&value);
+    bool operator==(const QKlipperUser &user) const;
+    bool operator!=(const QKlipperUser &user) const;
+    QKlipperUser &operator=(const QKlipperUser &user);
 
     QString username() const;
 
@@ -48,32 +44,21 @@ public:
 
     qreal createdOn() const;
 
-public slots:
     void setUsername(const QString &username);
 
     void setSource(const QString &source);
 
     void setCreatedOn(qreal createdOn);
 
-signals:
-
-    void usernameChanged();
-
-    void sourceChanged();
-
-    void createdOnChanged();
-
 private:
     QString m_username;
     QString m_source;
 
     qreal m_createdOn;
-
-    Q_PROPERTY(QString username READ username NOTIFY usernameChanged FINAL)
-    Q_PROPERTY(QString source READ source NOTIFY sourceChanged FINAL)
-    Q_PROPERTY(qreal createdOn READ createdOn NOTIFY createdOnChanged FINAL)
 };
 
 typedef QList<QKlipperUser> QKlipperUserList;
+
+Q_DECLARE_METATYPE(QKlipperUser)
 
 #endif // QKLIPPERUSER_H

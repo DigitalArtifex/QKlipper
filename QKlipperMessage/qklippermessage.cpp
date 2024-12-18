@@ -440,11 +440,7 @@ void QKlipperMessage::setResponse(const QByteArray &response)
     QJsonDocument document = QJsonDocument::fromJson(response, &parseError);
 
     if(parseError.error != QJsonParseError::NoError)
-    {
         setState(Error);
-
-        return;
-    }
 
     setResponse(document.object());
 }
@@ -467,6 +463,34 @@ void QKlipperMessage::on_responseTimerTimeout()
     qDebug() << "Response Timeout" << m_method;
 
     emit responseTimeout();
+}
+
+bool QKlipperMessage::isGcode() const
+{
+    return m_isGcode;
+}
+
+void QKlipperMessage::setIsGcode(bool isGcode)
+{
+    if (m_isGcode == isGcode)
+        return;
+
+    m_isGcode = isGcode;
+    emit isGcodeChanged();
+}
+
+QJsonValue QKlipperMessage::bodyData() const
+{
+    return m_bodyData;
+}
+
+void QKlipperMessage::setBodyData(const QJsonValue &bodyData)
+{
+    if (m_bodyData == bodyData)
+        return;
+
+    m_bodyData = bodyData;
+    emit bodyDataChanged();
 }
 
 QKlipperError QKlipperMessage::error() const

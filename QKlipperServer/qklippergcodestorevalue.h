@@ -23,17 +23,21 @@
 #include <QVariant>
 #include <QList>
 
-class QKlipperGCodeStoreValue : public QVariant
+class QKlipperGCodeStoreValue
 {
-    Q_GADGET
 public:
     enum GCodeType {
         Command,
         Response
     };
 
-    bool operator==(const QKlipperGCodeStoreValue &value);
-    bool operator!=(const QKlipperGCodeStoreValue &value);
+    QKlipperGCodeStoreValue() = default;
+    QKlipperGCodeStoreValue(const QKlipperGCodeStoreValue &value);
+    ~QKlipperGCodeStoreValue() = default;
+
+    QKlipperGCodeStoreValue &operator=(const QKlipperGCodeStoreValue &value);
+    bool operator==(const QKlipperGCodeStoreValue &value) const;
+    bool operator!=(const QKlipperGCodeStoreValue &value) const;
 
     QString message() const;
 

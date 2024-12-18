@@ -2,12 +2,58 @@
 
 QMap<QString, QKlipperCommand*> QKlipperCommand::m_commands;
 bool QKlipperCommand::m_isInitialized = false;
+bool QKlipperCommand::m_isInitializing = false;
 
-QKlipperCommand::QKlipperCommand(QString command, QObject *parent)
-    : QObject{parent}
+QKlipperCommand::QKlipperCommand(QString command)
+    : QVariant{}
 {
-    if(!m_isInitialized)
+    initialize();
+    m_command = command;
+
+    if(m_commands.contains(m_command))
     {
+        m_help = m_commands[m_command]->m_help;
+        m_parameters = m_commands[m_command]->m_parameters;
+    }
+}
+
+bool QKlipperCommand::isKlipperCommand(const QString &command)
+{
+    initialize();
+    return m_commands.contains(command);
+}
+
+QString QKlipperCommand::command() const
+{
+    return m_command;
+}
+
+void QKlipperCommand::setCommand(const QString &command)
+{
+    m_command = command;
+}
+
+QString QKlipperCommand::help() const
+{
+    return m_help;
+}
+
+void QKlipperCommand::setHelp(const QString &help)
+{
+    m_help = help;
+}
+
+void QKlipperCommand::setParameter(const QString &key)
+{
+    m_parameters += key;
+}
+
+void QKlipperCommand::initialize()
+{
+    if(!m_isInitialized && !m_isInitializing)
+    {
+        m_isInitializing = true;
+
         QFile commandsFile(QString(":/data/klipper_commands.json"));
 
         if(!commandsFile.open(QFile::ReadOnly))
@@ -61,56 +107,9 @@ QKlipperCommand::QKlipperCommand(QString command, QObject *parent)
             }
         }
     }
-
-    if(!command.isEmpty())
-    {
-
-    }
-}
-
-bool QKlipperCommand::isKlipperCommand(const QString &command)
-{
-    return m_commands.contains(command);
-}
-
-QString QKlipperCommand::command() const
-{
-    return m_command;
-}
-
-void QKlipperCommand::setCommand(const QString &command)
-{
-    if (m_command == command)
-        return;
-
-    m_command = command;
-    emit commandChanged();
-}
-
-QString QKlipperCommand::help() const
-{
-    return m_help;
-}
-
-void QKlipperCommand::setHelp(const QString &help)
-{
-    if (m_help == help)
-        return;
-
-    m_help = help;
-    emit helpChanged();
 }
 
 QStringList QKlipperCommand::parameters() const
 {
     return m_parameters;
-}
-
-void QKlipperCommand::setParameters(const QStringList &parameters)
-{
-    if (m_parameters == parameters)
-        return;
-
-    m_parameters = parameters;
-    emit parametersChanged();
 }

@@ -38,6 +38,8 @@
 #include <QNetworkRequest>
 #include <QHttpMultiPart>
 
+#include <QCoreApplication>
+
 #include "../QKlipperMessage/qklippermessage.h"
 #include "../QKlipperFile/qklipperfile.h"
 #include "../QKlipperSystem/qklippersystem.h"
@@ -98,9 +100,11 @@ public:
 
     /*!
       Connect to the websocket address and process
-      startup sequence
+      startup sequence.
+
+      \returns True if the websocket has connected.
     */
-    void connect();
+    bool connect();
 
     /*!
      * Disconnect from the websocket and reset objects
@@ -222,6 +226,59 @@ public slots:
      * Asyncronously requests job queue items to be deleted
      */
     void clientIdentifier();
+
+    /*!
+     * Asyncronously adds a new value to the database
+     *
+     * \param key Database key for the value
+     *
+     * \param value The value
+     */
+    void databaseCreate(const QString &key, const QVariant &value);
+
+    /*!
+     * Asyncronously removes the database value for the given key
+     *
+     * \param key Database key to remove
+     */
+    void databaseDelete(const QString &key);
+
+    /*!
+     * Reads a stored value in the database
+     *
+     * \param key Database key to remove
+     */
+    QVariant databaseGetItem(const QString &key);
+
+    /*!
+     * Requests a list of available power devices
+     */
+    void machinePowerDeviceList();
+
+    /*!
+     * Queries status of the power devices
+     *
+     * \param names Names of the power devices to query
+     */
+    void machinePowerDeviceStatus(QStringList names);
+
+    /*!
+     * Sets status of the power device
+     *
+     * \param names Name of the power devices to turn on or off
+     */
+    void machinePowerDeviceSetState(const QString &name, const QString &action = "toggle");
+
+    void machineLedStripList();
+    void machineLedStrip(const QStringList &names);
+    void machineLedStripOn(const QStringList &names);
+    void machineLedStripOff(const QStringList &names);
+    void machineSetLedStrip(QKlipperLedStrip *stripData);
+
+    void machineSensorsList();
+    void machineSensorInfo(const QString &name);
+    void machineSensorMeasurement(const QString &name);
+    void machineSensorMeasurements();
 
     /*!
      * Sends command to shutdown machine. Server will disconnect
@@ -646,7 +703,7 @@ public slots:
      *
      * \param destination URI of the new file location
      */
-    void serverDirectoryDelete(QString directory);
+    void serverDirectoryDelete(QString directory, bool forced);
 
     /*!
      * Asyncronously requests temperature store history
@@ -758,12 +815,40 @@ public slots:
      */
     void serverJobQueueDelete(QStringList ids);
 
+    /*!
+     * \brief Asyncronously sends a message to the RPC websocket
+     *
+     * \param message QKlipperMessage to send
+     */
+    void sendRpcMessage(QKlipperMessage *message);
+
+    /*!
+     * \brief Asyncronously sends a message via http
+     *
+     * \param message QKlipperMessage to send
+     */
+    void sendWebSocketMessageAsync(QKlipperMessage *message);
+
+    /*!
+     * \brief Sends a message via http
+     *
+     * \param message QKlipperMessage to send
+     *
+     * \param error Optional error object
+     *
+     * \returns True if successful
+     */
+    bool sendWebSocketMessage(QKlipperMessage *message, QKlipperError *error = nullptr);
+
+
 signals:
     void connectionStateChanged();
 
     void startupSequenceProgressChanged();
     void startupSequenceTextChanged();
     void errorOccured(QKlipperError &error);
+    void messageSent(QKlipperMessage *message);
+    void gcodeResponse(QString &message);
 
 private slots:
 
@@ -772,10 +857,6 @@ private slots:
     void setSystem(QKlipperSystem *system);
 
     void setServer(QKlipperServer *server);
-
-    void sendRpcMessage(QKlipperMessage *message);
-    void sendWebSocketMessageAsync(QKlipperMessage *message);
-    bool sendWebSocketMessage(QKlipperMessage *message, QKlipperError *error = nullptr);
 
     void rpcUpdateSocketDataReady(); //local socket
     void rpcUpdateSocketDataReceived(QString data); //websocket
@@ -803,6 +884,12 @@ private slots:
     void machinePeripheralsVideoParser(QKlipperMessage *message);
     void machinePeripheralsCanbusParser(QKlipperMessage *message);
     void machineUpdateStatusParser(QKlipperMessage *message);
+    void machinePowerDeviceListParser(QKlipperMessage *message);
+    void machinePowerDeviceParser(QKlipperMessage *message);
+    void machineLedStripListParser(QKlipperMessage *message);
+    void machineSensorListParser(QKlipperMessage *message);
+    void machineSensorParser(QKlipperMessage *message);
+    void machineSensorMeasurementParser(QKlipperMessage *message);
 
     void printerInfoParser(QKlipperMessage *message);
     void printerObjectsListParser(QKlipperMessage *message);
@@ -858,6 +945,14 @@ private slots:
     void onRpcConnectionTimeout();
 
 private:
+
+    //these methods return not found if they have not been setup in moonraker.cfg
+    const static inline QStringList m_ignoreErrorOnStartup = QStringList {
+        "machine.device_power.devices",
+        "machine.wled.strips",
+        "server.sensors.list"
+    };
+
     QMap<qint32, QKlipperMessage*> m_messageMap;
     QQueue<QKlipperMessage*> m_messageOutbox;
 

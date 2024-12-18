@@ -1,9 +1,5 @@
 #include "qklipperuser.h"
 
-QKlipperUser::QKlipperUser(QObject *parent)
-    : QObject{parent}
-{}
-
 QString QKlipperUser::username() const
 {
     return m_username;
@@ -14,7 +10,6 @@ void QKlipperUser::setUsername(const QString &username)
     if (m_username == username)
         return;
     m_username = username;
-    emit usernameChanged();
 }
 
 QString QKlipperUser::source() const
@@ -28,7 +23,6 @@ void QKlipperUser::setSource(const QString &source)
         return;
 
     m_source = source;
-    emit sourceChanged();
 }
 
 qreal QKlipperUser::createdOn() const
@@ -42,81 +36,37 @@ void QKlipperUser::setCreatedOn(qreal createdOn)
         return;
 
     m_createdOn = createdOn;
-    emit createdOnChanged();
 }
 
-QKlipperUser::QKlipperUser(const QKlipperUser &value)
+QKlipperUser::QKlipperUser(const QKlipperUser &user)
 {
-    m_username = value.m_username;
-    m_createdOn = value.m_createdOn;
-    m_source = value.m_source;
+    m_username = user.m_username;
+    m_createdOn = user.m_createdOn;
+    m_source = user.m_source;
 }
 
-QKlipperUser::QKlipperUser(QKlipperUser &&value)
+bool QKlipperUser::operator==(const QKlipperUser &user) const
 {
-    m_username = value.m_username;
-    m_createdOn = value.m_createdOn;
-    m_source = value.m_source;
-}
-
-QKlipperUser &QKlipperUser::operator=(const QKlipperUser &value)
-{
-    m_username = value.m_username;
-    m_createdOn = value.m_createdOn;
-    m_source = value.m_source;
-
-    return *this;
-}
-
-bool QKlipperUser::operator==(const QKlipperUser &value)
-{
-    if(m_username != value.m_username)
+    if(m_username != user.m_username)
         return false;
-    if(m_createdOn != value.m_createdOn)
+    if(m_createdOn != user.m_createdOn)
         return false;
-    if(m_source != value.m_source)
+    if(m_source != user.m_source)
         return false;
 
     return true;
 }
 
-bool QKlipperUser::operator!=(const QKlipperUser &value)
+bool QKlipperUser::operator!=(const QKlipperUser &user) const
 {
-    if(m_username == value.m_username &&
-        m_createdOn == value.m_createdOn &&
-        m_source == value.m_source)
-        return false;
-
-    return true;
+    return !(*this == user);
 }
 
-bool QKlipperUser::operator!=(QKlipperUser &&value)
+QKlipperUser &QKlipperUser::operator=(const QKlipperUser &user)
 {
-    if(m_username == value.m_username &&
-        m_createdOn == value.m_createdOn &&
-        m_source == value.m_source)
-        return false;
+    m_username = user.m_username;
+    m_createdOn = user.m_createdOn;
+    m_source = user.m_source;
 
-    return true;
-}
-
-bool QKlipperUser::operator==(QKlipperUser &&value)
-{
-    if(m_username != value.m_username)
-        return false;
-    if(m_createdOn != value.m_createdOn)
-        return false;
-    if(m_source != value.m_source)
-        return false;
-
-    return true;
-}
-
-QKlipperUser &QKlipperUser::operator=(QKlipperUser &&value)
-{
-    m_username = value.m_username;
-    m_createdOn = value.m_createdOn;
-    m_source = value.m_source;
-
-    return *this;
+    return (*this);
 }

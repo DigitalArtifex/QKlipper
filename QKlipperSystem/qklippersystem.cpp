@@ -9,7 +9,7 @@ QKlipperSystem::QKlipperSystem(QObject *parent)
     m_memoryStats = new QKlipperMemoryStats(this);
     m_virtualizationState = new QKlipperVirtualizationState(this);
     m_canBus = new QKlipperCanBus(this);
-    m_updateState = new QKlipperUpdateState(this);
+    m_updateManager = new QKlipperUpdateManager(this);
     m_virtualSDCard = new QKlipperVirtualSDCard(this);
 }
 
@@ -23,8 +23,8 @@ QKlipperSystem::~QKlipperSystem()
         m_virtualizationState->deleteLater();
     if(m_canBus)
         m_canBus->deleteLater();
-    if(m_updateState)
-        m_updateState->deleteLater();
+    if(m_updateManager)
+        m_updateManager->deleteLater();
     if(m_virtualSDCard)
         m_virtualSDCard->deleteLater();
 
@@ -95,6 +95,33 @@ bool QKlipperSystem::restartService(QString serviceName)
     return false;
 }
 
+QKlipperSystem::State QKlipperSystem::state() const
+{
+    return m_state;
+}
+
+void QKlipperSystem::setState(State state)
+{
+    if (m_state == state)
+        return;
+    m_state = state;
+    emit stateChanged();
+}
+
+QKlipperUpdateManager *QKlipperSystem::updateManager() const
+{
+    return m_updateManager;
+}
+
+void QKlipperSystem::setUpdateManager(QKlipperUpdateManager *updateManager)
+{
+    if (m_updateManager == updateManager)
+        return;
+
+    m_updateManager = updateManager;
+    emit updateManagerChanged();
+}
+
 qint64 QKlipperSystem::driveUsage() const
 {
     return m_driveUsage;
@@ -104,6 +131,7 @@ void QKlipperSystem::setDriveUsage(qint64 driveUsage)
 {
     if (m_driveUsage == driveUsage)
         return;
+
     m_driveUsage = driveUsage;
     emit driveUsageChanged();
 }
@@ -363,38 +391,38 @@ void QKlipperSystem::setAvailableServices(const QStringList &availableServices)
     emit availableServicesChanged();
 }
 
-QMap<QString, QKlipperServiceState> QKlipperSystem::serviceStates() const
+void QKlipperSystem::addService(QKlipperService *state)
 {
-    return m_serviceStates;
-}
-
-void QKlipperSystem::setServiceStates(const QMap<QString, QKlipperServiceState> &serviceStates)
-{
-    bool changed = false;
-    QStringList keys = serviceStates.keys();
-
-    foreach(QString key, keys)
+    if(m_services.contains(state->name()) && m_services[state->name()] != state)
     {
-        if(m_serviceStates.contains(key))
-        {
-            if(m_serviceStates[key] != serviceStates[key])
-            {
-                changed = true;
-                break;
-            }
-        }
-        else
-        {
-            changed = true;
-            break;
-        }
+        QKlipperService *oldState = m_services[state->name()];
+        m_services.remove(state->name());
+
+        oldState->deleteLater();
     }
 
-    if(!changed)
-        return;
+    m_services[state->name()] = state;
 
-    m_serviceStates = serviceStates;
-    emit serviceStatesChanged();
+    emit servicesChanged();
+}
+
+void QKlipperSystem::deleteService(QString name)
+{
+    if(m_services.contains(name))
+    {
+        QKlipperService *oldState = m_services[name];
+        m_services.remove(name);
+
+        oldState->deleteLater();
+    }
+}
+
+QKlipperService* QKlipperSystem::service(const QString &name) const
+{
+    if(m_services.contains(name))
+        return m_services[name];
+
+    return nullptr;
 }
 
 QList<QKlipperUsbPeripheral> QKlipperSystem::usbPeripherals() const
@@ -536,19 +564,6 @@ void QKlipperSystem::setCanBusses(const QMap<qint32, QKlipperCanBus *> &canBusse
     emit canBussesChanged();
 }
 
-QKlipperUpdateState *QKlipperSystem::updateState() const
-{
-    return m_updateState;
-}
-
-void QKlipperSystem::setUpdateState(QKlipperUpdateState *updateState)
-{
-    if (m_updateState == updateState)
-        return;
-    m_updateState = updateState;
-    emit updateStateChanged();
-}
-
 QKlipperVirtualSDCard *QKlipperSystem::virtualSDCard() const
 {
     return m_virtualSDCard;
@@ -573,5 +588,88 @@ void QKlipperSystem::setPythonVersion(const QString &pythonVersion)
         return;
     m_pythonVersion = pythonVersion;
     emit pythonVersionChanged();
+}
+
+QKlipperSensorMap QKlipperSystem::sensors() const
+{
+    return m_sensors;
+}
+
+void QKlipperSystem::setSensors(const QKlipperSensorMap &sensors)
+{
+    if (m_sensors == sensors)
+        return;
+
+    m_sensors = sensors;
+    emit sensorsChanged();
+}
+
+void QKlipperSystem::addSensor(QKlipperSensor *sensor)
+{
+    if(m_sensors.contains(sensor->id()))
+        return;
+
+    m_sensors.insert(sensor->id(), sensor);
+    emit sensorsChanged();
+}
+
+QMap<QString, QKlipperService *> QKlipperSystem::services() const
+{
+    return m_services;
+}
+
+void QKlipperSystem::setServices(const QMap<QString, QKlipperService *> &services)
+{
+    if (m_services == services)
+        return;
+
+    m_services = services;
+    emit servicesChanged();
+}
+
+QKlipperLedStripList QKlipperSystem::ledStrips() const
+{
+    return m_ledStrips;
+}
+
+void QKlipperSystem::setLedStrips(const QKlipperLedStripList &ledStrips)
+{
+    if (m_ledStrips == ledStrips)
+        return;
+
+    m_ledStrips = ledStrips;
+    emit ledStripsChanged();
+}
+
+void QKlipperSystem::setLedStrip(QKlipperLedStrip *strip)
+{
+    if(!m_ledStrips.contains(strip->name()))
+    {
+        m_ledStrips.insert(strip->name(), strip);
+        emit ledStripsChanged();
+    }
+}
+
+QKlipperPowerDeviceList QKlipperSystem::powerDevices() const
+{
+    return m_powerDevices;
+}
+
+void QKlipperSystem::setPowerDevices(const QKlipperPowerDeviceList &powerDevices)
+{
+    if (m_powerDevices == powerDevices)
+        return;
+
+    m_powerDevices = powerDevices;
+    emit powerDevicesChanged();
+}
+
+void QKlipperSystem::setPowerDevice(QKlipperPowerDevice *powerDevice)
+{
+    if(!m_powerDevices.contains(powerDevice->name()))
+    {
+        m_powerDevices.insert(powerDevice->name(), powerDevice);
+        emit powerDevicesChanged();
+    }
 }
 

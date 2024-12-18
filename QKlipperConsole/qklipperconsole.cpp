@@ -20,13 +20,18 @@ QKlipperConsole::~QKlipperConsole()
     }
 
     if(m_rpcUpdateSocket)
+    {
         m_rpcUpdateSocket->deleteLater();
+    }
+
+    m_startupSequence.clear();
+    m_parserMap.clear();
 }
 
-void QKlipperConsole::connect()
+bool QKlipperConsole::connect()
 {
     if(m_rpcUpdateSocket && m_rpcUpdateSocket->isOpen())
-        return;
+        return true;
 
     setupNetworkAccessManager();
 
@@ -43,7 +48,7 @@ void QKlipperConsole::connect()
         ((QLocalSocket*)m_rpcUpdateSocket)->setServerName(m_server->websocketAddress());
         ((QLocalSocket*)m_rpcUpdateSocket)->connectToServer();
 
-        if(!((QLocalSocket*)m_rpcUpdateSocket)->waitForConnected())
+        if(!((QLocalSocket*)m_rpcUpdateSocket)->waitForConnected(5000))
         {
             qDebug() << QString("Failed to connect to moonraker");
 
@@ -56,7 +61,7 @@ void QKlipperConsole::connect()
             emit errorOccured(error);
 
             //sendError("Could not connect to local socket");
-            return;
+            return false;
         }
 
         addConnectionState(MoonrakerConnected);
@@ -103,10 +108,32 @@ void QKlipperConsole::connect()
 
         QObject::connect(socket, SIGNAL(textMessageReceived(QString)), this, SLOT(rpcUpdateSocketDataReceived(QString)));
 
-        qDebug() << "Connecting to " << m_server->websocketAddress();
+        //Timeout for websocket -_-
+        QTimer *timeout = new QTimer(this);
+        timeout->setInterval(10000);
+        timeout->setSingleShot(true);
 
+        QObject::connect
+        (
+            timeout,
+            &QTimer::timeout,
+            this,
+            [&socketError, &errorOccurred, &loop]() {
+                errorOccurred = true;
+                socketError = QAbstractSocket::SocketTimeoutError;
+                loop.quit();
+            }
+        );
+
+        qDebug() << "Connecting to " << m_server->websocketAddress();
         socket->open(m_server->websocketAddress());
+        timeout->start();
         loop.exec();
+
+        timeout->deleteLater();
+
+        if(socket->state() != QAbstractSocket::ConnectedState)
+            errorOccurred = true;
 
         if(errorOccurred)
         {
@@ -116,8 +143,10 @@ void QKlipperConsole::connect()
             error.setErrorTitle("Socket Error " + QString::number(socketError));
             error.setOrigin("Console Connect");
 
+            setConnectionState(Idle);
+
             emit errorOccured(error);
-            return;
+            return false;
         }
 
         addConnectionState(MoonrakerConnected);
@@ -130,6 +159,10 @@ void QKlipperConsole::connect()
         StartupFunction function = m_startupSequence.dequeue();
         (this->*function)();
     }
+    else
+        setConnectionState(Syncronized);
+
+    return true;
 }
 
 void QKlipperConsole::disconnect()
@@ -164,16 +197,30 @@ void QKlipperConsole::machineShutdown(QKlipperError *error)
 {
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("machine.shutdown");
+    message->setProtocol(QKlipperMessage::HttpPostProtocol);
 
     sendWebSocketMessage(message, error);
+
+    if(error && (error->type() != QKlipperError::NoError || message->response().toString() != "ok"))
+    {
+        error->setErrorTitle("Could not cancel print");
+        emit errorOccured(*error);
+    }
 }
 
 void QKlipperConsole::machineReboot(QKlipperError *error)
 {
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("machine.reboot");
+    message->setProtocol(QKlipperMessage::HttpPostProtocol);
 
     sendWebSocketMessage(message, error);
+
+    if(error && (error->type() != QKlipperError::NoError || message->response().toString() != "ok"))
+    {
+        error->setErrorTitle("Could not cancel print");
+        emit errorOccured(*error);
+    }
 }
 
 void QKlipperConsole::machineSystemInfo()
@@ -189,8 +236,19 @@ bool QKlipperConsole::machineServiceRestart(QString service, QKlipperError *erro
     QKlipperMessage *message = new QKlipperMessage();
     message->setParam("service", service);
     message->setMethod("machine.service.restart");
+    message->setProtocol(QKlipperMessage::HttpPostProtocol);
 
-    return sendWebSocketMessage(message, error);
+    sendWebSocketMessage(message, error);
+
+    if(error && (error->type() != QKlipperError::NoError || message->response().toString() != "ok"))
+    {
+        error->setErrorTitle("Could not cancel print");
+        emit errorOccured(*error);
+
+        return false;
+    }
+
+    return true;
 }
 
 bool QKlipperConsole::machineServiceStop(QString service, QKlipperError *error)
@@ -198,8 +256,19 @@ bool QKlipperConsole::machineServiceStop(QString service, QKlipperError *error)
     QKlipperMessage *message = new QKlipperMessage();
     message->setParam("service", service);
     message->setMethod("machine.service.stop");
+    message->setProtocol(QKlipperMessage::HttpPostProtocol);
 
-    return sendWebSocketMessage(message, error);
+    sendWebSocketMessage(message, error);
+
+    if(error && (error->type() != QKlipperError::NoError || message->response().toString() != "ok"))
+    {
+        error->setErrorTitle("Could not cancel print");
+        emit errorOccured(*error);
+
+        return false;
+    }
+
+    return true;
 }
 
 bool QKlipperConsole::machineServiceStart(QString service, QKlipperError *error)
@@ -207,8 +276,19 @@ bool QKlipperConsole::machineServiceStart(QString service, QKlipperError *error)
     QKlipperMessage *message = new QKlipperMessage();
     message->setParam("service", service);
     message->setMethod("machine.service.start");
+    message->setProtocol(QKlipperMessage::HttpPostProtocol);
 
-    return sendWebSocketMessage(message, error);
+    sendWebSocketMessage(message, error);
+
+    if(error && (error->type() != QKlipperError::NoError || message->response().toString() != "ok"))
+    {
+        error->setErrorTitle("Could not cancel print");
+        emit errorOccured(*error);
+
+        return false;
+    }
+
+    return true;
 }
 
 void QKlipperConsole::machinePeripheralsUSB()
@@ -246,6 +326,9 @@ void QKlipperConsole::machinePeripheralsCanbus(qint32 canBus)
 
 void QKlipperConsole::machineProcStats()
 {
+    if(hasConnectionState(Startup))
+        setStartupSequenceText("Getting Machine Stats..");
+
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("machine.proc_stats");
 
@@ -254,6 +337,9 @@ void QKlipperConsole::machineProcStats()
 
 void QKlipperConsole::machineUpdateStatus()
 {
+    if(hasConnectionState(Startup))
+        setStartupSequenceText("Getting Update Status..");
+
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("machine.update.status");
 
@@ -264,6 +350,7 @@ void QKlipperConsole::machineUpdateRefresh()
 {
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("machine.update.refresh");
+    message->setProtocol(QKlipperMessage::HttpPostProtocol);
 
     sendWebSocketMessageAsync(message);
 }
@@ -272,24 +359,57 @@ bool QKlipperConsole::machineUpdateFull(QKlipperError *error)
 {
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("machine.update.full");
+    message->setProtocol(QKlipperMessage::HttpPostProtocol);
 
-    return sendWebSocketMessage(message, error);
+    sendWebSocketMessage(message, error);
+
+    if(error && (error->type() != QKlipperError::NoError || message->response().toString() != "ok"))
+    {
+        error->setErrorTitle("Could not cancel print");
+        emit errorOccured(*error);
+
+        return false;
+    }
+
+    return true;
 }
 
 bool QKlipperConsole::machineUpdateMoonraker(QKlipperError *error)
 {
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("machine.update.moonraker");
+    message->setProtocol(QKlipperMessage::HttpPostProtocol);
 
-    return sendWebSocketMessage(message, error);
+    sendWebSocketMessage(message, error);
+
+    if(error && (error->type() != QKlipperError::NoError || message->response().toString() != "ok"))
+    {
+        error->setErrorTitle("Could not cancel print");
+        emit errorOccured(*error);
+
+        return false;
+    }
+
+    return true;
 }
 
 bool QKlipperConsole::machineUpdateKlipper(QKlipperError *error)
 {
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("machine.update.klipper");
+    message->setProtocol(QKlipperMessage::HttpPostProtocol);
 
-    return sendWebSocketMessage(message, error);
+    sendWebSocketMessage(message, error);
+
+    if(error && (error->type() != QKlipperError::NoError || message->response().toString() != "ok"))
+    {
+        error->setErrorTitle("Could not cancel print");
+        emit errorOccured(*error);
+
+        return false;
+    }
+
+    return true;
 }
 
 bool QKlipperConsole::machineUpdateClient(QString client, QKlipperError *error)
@@ -297,16 +417,38 @@ bool QKlipperConsole::machineUpdateClient(QString client, QKlipperError *error)
     QKlipperMessage *message = new QKlipperMessage();
     message->setParam("name", client);
     message->setMethod("machine.update.client");
+    message->setProtocol(QKlipperMessage::HttpPostProtocol);
 
-    return sendWebSocketMessage(message, error);
+    sendWebSocketMessage(message, error);
+
+    if(error && (error->type() != QKlipperError::NoError || message->response().toString() != "ok"))
+    {
+        error->setErrorTitle("Could not cancel print");
+        emit errorOccured(*error);
+
+        return false;
+    }
+
+    return true;
 }
 
 bool QKlipperConsole::machineUpdateSystem(QKlipperError *error)
 {
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("machine.update.system");
+    message->setProtocol(QKlipperMessage::HttpPostProtocol);
 
-    return sendWebSocketMessage(message, error);
+    sendWebSocketMessage(message, error);
+
+    if(error && (error->type() != QKlipperError::NoError || message->response().toString() != "ok"))
+    {
+        error->setErrorTitle("Could not cancel print");
+        emit errorOccured(*error);
+
+        return false;
+    }
+
+    return true;
 }
 
 bool QKlipperConsole::machineUpdateRecover(QString name, bool hardRecover, QKlipperError *error)
@@ -315,8 +457,19 @@ bool QKlipperConsole::machineUpdateRecover(QString name, bool hardRecover, QKlip
     message->setParam("name", name);
     message->setParam("hard", hardRecover);
     message->setMethod("machine.update.recover");
+    message->setProtocol(QKlipperMessage::HttpPostProtocol);
 
-    return sendWebSocketMessage(message, error);
+    sendWebSocketMessage(message, error);
+
+    if(error && (error->type() != QKlipperError::NoError || message->response().toString() != "ok"))
+    {
+        error->setErrorTitle("Could not cancel print");
+        emit errorOccured(*error);
+
+        return false;
+    }
+
+    return true;
 }
 
 bool QKlipperConsole::machineUpdateRollback(QString name, QKlipperError *error)
@@ -324,12 +477,26 @@ bool QKlipperConsole::machineUpdateRollback(QString name, QKlipperError *error)
     QKlipperMessage *message = new QKlipperMessage();
     message->setParam("name", name);
     message->setMethod("machine.update.rollback");
+    message->setProtocol(QKlipperMessage::HttpPostProtocol);
 
-    return sendWebSocketMessage(message, error);
+    sendWebSocketMessage(message, error);
+
+    if(error && (error->type() != QKlipperError::NoError || message->response().toString() != "ok"))
+    {
+        error->setErrorTitle("Could not cancel print");
+        emit errorOccured(*error);
+
+        return false;
+    }
+
+    return true;
 }
 
 void QKlipperConsole::printerInfo()
 {
+    if(hasConnectionState(Startup))
+        setStartupSequenceText("Getting Printer Info..");
+
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("printer.info");
 
@@ -338,12 +505,18 @@ void QKlipperConsole::printerInfo()
 
 void QKlipperConsole::printerMCUInfo()
 {
+    if(hasConnectionState(Startup))
+        setStartupSequenceText("Getting MCU Info..");
+
     QString object = "mcu";
     printerObjectsQuery(object);
 }
 
 void QKlipperConsole::printerObjectsList()
 {
+    if(hasConnectionState(Startup))
+        setStartupSequenceText("Getting Available Objects..");
+
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("printer.objects.list");
 
@@ -387,6 +560,9 @@ void QKlipperConsole::printerObjectsQuery()
 
 void QKlipperConsole::printerSubscribe()
 {
+    if(hasConnectionState(Startup))
+        setStartupSequenceText("Subscribing To Printer Objects..");
+
     QKlipperMessage *message = new QKlipperMessage();
     QJsonObject objects;
 
@@ -404,8 +580,19 @@ bool QKlipperConsole::printerEmergencyStop(QKlipperError *error)
 {
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("printer.emergency_stop");
+    message->setProtocol(QKlipperMessage::HttpDeleteProtocol);
 
-    return sendWebSocketMessage(message, error);
+    sendWebSocketMessage(message, error);
+
+    if(error && (error->type() != QKlipperError::NoError || message->response().toString() != "ok"))
+    {
+        error->setErrorTitle("Could not cancel print");
+        emit errorOccured(*error);
+
+        return false;
+    }
+
+    return true;
 }
 
 void QKlipperConsole::printerQueryEndstops()
@@ -422,7 +609,17 @@ bool QKlipperConsole::printerPrintStart(QString file, QKlipperError *error)
     message->setParam("filename", file);
     message->setMethod("printer.print.start");
 
-    return sendWebSocketMessage(message, error);
+    sendWebSocketMessage(message, error);
+
+    if(error && (error->type() != QKlipperError::NoError || message->response().toString() != "ok"))
+    {
+        error->setErrorTitle("Could not cancel print");
+        emit errorOccured(*error);
+
+        return false;
+    }
+
+    return true;
 }
 
 bool QKlipperConsole::printerPrintStart(QKlipperFile *file, QKlipperError *error)
@@ -435,25 +632,57 @@ bool QKlipperConsole::printerPrintPause(QKlipperError *error)
 {
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("printer.print.pause");
+    message->setProtocol(QKlipperMessage::HttpPostProtocol);
 
-    return sendWebSocketMessage(message, error);
+    sendWebSocketMessage(message, error);
+
+    if(error && (error->type() != QKlipperError::NoError || message->response().toString() != "ok"))
+    {
+        error->setErrorTitle("Could not cancel print");
+        emit errorOccured(*error);
+
+        return false;
+    }
+
+    return true;
 }
 
 bool QKlipperConsole::printerPrintResume(QKlipperError *error)
 {
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("printer.print.resume");
+    message->setProtocol(QKlipperMessage::HttpPostProtocol);
 
-    return sendWebSocketMessage(message, error);
+    sendWebSocketMessage(message, error);
+
+    if(error && (error->type() != QKlipperError::NoError || message->response().toString() != "ok"))
+    {
+        error->setErrorTitle("Could not cancel print");
+        emit errorOccured(*error);
+
+        return false;
+    }
+
+    return true;
 }
 
 bool QKlipperConsole::printerPrintCancel(QKlipperError *error)
 {
-
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("printer.printer.cancel");
+    message->setProtocol(QKlipperMessage::HttpPostProtocol);
 
-    return sendWebSocketMessage(message, error);
+    sendWebSocketMessage(message, error);
+
+    if(error && (error->type() != QKlipperError::NoError || message->response().toString() != "ok"))
+    {
+        error->setErrorTitle("Could not cancel print");
+        emit errorOccured(*error);
+
+        return false;
+    }
+
+    return true;
 }
 
 bool QKlipperConsole::printerGcodeScript(QString gcode, QKlipperError *error, QKlipperMessage::Origin origin)
@@ -462,36 +691,84 @@ bool QKlipperConsole::printerGcodeScript(QString gcode, QKlipperError *error, QK
     message->setOrigin(origin);
     message->setParam("script", gcode);
     message->setMethod("printer.gcode.script");
+    message->setIsGcode(true);
+    message->setProtocol(QKlipperMessage::HttpPostProtocol);
 
-    return sendWebSocketMessage(message, error);
+    sendWebSocketMessage(message, error);
+
+    if(error && (error->type() != QKlipperError::NoError || message->response().toString() != "ok"))
+    {
+        error->setErrorTitle("Could not send gcode script");
+        emit errorOccured(*error);
+
+        return false;
+    }
+
+    return true;
 }
 
 bool QKlipperConsole::restartKlipper(QKlipperError *error)
 {
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("printer.restart");
+    message->setProtocol(QKlipperMessage::HttpPostProtocol);
 
-    return sendWebSocketMessage(message, error);
+    sendWebSocketMessage(message, error);
+
+    if(error && (error->type() != QKlipperError::NoError || message->response().toString() != "ok"))
+    {
+        error->setErrorTitle("Could not restart klipper");
+        emit errorOccured(*error);
+
+        return false;
+    }
+
+    return true;
 }
 
 bool QKlipperConsole::restartFirmware(QKlipperError *error)
 {
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("printer.firmware_restart");
+    message->setProtocol(QKlipperMessage::HttpPostProtocol);
 
-    return sendWebSocketMessage(message, error);
+    sendWebSocketMessage(message, error);
+
+    if(error && (error->type() != QKlipperError::NoError || message->response().toString() != "ok"))
+    {
+        error->setErrorTitle("Could not restart firmware");
+        emit errorOccured(*error);
+
+        return false;
+    }
+
+    return true;
 }
 
 bool QKlipperConsole::serverRestart(QKlipperError *error)
 {
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("server.restart");
+    message->setProtocol(QKlipperMessage::HttpPostProtocol);
 
-    return sendWebSocketMessage(message, error);
+    sendWebSocketMessage(message, error);
+
+    if(error && (error->type() != QKlipperError::NoError || message->response().toString() != "ok"))
+    {
+        error->setErrorTitle("Could not restart server");
+        emit errorOccured(*error);
+
+        return false;
+    }
+
+    return true;
 }
 
 void QKlipperConsole::serverInfo()
 {
+    if(hasConnectionState(Startup))
+        setStartupSequenceText("Getting Server Info..");
+
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("server.info");
 
@@ -500,6 +777,9 @@ void QKlipperConsole::serverInfo()
 
 void QKlipperConsole::serverConfig()
 {
+    if(hasConnectionState(Startup))
+        setStartupSequenceText("Getting Server Configuration..");
+
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("server.config");
 
@@ -508,6 +788,9 @@ void QKlipperConsole::serverConfig()
 
 void QKlipperConsole::serverFileRoots()
 {
+    if(hasConnectionState(Startup))
+        setStartupSequenceText("Getting File Roots..");
+
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("server.files.roots");
 
@@ -552,6 +835,9 @@ void QKlipperConsole::serverFilesMetadata(QKlipperFile *file)
 
 void QKlipperConsole::serverFilesList(QString directory)
 {
+    if(hasConnectionState(Startup))
+        setStartupSequenceText("Getting File Lists..");
+
     QKlipperMessage *message = new QKlipperMessage();
     message->setParam("path", directory);
     message->setParam("extended", true);
@@ -586,6 +872,7 @@ void QKlipperConsole::serverFileMove(QString source, QString destination)
     message->setParam("source", source);
     message->setParam("dest", destination);
     message->setMethod("server.files.move");
+    message->setProtocol(QKlipperMessage::HttpPostProtocol);
 
     sendWebSocketMessageAsync(message);
 }
@@ -596,6 +883,7 @@ void QKlipperConsole::serverFileCopy(QString source, QString destination)
     message->setParam("source", source);
     message->setParam("dest", destination);
     message->setMethod("server.files.copy");
+    message->setProtocol(QKlipperMessage::HttpPostProtocol);
 
     sendWebSocketMessageAsync(message);
 }
@@ -829,16 +1117,19 @@ void QKlipperConsole::serverDirectoryPost(QString directory)
 {
     QKlipperMessage *message = new QKlipperMessage();
     message->setParam("path", directory);
-    message->setMethod("server.files.post_directory");
+    message->setMethod("server.files.directory");
+    message->setProtocol(QKlipperMessage::HttpPostProtocol);
 
     sendWebSocketMessageAsync(message);
 }
 
-void QKlipperConsole::serverDirectoryDelete(QString directory)
+void QKlipperConsole::serverDirectoryDelete(QString directory, bool forced = false)
 {
     QKlipperMessage *message = new QKlipperMessage();
     message->setParam("path", directory);
-    message->setMethod("server.files.delete_directory");
+    message->setParam("forced", forced);
+    message->setMethod("server.files.directory");
+    message->setProtocol(QKlipperMessage::HttpDeleteProtocol);
 
     m_messageMap.insert(message->id(), message);
 
@@ -867,6 +1158,7 @@ void QKlipperConsole::serverLogsRollover()
 {
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("server.logs.rollover");
+    message->setProtocol(QKlipperMessage::HttpPostProtocol);
 
     sendWebSocketMessageAsync(message);
 }
@@ -876,6 +1168,7 @@ void QKlipperConsole::serverLogsRollover(QString &application)
     QKlipperMessage *message = new QKlipperMessage();
     message->setParam("application", application);
     message->setMethod("server.logs.rollover");
+    message->setProtocol(QKlipperMessage::HttpPostProtocol);
 
     sendWebSocketMessageAsync(message);
 }
@@ -890,6 +1183,9 @@ void QKlipperConsole::serverWebsocketId()
 
 void QKlipperConsole::serverWebcamList()
 {
+    if(hasConnectionState(Startup))
+        setStartupSequenceText("Getting Webcams..");
+
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("server.webcams.list");
 
@@ -913,7 +1209,8 @@ void QKlipperConsole::serverWebcamCreate(QKlipperWebcam *webcam)
     message->setParam("rotation", webcam->rotation());
     message->setParam("aspect_ratio", webcam->aspectRatio());
     message->setParam("source", webcam->source());
-    message->setMethod("server.webcams.post_item");
+    message->setMethod("server.webcams.item");
+    message->setProtocol(QKlipperMessage::HttpPostProtocol);
 
     sendWebSocketMessageAsync(message);
 }
@@ -936,7 +1233,8 @@ void QKlipperConsole::serverWebcamUpdate(QKlipperWebcam *webcam)
     message->setParam("aspect_ratio", webcam->aspectRatio());
     message->setParam("source", webcam->source());
     message->setParam("uid", webcam->uid());
-    message->setMethod("server.webcams.post_item");
+    message->setMethod("server.webcams.item");
+    message->setProtocol(QKlipperMessage::HttpPostProtocol);
 
     sendWebSocketMessageAsync(message);
 }
@@ -945,13 +1243,17 @@ void QKlipperConsole::serverWebcamDelete(QKlipperWebcam *webcam)
 {
     QKlipperMessage *message = new QKlipperMessage();
     message->setParam("uid", webcam->uid());
-    message->setMethod("server.webcams.delete_item");
+    message->setMethod("server.webcams.item");
+    message->setProtocol(QKlipperMessage::HttpDeleteProtocol);
 
     sendWebSocketMessageAsync(message);
 }
 
 void QKlipperConsole::serverAnnouncementsList(bool includeDismissed)
 {
+    if(hasConnectionState(Startup))
+        setStartupSequenceText("Getting Announcements..");
+
     QKlipperMessage *message = new QKlipperMessage();
     message->setParam("include_dismissed", includeDismissed);
     message->setMethod("server.announcements.list");
@@ -979,6 +1281,9 @@ void QKlipperConsole::serverAnnouncementDismiss(QString entryId, qint64 waketime
 
 void QKlipperConsole::serverJobQueueStatus()
 {
+    if(hasConnectionState(Startup))
+        setStartupSequenceText("Getting Job Queue..");
+
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("server.job_queue.status");
 
@@ -989,6 +1294,7 @@ void QKlipperConsole::serverJobQueueStart()
 {
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("server.job_queue.start");
+    message->setProtocol(QKlipperMessage::HttpPostProtocol);
 
     sendWebSocketMessageAsync(message);
 }
@@ -997,6 +1303,7 @@ void QKlipperConsole::serverJobQueuePause()
 {
     QKlipperMessage *message = new QKlipperMessage();
     message->setMethod("server.job_queue.pause");
+    message->setProtocol(QKlipperMessage::HttpPostProtocol);
 
     sendWebSocketMessageAsync(message);
 }
@@ -1006,6 +1313,7 @@ void QKlipperConsole::serverJobQueueJump(QString id)
     QKlipperMessage *message = new QKlipperMessage();
     message->setParam("job_id", id);
     message->setMethod("server.job_queue.jump");
+    message->setProtocol(QKlipperMessage::HttpPostProtocol);
 
     sendWebSocketMessageAsync(message);
 }
@@ -1013,8 +1321,9 @@ void QKlipperConsole::serverJobQueueJump(QString id)
 void QKlipperConsole::serverJobQueueAdd(QStringList filenames)
 {
     QKlipperMessage *message = new QKlipperMessage();
-    message->setParam("filenames", filenames);
-    message->setMethod("server.job_queue.post_job");
+    message->setParam("filenames", filenames.join(','));
+    message->setMethod("server.job_queue.job");
+    message->setProtocol(QKlipperMessage::HttpPostProtocol);
 
     sendWebSocketMessageAsync(message);
 }
@@ -1022,14 +1331,18 @@ void QKlipperConsole::serverJobQueueAdd(QStringList filenames)
 void QKlipperConsole::serverJobQueueDelete(QStringList ids)
 {
     QKlipperMessage *message = new QKlipperMessage();
-    message->setParam("job_ids", ids);
-    message->setMethod("server.job_queue.jump");
+    message->setParam("job_ids", ids.join(','));
+    message->setMethod("server.job_queue.job");
+    message->setProtocol(QKlipperMessage::HttpDeleteProtocol);
 
     sendWebSocketMessageAsync(message);
 }
 
 void QKlipperConsole::clientIdentifier()
 {
+    if(hasConnectionState(Startup))
+        setStartupSequenceText("Sending Identifier..");
+
     QKlipperMessage *message = new QKlipperMessage();
     QKlipperClientIdentifier identifier = m_server->clientIdentifier();
 
@@ -1041,6 +1354,187 @@ void QKlipperConsole::clientIdentifier()
 
     m_messageMap.insert(message->id(), message);
     sendRpcMessage(message);
+}
+
+void QKlipperConsole::databaseCreate(const QString &key, const QVariant &value)
+{
+    QKlipperMessage *message = new QKlipperMessage();
+    message->setParam("namespace", QCoreApplication::applicationName());
+    message->setParam("key", key);
+    message->setParam("value", value);
+    message->setMethod("server.database.item");
+    message->setProtocol(QKlipperMessage::HttpPostProtocol);
+
+    sendWebSocketMessageAsync(message);
+}
+
+void QKlipperConsole::databaseDelete(const QString &key)
+{
+    QKlipperMessage *message = new QKlipperMessage();
+    message->setParam("namespace", QCoreApplication::applicationName());
+    message->setParam("key", key);
+    message->setMethod("server.database.item");
+    message->setProtocol(QKlipperMessage::HttpDeleteProtocol);
+
+    sendWebSocketMessageAsync(message);
+}
+
+QVariant QKlipperConsole::databaseGetItem(const QString &key)
+{
+    QVariant value;
+
+    QKlipperMessage *message = new QKlipperMessage();
+    message->setParam("namespace", QCoreApplication::applicationName());
+    message->setParam("key", key);
+    message->setMethod("server.database.item");
+
+    sendWebSocketMessage(message);
+
+    if(message->response().isObject())
+    {
+        QJsonObject response = message->response().toObject();
+
+        if(response.contains("value"))
+            value = response["value"].toVariant();
+    }
+
+    return value;
+}
+
+void QKlipperConsole::machinePowerDeviceList()
+{
+    if(hasConnectionState(Startup))
+        setStartupSequenceText("Getting Power Devices..");
+
+    QKlipperMessage *message = new QKlipperMessage();
+    message->setMethod("machine.device_power.devices");
+
+    sendWebSocketMessageAsync(message);
+}
+
+void QKlipperConsole::machinePowerDeviceStatus(QStringList names)
+{
+    QKlipperMessage *message = new QKlipperMessage();
+    message->setMethod("machine.device_power.device");
+
+    for(QString name : names)
+        message->setParam(name, QVariant());
+
+    sendWebSocketMessageAsync(message);
+}
+
+void QKlipperConsole::machinePowerDeviceSetState(const QString &name, const QString &action)
+{
+    QKlipperMessage *message = new QKlipperMessage();
+    message->setMethod("machine.device_power.device");
+    message->setParam("device", name);
+    message->setParam("action", action);
+    message->setProtocol(QKlipperMessage::HttpPostProtocol);
+
+    sendWebSocketMessageAsync(message);
+}
+
+void QKlipperConsole::machineLedStripList()
+{
+    if(hasConnectionState(Startup))
+        setStartupSequenceText("Getting LED Strips..");
+
+    QKlipperMessage *message = new QKlipperMessage();
+    message->setMethod("machine.wled.strips");
+
+    sendWebSocketMessageAsync(message);
+}
+
+void QKlipperConsole::machineLedStrip(const QStringList &names)
+{
+    QKlipperMessage *message = new QKlipperMessage();
+    message->setMethod("machine.wled.status");
+
+    for(const QString &name : names)
+        message->setParam(name, QVariant());
+
+    sendWebSocketMessageAsync(message);
+}
+
+void QKlipperConsole::machineLedStripOn(const QStringList &names)
+{
+    QKlipperMessage *message = new QKlipperMessage();
+    message->setMethod("machine.wled.on");
+
+    for(const QString &name : names)
+        message->setParam(name, QVariant());
+
+    sendWebSocketMessageAsync(message);
+}
+
+void QKlipperConsole::machineLedStripOff(const QStringList &names)
+{
+    QKlipperMessage *message = new QKlipperMessage();
+    message->setMethod("machine.wled.off");
+
+    for(const QString &name : names)
+        message->setParam(name, QVariant());
+
+    sendWebSocketMessageAsync(message);
+}
+
+void QKlipperConsole::machineSetLedStrip(QKlipperLedStrip *stripData)
+{
+    QKlipperMessage *message = new QKlipperMessage();
+    message->setMethod("machine.wled.strip");
+    message->setParam("strip", stripData->m_name);
+    message->setParam("preset", stripData->m_preset);
+    message->setParam("brightness", stripData->m_brightness);
+    message->setParam("intensity", stripData->m_intensity);
+    message->setParam("speed", stripData->m_speed);
+
+    if(stripData->isOn())
+        message->setParam("action", "on");
+    else
+        message->setParam("action", "off");
+
+    message->setProtocol(QKlipperMessage::HttpPostProtocol);
+
+    sendWebSocketMessageAsync(message);
+}
+
+void QKlipperConsole::machineSensorsList()
+{
+    if(hasConnectionState(Startup))
+        setStartupSequenceText("Getting Machine Sensors..");
+
+    QKlipperMessage *message = new QKlipperMessage();
+    message->setMethod("server.sensors.list");
+    message->setParam("extended", true);
+
+    sendWebSocketMessageAsync(message);
+}
+
+void QKlipperConsole::machineSensorInfo(const QString &name)
+{
+    QKlipperMessage *message = new QKlipperMessage();
+    message->setMethod("server.sensors.info");
+    message->setParam("extended", true);
+    message->setParam("sensor", name);
+
+    sendWebSocketMessageAsync(message);
+}
+
+void QKlipperConsole::machineSensorMeasurement(const QString &name)
+{
+    QKlipperMessage *message = new QKlipperMessage();
+    message->setMethod("server.sensors.measurements");
+    message->setParam("sensor", name);
+
+    sendWebSocketMessageAsync(message);
+}
+
+void QKlipperConsole::machineSensorMeasurements()
+{
+    QKlipperMessage *message = new QKlipperMessage();
+    message->setMethod("server.sensors.measurements");
+
+    sendWebSocketMessageAsync(message);
 }
 
 void QKlipperConsole::accessLogin(QString username, QString password)
@@ -1182,26 +1676,9 @@ void QKlipperConsole::rpcUpdateSocketDataReceived(QString data)
         message->setError(error);
     }
 
-    if(responseObject["method"].toString().startsWith("notify"))
+    if(responseObject["method"].toString().startsWith("notify")
+        || responseObject["method"].toString().startsWith("sensors:"))
     {
-        if(responseObject.contains("params")
-            && responseObject["params"].isArray()
-            && responseObject["params"].toArray().count() > 0)
-        {
-            QJsonArray params = responseObject["params"].toArray();
-            QString method = responseObject["method"].toString();
-
-            //set the first object as the response object
-            for(int i = 0; i < params.count(); i++)
-            {
-                if(params[i].isObject())
-                {
-                    responseObject = params[i].toObject();
-                    responseObject["method"] = method;
-                    break;
-                }
-            }
-        }
 
         if(responseObject.contains("result"))
             responseObject = responseObject["result"].toObject();
@@ -1393,6 +1870,9 @@ void QKlipperConsole::resetStartupSequence()
     m_startupSequence.enqueue((StartupFunction)&QKlipperConsole::clientIdentifier);
     m_startupSequence.enqueue((StartupFunction)&QKlipperConsole::accessUsersList);
     m_startupSequence.enqueue((StartupFunction)&QKlipperConsole::machineSystemInfo);
+    m_startupSequence.enqueue((StartupFunction)&QKlipperConsole::machinePowerDeviceList);
+    m_startupSequence.enqueue((StartupFunction)&QKlipperConsole::machineLedStripList);
+    m_startupSequence.enqueue((StartupFunction)&QKlipperConsole::machineSensorsList);
     m_startupSequence.enqueue((StartupFunction)&QKlipperConsole::machineProcStats);
     m_startupSequence.enqueue((StartupFunction)&QKlipperConsole::machinePeripheralsUSB);
     m_startupSequence.enqueue((StartupFunction)&QKlipperConsole::machinePeripheralsSerial);
@@ -1400,7 +1880,7 @@ void QKlipperConsole::resetStartupSequence()
     m_startupSequence.enqueue((StartupFunction)&QKlipperConsole::serverConfig);
     m_startupSequence.enqueue((StartupFunction)&QKlipperConsole::serverFileRoots);
     m_startupSequence.enqueue((StartupFunction)&QKlipperConsole::serverWebcamList);
-    //m_startupSequence.enqueue((StartupFunction)&QKlipperConsole::serverAnnouncementsList);
+    m_startupSequence.enqueue((StartupFunction)&QKlipperConsole::serverAnnouncementsList);
     m_startupSequence.enqueue((StartupFunction)&QKlipperConsole::printerObjectsList);
     m_startupSequence.enqueue((StartupFunction)&QKlipperConsole::printerInfo);
     m_startupSequence.enqueue((StartupFunction)&QKlipperConsole::serverInfo);
@@ -1475,6 +1955,16 @@ void QKlipperConsole::generateParserMap()
     m_parserMap[QString("machine.peripherals.serial")] = (ParserFunction)&QKlipperConsole::machinePeripheralsSerialParser;
     m_parserMap[QString("machine.peripherals.video")] = (ParserFunction)&QKlipperConsole::machinePeripheralsVideoParser;
     m_parserMap[QString("machine.peripherals.canbus")] = (ParserFunction)&QKlipperConsole::machinePeripheralsCanbusParser;
+    m_parserMap[QString("machine.device_power.devices")] = (ParserFunction)&QKlipperConsole::machinePowerDeviceListParser;
+    m_parserMap[QString("machine.device_power.status")] = (ParserFunction)&QKlipperConsole::machinePowerDeviceListParser;
+    m_parserMap[QString("machine.wled.strips")] = (ParserFunction)&QKlipperConsole::machineLedStripListParser;
+    m_parserMap[QString("machine.wled.status")] = (ParserFunction)&QKlipperConsole::machineLedStripListParser;
+    m_parserMap[QString("machine.wled.on")] = (ParserFunction)&QKlipperConsole::machineLedStripListParser;
+    m_parserMap[QString("machine.wled.off")] = (ParserFunction)&QKlipperConsole::machineLedStripListParser;
+    m_parserMap[QString("machine.wled.strip")] = (ParserFunction)&QKlipperConsole::machineLedStripListParser;
+    m_parserMap[QString("server.sensors.list")] = (ParserFunction)&QKlipperConsole::machineSensorListParser;
+    m_parserMap[QString("server.sensors.measurements")] = (ParserFunction)&QKlipperConsole::machineSensorMeasurementParser;
+    m_parserMap[QString("server.sensors.info")] = (ParserFunction)&QKlipperConsole::machineSensorParser;
 
     m_parserMap[QString("machine.update.status")] = (ParserFunction)&QKlipperConsole::machineUpdateStatusParser;
     m_parserMap[QString("machine.update.refresh")] = (ParserFunction)&QKlipperConsole::machineUpdateStatusParser;
@@ -1621,8 +2111,35 @@ void QKlipperConsole::sendWebSocketMessageAsync(QKlipperMessage *message)
     if(!m_messageMap.contains(message->id()))
         m_messageMap.insert(message->id(), message);
 
-    QString uri = m_server->address() + message->toUri();
-    QNetworkReply *reply = m_networkManager->get(QNetworkRequest(uri));
+    QNetworkReply *reply;
+
+    QNetworkRequest request(m_server->address() + message->toUri());
+
+    if(!m_server->apiKey().isEmpty())
+        request.setRawHeader("X-Api-Key", m_server->apiKey().toUtf8());
+
+    if(message->protocol() == QKlipperMessage::HttpPostProtocol)
+    {
+        QByteArray data;
+
+        if(!message->bodyData().isNull())
+        {
+            QJsonDocument document;
+
+            if(message->bodyData().isObject())
+                document.setObject(message->bodyData().toObject());
+            else if(message->bodyData().isArray())
+                document.setArray(message->bodyData().toArray());
+
+            data = document.toJson();
+        }
+
+        reply = m_networkManager->post(request, data);
+    }
+    else if(message->protocol() == QKlipperMessage::HttpDeleteProtocol)
+        reply = m_networkManager->deleteResource(request);
+    else
+        reply = m_networkManager->get(request);
 
     QObject::connect
     (
@@ -1642,10 +2159,16 @@ void QKlipperConsole::sendWebSocketMessageAsync(QKlipperMessage *message)
                 error.setErrorTitle("Error Sending Websocket Command");
 
                 message->setError(error);
+                bool emitError = true;
 
-                emit errorOccured(error);
+                if(hasConnectionState(Startup) && m_ignoreErrorOnStartup.contains(message->method()))
+                    emitError = false;
 
-                return;
+                if(emitError)
+                {
+                    emit errorOccured(error);
+                    return;
+                }
             }
 
             QByteArray responseData = reply->readAll();
@@ -1664,26 +2187,58 @@ void QKlipperConsole::sendWebSocketMessageAsync(QKlipperMessage *message)
                 error.setErrorTitle("Invalid Response From Server");
 
                 message->setError(error);
+                bool emitError = true;
 
-                emit errorOccured(error);
+                if(hasConnectionState(Startup) && m_ignoreErrorOnStartup.contains(message->method()))
+                    emitError = false;
 
-                return;
+                if(emitError)
+                {
+                    emit errorOccured(error);
+                    return;
+                }
             }
 
             message->setResponse(responseDocument["result"]);
             parseResponse(message);
         }
     );
+
+    emit messageSent(message);
 }
 
 bool QKlipperConsole::sendWebSocketMessage(QKlipperMessage *message, QKlipperError *error)
 {
     qDebug() << "Sending WS method" << message->method();
 
-    QEventLoop loop;
+    emit messageSent(message);
 
+    QEventLoop loop;
+    QNetworkReply *reply;
     QNetworkRequest request(m_server->address() + message->toUri());
-    QNetworkReply *reply = m_networkManager->get(request);
+
+    if(message->protocol() == QKlipperMessage::HttpPostProtocol)
+    {
+        QByteArray data;
+
+        if(!message->bodyData().isNull())
+        {
+            QJsonDocument document;
+
+            if(message->bodyData().isObject())
+                document.setObject(message->bodyData().toObject());
+            else if(message->bodyData().isArray())
+                document.setArray(message->bodyData().toArray());
+
+            data = document.toJson();
+        }
+
+        reply = m_networkManager->post(request, data);
+    }
+    else if(message->protocol() == QKlipperMessage::HttpDeleteProtocol)
+        reply = m_networkManager->deleteResource(request);
+    else
+        reply = m_networkManager->get(request);
 
     QObject::connect
     (
@@ -1699,35 +2254,33 @@ bool QKlipperConsole::sendWebSocketMessage(QKlipperMessage *message, QKlipperErr
 
     if (reply->error())
     {
-        qDebug() << "Error: " + reply->errorString() << reply->url() ;
+        qDebug() << reply->errorString() << reply->url() ;
 
         if(!error)
             error = new QKlipperError();
 
         error->setErrorString(reply->errorString());
         error->setType(QKlipperError::Socket);
-        error->setOrigin("Server Files Download");
+        error->setOrigin("Server GCode Script");
         error->setErrorTitle("Error Sending Websocket Command");
+        message->setError(*error);
 
-        emit errorOccured(*error);
+        reply->deleteLater();
+
+        bool emitError = true;
+
+        if(hasConnectionState(Startup) && m_ignoreErrorOnStartup.contains(message->method()))
+            emitError = false;
+
+        if(emitError)
+            emit errorOccured(*error);
+
+        return false;
     }
 
-    //returns ok
-    QByteArray data = reply->readAll();
+    message->setResponse(reply->readAll());
 
-    if(data == "ok")
-    {
-        if(error)
-        {
-            error->setErrorString("");
-            error->setType(QKlipperError::NoError);
-            return true;
-        }
-    }
-
-    reply->deleteLater();
-
-    return false;
+    return true;
 }
 
 /*
@@ -1742,6 +2295,7 @@ void QKlipperConsole::parseNotification(QKlipperMessage *message)
         ParserFunction parser = m_parserMap[key];
         (this->*parser)(message);
     }
+
     else if(message->method() == QString("notify_klippy_disconnected"))
     {
         removeConnectionState(KlipperConnected);
@@ -1797,142 +2351,147 @@ void QKlipperConsole::parseNotification(QKlipperMessage *message)
     }
     else if(message->method() == QString("notify_gcode_response"))
     {
-        //string message
+        if(message->response().toObject().contains("params"))
+        {
+            QJsonArray paramsArray = message->response()["params"].toArray();
+
+            for(const QJsonValue &paramValue : paramsArray)
+            {
+                //string message
+                QString response = paramValue.toString();
+
+                if(response.startsWith("// probe at"))
+                {
+                    if(m_printer->bed()->isBedMeshCalibrating())
+                    {
+                        quint32 points = m_printer->bed()->bedMesh()->reportedProbePoints();
+                        m_printer->bed()->bedMesh()->setReportedProbePoints(points + 1);
+                    }
+                }
+
+                if(response.startsWith("// Mesh Bed Leveling Complete"))
+                {
+                    m_printer->bed()->setHasBedMeshResult(true);
+                }
+
+                emit gcodeResponse(response);
+            }
+        }
+
     }
     else if(message->method() == QString("notify_update_response"))
     {
-        /*{
-            "jsonrpc": "2.0",
-            "method": "notify_update_response",
-           "params": [
+        if(message->response().isObject())
+        {
+            bool isUpdating = false;
+
+            QJsonObject object = message->response().toObject();
+            QString application = object["application"].toString();
+            QString message = object["message"].toString();
+            bool complete = object["complete"].toBool();
+
+            if(m_system->updateManager()->packages().contains(application))
             {
-              "application": "{app_name}",
-              "proc_id": 446461,
-              "message": "Update Response Message",
-              "complete": false
+                m_system->updateManager()->packages().value(application)->setStateMessage(message);
+
+                if(complete && m_system->updateManager()->packages().value(application)->updating())
+                    m_system->updateManager()->packages().value(application)->setUpdatingFinished(true);
             }
-            ]
-        }*/
+
+            if(complete)
+                m_system->updateManager()->setCurrentStateMessage(QString("Updating %1 Complete. %2").arg(application, message));
+            else
+            {
+                isUpdating = true;
+                m_system->updateManager()->setCurrentStateMessage(QString("Updating %1: %2").arg(application, message));
+            }
+
+            if(isUpdating)
+                m_system->setState(QKlipperSystem::Updating);
+            else
+                m_system->setState(QKlipperSystem::Idle);
+        }
     }
+    //emitted when a package has completed auto-scan for update
     else if(message->method() == QString("notify_update_refreshed"))
     {
-        /*{
-            "jsonrpc": "2.0",
-            "method": "notify_update_response",
-           "params": [
-            {
-              "application": "{app_name}",
-              "proc_id": 446461,
-              "message": "Update Response Message",
-              "complete": false
-            }
-            ]
-        }*/
+        machineUpdateStatusParser(message);
     }
     else if(message->method() == QString("notify_cpu_throttled"))
     {
-        /*{
-            "jsonrpc": "2.0",
-            "method": "notify_update_response",
-           "params": [
-            {
-              "application": "{app_name}",
-              "proc_id": 446461,
-              "message": "Update Response Message",
-              "complete": false
-            }
-            ]
-        }*/
+        QJsonObject response = message->response().toObject();
+        QJsonArray flagArray = response["flags"].toArray();
+        QStringList flagList;
+
+        for(const QJsonValue &flag : flagArray)
+            flagList += flag.toString();
+
+        m_system->throttleState()->setFlags(flagList);
+        m_system->throttleState()->setBits(response["bits"].toInt());
     }
     else if(message->method() == QString("notify_history_changed"))
     {
-        /*
+        QJsonObject response = message->response().toObject();
+        QJsonObject printJobObject = response["job"].toObject();
+        bool newJob = false;
+        QKlipperPrintJob *printJob = m_server->jobQueue()->job(printJobObject["id"].toString());
+
+        if(!printJob)
         {
-            "jsonrpc": "2.0",
-            "method": "notify_history_changed",
-            "params": [
-                {
-                    "action": "added OR finished",
-                    "job": <job object>
-                }
-            ]
+            printJob = new QKlipperPrintJob(m_server->jobQueue());
+            newJob = true;
         }
-        */
+
+        if(newJob)
+            m_server->jobQueue()->addJob(printJob);
     }
     else if(message->method() == QString("notify_user_created"))
     {
-        /*
-        {
-            "jsonrpc": "2.0",
-            "method": "notify_user_created",
-            "params": [
-                {
-                    "username": "<username>"
-                }
-            ]
-        }
-        */
+        accessGetUser();
     }
     else if(message->method() == QString("notify_user_deleted"))
     {
-        /*
+        QJsonObject response = message->response().toObject();
+
+        for(QKlipperUser &user : m_server->userList())
         {
-            "jsonrpc": "2.0",
-            "method": "notify_user_created",
-            "params": [
-                {
-                    "username": "<username>"
-                }
-            ]
+            if(user.username() == response["username"].toString())
+            {
+                m_server->deleteUser(user);
+                break;
+            }
         }
-        */
     }
     else if(message->method() == QString("notify_user_logged_out"))
     {
-        /*
-        {
-            "jsonrpc": "2.0",
-            "method": "notify_user_created",
-            "params": [
-                {
-                    "username": "<username>"
-                }
-            ]
-        }
-        */
+        accessGetUser();
     }
     else if(message->method() == QString("notify_service_state_changed"))
     {
-        /*
+        QJsonObject response = message->response().toObject();
+        QStringList stateKeys = response.keys();
+
+        for(const QString &key : stateKeys)
         {
-            "jsonrpc": "2.0",
-            "method": "notify_service_state_changed",
-            "params": [
-                {
-                    "klipper": {
-                        "active_state": "inactive",
-                        "sub_state": "dead"
-                    }
-                }
-            ]
+            if(m_system->services().contains(key))
+            {
+                QJsonObject stateObject = response[key].toObject();
+                m_system->services()[key]->setActiveState(stateObject["active_state"].toString());
+                m_system->services()[key]->setSubState(stateObject["sub_state"].toString());
+            }
         }
-        */
     }
     else if(message->method() == QString("notify_job_queue_changed"))
     {
-        /*
-        {
-            "jsonrpc": "2.0",
-            "method": "notify_job_queue_changed",
-            "params": [
-                {
-                    "action": "state_changed|jobs_added|jobs_removed|job_loaded",
-                    "updated_queue": null,
-                    "queue_state": "paused"
-                }
-            ]
+        QJsonObject response = message->response().toObject();
+
+        if(response["action"] == QString("state_changed")) {
+            m_server->jobQueue()->setState(response["queue_state"].toString());
         }
-        */
+        else {
+            serverJobQueueStatus();
+        }
+
     }
     else if(message->method() == QString("notify_button_event"))
     {
@@ -1981,31 +2540,11 @@ void QKlipperConsole::parseNotification(QKlipperMessage *message)
     }
     else if(message->method() == QString("notify_announcement_dismissed"))
     {
-        /*
-        {
-            "jsonrpc": "2.0",
-            "method": "notify_announcement_dismissed",
-            "params": [
-                {
-                    "entry_id": "arksine/moonlight/issue/3"
-                }
-            ]
-        }
-        */
+        serverAnnouncementsUpdate();
     }
     else if(message->method() == QString("notify_announcement_wake"))
     {
-        /*
-        {
-            "jsonrpc": "2.0",
-            "method": "notify_announcement_wake",
-            "params": [
-                {
-                    "entry_id": "arksine/moonlight/issue/1"
-                }
-            ]
-        }
-        */
+        serverAnnouncementsUpdate();
     }
     else if(message->method() == QString("notify_sudo_alert"))
     {
@@ -2024,54 +2563,9 @@ void QKlipperConsole::parseNotification(QKlipperMessage *message)
         }
         */
     }
-    else if(message->method() == QString("notify_sudo_alert"))
+    else if(message->method() == QString("notify_webcams_changed"))
     {
-        /*
-        {
-            "jsonrpc": "2.0",
-            "method": "notify_webcams_changed",
-            "params": [
-                {
-                    "webcams": [
-                        {
-                            "name": "tc2",
-                            "location": "printer",
-                            "service": "mjpegstreamer",
-                            "enabled": true,
-                            "icon": "mdiWebcam",
-                            "target_fps": 15,
-                            "target_fps_idle": 5,
-                            "stream_url": "http://printer.lan/webcam?action=stream",
-                            "snapshot_url": "http://printer.lan/webcam?action=snapshot",
-                            "flip_horizontal": false,
-                            "flip_vertical": false,
-                            "rotation": 0,
-                            "aspect_ratio": "4:3",
-                            "extra_data": {},
-                            "source": "database"
-                        },
-                        {
-                            "name": "TestCam",
-                            "location": "printer",
-                            "service": "mjpegstreamer",
-                            "enabled": true,
-                            "icon": "mdiWebcam",
-                            "target_fps": 15,
-                            "target_fps_idle": 5,
-                            "stream_url": "/webcam/?action=stream",
-                            "snapshot_url": "/webcam/?action=snapshot",
-                            "flip_horizontal": false,
-                            "flip_vertical": false,
-                            "rotation": 0,
-                            "aspect_ratio": "4:3",
-                            "extra_data": {},
-                            "source": "database"
-                        }
-                    ]
-                }
-            ]
-        }
-        */
+        serverWebcamList();
     }
     else if(message->method() == QString("notify_active_spool_set"))
     {
@@ -2122,22 +2616,22 @@ void QKlipperConsole::parseNotification(QKlipperMessage *message)
         }
         */
     }
-    else if(message->method() == QString("sensor_update"))
+    else if(message->method() == QString("sensors:sensor_update"))
     {
-        /*
+        QJsonObject response = message->response().toObject();
+        QStringList keys = response.keys();
+
+        for(const QString &key : keys)
         {
-            "jsonrpc": "2.0",
-            "method": "sensors:sensor_update",
-            "params": [
-                {
-                    "sensor1": {
-                        "humidity": 28.9,
-                        "temperature": 22.4
-                    }
-                }
-            ]
+            if(m_system->m_sensors.contains(key))
+            {
+                QJsonObject sensorObject = response[key].toObject();
+                QStringList valueKeys = sensorObject.keys();
+
+                for(const QString &valueKey : valueKeys)
+                    m_system->m_sensors[key]->addValue(valueKey, sensorObject[valueKey].toVariant());
+            }
         }
-        */
     }
 }
 
@@ -2464,31 +2958,33 @@ void QKlipperConsole::machineSystemInfoParser(QKlipperMessage *message)
 
         if(systemInfo.contains("service_state") && systemInfo["service_state"].isObject())
         {
-            QJsonObject serviceState = systemInfo["service_state"].toObject();
-            QStringList keys = serviceState.keys();
+            QJsonObject serviceStateObject = systemInfo["service_state"].toObject();
+            QStringList keys = serviceStateObject.keys();
 
-            QMap<QString, QKlipperServiceState> serviceStates;
+            QMap<QString, QKlipperService*> serviceStates = m_system->services();
 
-            foreach(QString key, keys)
+            for(const QString &key : keys)
             {
-                if(serviceState[key].isObject())
+                if(serviceStateObject[key].isObject())
                 {
-                    QJsonObject stateObject = serviceState[key].toObject();
-                    QKlipperServiceState state;
+                    QJsonObject stateObject = serviceStateObject[key].toObject();
+                    QKlipperService *state = m_system->service(key);
+
+                    if(!state)
+                        state = new QKlipperService(m_system);
 
                     if(stateObject.contains("active_state"))
-                        state.setActiveState(stateObject["active_state"].toString());
+                        state->setActiveState(stateObject["active_state"].toString());
 
                     if(stateObject.contains("sub_state"))
-                        state.setSubState(stateObject["sub_state"].toString());
+                        state->setSubState(stateObject["sub_state"].toString());
 
-                    state.setName(key);
+                    state->setName(key);
 
-                    serviceStates[key] = state;
+                    if(!m_system->services().contains(key))
+                        m_system->addService(state);
                 }
             }
-
-            m_system->setServiceStates(serviceStates);
         }
 
         if(systemInfo.contains("network") && systemInfo["network"].isObject())
@@ -2580,6 +3076,17 @@ void QKlipperConsole::machineSystemInfoParser(QKlipperMessage *message)
 
 void QKlipperConsole::machineProcStatsParser(QKlipperMessage *message)
 {
+    if(message->response().toObject().contains("params"))
+    {
+        QJsonArray paramArray = message->response()["params"].toArray();
+
+        for(const QJsonValue &value : paramArray)
+        {
+            message->setResponse(value);
+            machineProcStatsParser(message);
+        }
+    }
+
     QKlipperCpuInfo cpuInfo = m_system->cpuInfo();
     bool cpuInfoChanged = false;
 
@@ -2849,6 +3356,7 @@ void QKlipperConsole::machinePeripheralsVideoParser(QKlipperMessage *message)
 
 void QKlipperConsole::machinePeripheralsCanbusParser(QKlipperMessage *message)
 {
+    Q_UNUSED(message);
     // QString interfaceName = message->params()["interface"].toString();
     // interfaceName.remove("can");
 
@@ -2874,7 +3382,7 @@ void QKlipperConsole::machinePeripheralsCanbusParser(QKlipperMessage *message)
 
 void QKlipperConsole::machineUpdateStatusParser(QKlipperMessage *message)
 {
-    QKlipperUpdateState *updateState = m_system->updateState();
+    QKlipperUpdateManager *updateState = m_system->updateManager();
 
     updateState->setIsBusy(message->response()["busy"].toBool());
     updateState->setGithubLimitResetTime(message->response()["github_limit_reset_time"].toInt());
@@ -2884,9 +3392,9 @@ void QKlipperConsole::machineUpdateStatusParser(QKlipperMessage *message)
     //Grab the version info
     QJsonObject versionObject = message->response()["version_info"].toObject();
     QStringList keys = versionObject.keys();
-    QMultiMap<QString, QKlipperUpdatePackage> packages;
+    QMap<QString, QKlipperUpdatePackage*> packages = m_system->updateManager()->packages();
 
-    QStringList systemPackages;
+    QStringList systemPackages = m_system->updateManager()->systemPackages();
 
     foreach(QString key, keys)
     {
@@ -2899,7 +3407,10 @@ void QKlipperConsole::machineUpdateStatusParser(QKlipperMessage *message)
             updateState->setSystemPackageCount(systemObject["package_count"].toInt());
 
             for(int i = 0; i < packageArray.count(); i++)
-                systemPackages += packageArray[i].toString();
+            {
+                if(!systemPackages.contains(packageArray[i].toString()))
+                    systemPackages += packageArray[i].toString();
+            }
         }
         //Package states
         else
@@ -2912,33 +3423,40 @@ void QKlipperConsole::machineUpdateStatusParser(QKlipperMessage *message)
             QJsonArray warningArray = packageObject["warnings"].toArray();
             QJsonArray anomaliesArray = packageObject["anomalies"].toArray();
 
+            bool newPackage = !m_system->updateManager()->packages().contains(key);
+
             //Package information
-            QKlipperUpdatePackage packageState;
+            QKlipperUpdatePackage *packageState;
+
+            if(newPackage)
+                packageState = new QKlipperUpdatePackage(m_system->updateManager());
+            else
+                packageState = m_system->updateManager()->packages().value(key);
 
             //Strings
-            packageState.setChannel(packageObject["channel"].toString());
-            packageState.setConfiguredType(packageObject["configured_type"].toString());
-            packageState.setDetectedType(packageObject["detected_type"].toString());
-            packageState.setRemoteAlias(packageObject["remote_alias"].toString());
-            packageState.setBranch(packageObject["branch"].toString());
-            packageState.setOwner(packageObject["owner"].toString());
-            packageState.setRepoName(packageObject["repo_name"].toString());
-            packageState.setVersion(packageObject["version"].toString());
-            packageState.setRemoteVersion(packageObject["remote_version"].toString());
-            packageState.setRollbackVersion(packageObject["rollback_version"].toString());
-            packageState.setCurrentHash(packageObject["current_hash"].toString());
-            packageState.setRemoteHash(packageObject["remote_hash"].toString());
-            packageState.setFullVersionString(packageObject["full_version_string"].toString());
-            packageState.setRecoveryUrl(packageObject["recovery_url"].toString());
-            packageState.setRemoteUrl(packageObject["remote_url"].toString());
+            packageState->setChannel(packageObject["channel"].toString());
+            packageState->setConfiguredType(packageObject["configured_type"].toString());
+            packageState->setDetectedType(packageObject["detected_type"].toString());
+            packageState->setRemoteAlias(packageObject["remote_alias"].toString());
+            packageState->setBranch(packageObject["branch"].toString());
+            packageState->setOwner(packageObject["owner"].toString());
+            packageState->setRepoName(packageObject["repo_name"].toString());
+            packageState->setVersion(packageObject["version"].toString());
+            packageState->setRemoteVersion(packageObject["remote_version"].toString());
+            packageState->setRollbackVersion(packageObject["rollback_version"].toString());
+            packageState->setCurrentHash(packageObject["current_hash"].toString());
+            packageState->setRemoteHash(packageObject["remote_hash"].toString());
+            packageState->setFullVersionString(packageObject["full_version_string"].toString());
+            packageState->setRecoveryUrl(packageObject["recovery_url"].toString());
+            packageState->setRemoteUrl(packageObject["remote_url"].toString());
 
             //Bools
-            packageState.setDebugEnabled(packageObject["debug_enabled"].toBool());
-            packageState.setIsValid(packageObject["is_valid"].toBool());
-            packageState.setCorrupt(packageObject["corrupt"].toBool());
-            packageState.setIsDirty(packageObject["is_dirty"].toBool());
-            packageState.setDetached(packageObject["detached"].toBool());
-            packageState.setPristine(packageObject["pristine"].toBool());
+            packageState->setDebugEnabled(packageObject["debug_enabled"].toBool());
+            packageState->setIsValid(packageObject["is_valid"].toBool());
+            packageState->setCorrupt(packageObject["corrupt"].toBool());
+            packageState->setIsDirty(packageObject["is_dirty"].toBool());
+            packageState->setDetached(packageObject["detached"].toBool());
+            packageState->setPristine(packageObject["pristine"].toBool());
 
             //Tags
             QStringList tags;
@@ -2946,7 +3464,7 @@ void QKlipperConsole::machineUpdateStatusParser(QKlipperMessage *message)
             for(int i = 0; i < tagsArray.count(); i++)
                 tags += tagsArray[i].toString();
 
-            packageState.setInfoTags(tags);
+            packageState->setInfoTags(tags);
 
             //Git messages
             QStringList gitMessages;
@@ -2954,7 +3472,7 @@ void QKlipperConsole::machineUpdateStatusParser(QKlipperMessage *message)
             for(int i = 0; i < gitArray.count(); i++)
                 gitMessages += gitArray[i].toString();
 
-            packageState.setGitMessages(gitMessages);
+            packageState->setGitMessages(gitMessages);
 
             //Warning messages
             QStringList warnings;
@@ -2962,7 +3480,7 @@ void QKlipperConsole::machineUpdateStatusParser(QKlipperMessage *message)
             for(int i = 0; i < warningArray.count(); i++)
                 warnings += warningArray[i].toString();
 
-            packageState.setWarnings(warnings);
+            packageState->setWarnings(warnings);
 
             //Anomalies messages
             QStringList anomalies;
@@ -2970,7 +3488,7 @@ void QKlipperConsole::machineUpdateStatusParser(QKlipperMessage *message)
             for(int i = 0; i < anomaliesArray.count(); i++)
                 anomalies += anomaliesArray[i].toString();
 
-            packageState.setAnomalies(anomalies);
+            packageState->setAnomalies(anomalies);
 
             QList<QKlipperUpdateCommit> commits;
 
@@ -2990,23 +3508,280 @@ void QKlipperConsole::machineUpdateStatusParser(QKlipperMessage *message)
                 commits.append(commit);
             }
 
-            packageState.setCommitsBehind(commits);
+            packageState->setCommitsBehind(commits);
 
             //Add to packages map
-            packages.insert(key, packageState);
+            if(newPackage)
+                m_system->updateManager()->setPackage(key, packageState);
         }
     }
 
-    updateState->setPackages(packages);
     updateState->setSystemPackages(systemPackages);
+}
+
+void QKlipperConsole::machinePowerDeviceListParser(QKlipperMessage *message)
+{
+    // {
+    //     "devices": [
+    //         {
+    //             "device": "green_led",
+    //             "status": "off",
+    //             "locked_while_printing": true,
+    //             "type": "gpio"
+    //         },
+    //         {
+    //             "device": "printer",
+    //             "status": "off",
+    //             "locked_while_printing": false,
+    //             "type": "tplink_smartplug"
+    //         }
+    //     ]
+    // }
+
+    if(message->response().isObject() && message->response().toObject().contains("devices"))
+    {
+        QJsonArray deviceArray = message->response().toObject().value("devices").toArray();
+
+        for(QJsonValue value : deviceArray)
+        {
+            if(value.isObject())
+            {
+                QJsonObject deviceObject = value.toObject();
+                QString name = deviceObject["device"].toString();
+                QString type = deviceObject["type"].toString();
+                bool isOn = (deviceObject["status"].toString() == "on");
+                bool lockedWhilePrinting = deviceObject["locked_while_printing"].toBool();
+                QKlipperPowerDevice *device;
+
+                if(m_system->powerDevices().contains(name))
+                {
+                    device = m_system->m_powerDevices[name];
+                    device->setName(name);
+                    device->setTypeString(type);
+                    device->setIsOn(isOn);
+                    device->setLockedWhilePrinting(lockedWhilePrinting);
+                }
+                else
+                {
+                    device = new QKlipperPowerDevice(m_system);
+                    device->setName(name);
+                    device->setTypeString(type);
+                    device->setIsOn(isOn);
+                    device->setLockedWhilePrinting(lockedWhilePrinting);
+                    m_system->setPowerDevice(device);
+                }
+            }
+        }
+    }
+}
+
+void QKlipperConsole::machinePowerDeviceParser(QKlipperMessage *message)
+{
+    // {
+    //     "green_led": "off"
+    // }
+
+    // if(message->response().isObject())
+    // {
+    //     QJsonObject deviceObject = message->response().toObject();
+    //     QStringList keys = deviceObject.keys();
+
+    //     for(QString &key : keys)
+    //     {
+    //         if(m_powerDevices.contains(key))
+    //         {
+    //             bool isOn = (deviceObject[key].toString() == "on");
+    //             m_powerDevices[key]->setIsOn(isOn);
+    //         }
+    //     }
+    // }
+}
+
+void QKlipperConsole::machineLedStripListParser(QKlipperMessage *message)
+{
+    if(message->response().isObject())
+    {
+        QJsonObject response = message->response().toObject();
+        QStringList keys = response.keys();
+
+        for(QString &key : keys)
+        {
+            QJsonObject ledObject = response[key].toObject();
+            QKlipperLedStrip *ledStrip;
+
+            bool newStrip = false;
+
+            if(!m_system->ledStrips().contains(key))
+            {
+                ledStrip = new QKlipperLedStrip(m_system);
+                newStrip = true;
+            }
+            else
+                ledStrip = m_system->ledStrips()[key];
+
+            ledStrip->setBrightness(ledObject["brightness"].toInt());
+            ledStrip->setChainCount(ledObject["chain_count"].toInt());
+            ledStrip->setError(ledObject["error"].toString());
+            ledStrip->setName(ledObject["strip"].toString());
+            ledStrip->setStatus(ledObject["status"].toString());
+            ledStrip->setIntensity(ledObject["intensity"].toInt());
+            ledStrip->setPreset(ledObject["preset"].toInt());
+            ledStrip->setSpeed(ledObject["speed"].toInt());
+
+            if(newStrip)
+                m_system->setLedStrip(ledStrip);
+        }
+    }
+}
+
+void QKlipperConsole::machineSensorListParser(QKlipperMessage *message)
+{
+    if(message->response().isObject() && message->response().toObject().contains("sensors"))
+    {
+        QJsonObject sensorsObject = message->response().toObject()["sensors"].toObject();
+        QStringList sensorKeys = sensorsObject.keys();
+
+        for(QString &key : sensorKeys)
+        {
+            QJsonObject sensorObject = sensorsObject[key].toObject();
+            QKlipperSensor *sensor;
+
+            if(m_system->m_sensors.contains(key))
+                sensor = m_system->m_sensors[key];
+            else
+                sensor = new QKlipperSensor(m_system);
+
+            if(sensorObject.contains("id"))
+                sensor->setId(sensorObject["id"].toString());
+
+            if(sensorObject.contains("type"))
+                sensor->setType(sensorObject["id"].toString());
+
+            if(sensorObject.contains("friendly_name"))
+                sensor->setFriendlyName(sensorObject["friendly_name"].toString());
+
+            if(sensorObject.contains("values"))
+            {
+                QJsonObject valuesObject = sensorObject["values"].toObject();
+                QStringList valueKeys = valuesObject.keys();
+
+                for(QString &valueKey : valueKeys)
+                {
+                    if(valuesObject[valueKey].isArray())
+                    {
+                        QJsonArray valueArray = valuesObject[valueKey].toArray();
+
+                        for(const QJsonValue &value : valueArray)
+                            sensor->addValue(valueKey, value.toVariant());
+                    }
+                    else
+                        sensor->addValue(valueKey, valuesObject[valueKey].toVariant());
+                }
+            }
+
+            if(sensorObject.contains("parameter_info"))
+            {
+                QJsonArray parameterArray = sensorObject["parameter_info"].toArray();
+
+                for(const QJsonValue &parameter : parameterArray)
+                {
+                    if(parameter.isObject())
+                    {
+                        QJsonObject parameterObject = parameter.toObject();
+
+                        if(parameterObject.contains("units") && parameterObject.contains("name"))
+                        sensor->addParameter(parameterObject["name"].toString(), parameterObject["units"].toString());
+                    }
+                }
+            }
+
+            if(sensorObject.contains("history_fields"))
+            {
+                QJsonArray historyArray = sensorObject["history_fields"].toArray();
+
+                for(const QJsonValue &historyValue : historyArray)
+                {
+                    if(historyValue.isObject())
+                    {
+                        QJsonObject historyObject = historyValue.toObject();
+                        QKlipperSensorData data;
+
+                        if(historyObject.contains("field"))
+                            data.m_field = historyObject["field"].toString();
+
+                        if(historyObject.contains("provider"))
+                            data.m_provider = historyObject["provider"].toString();
+
+                        if(historyObject.contains("description"))
+                            data.m_description = historyObject["description"].toString();
+
+                        if(historyObject.contains("strategy"))
+                            data.m_strategy = historyObject["strategy"].toString();
+
+                        if(historyObject.contains("units"))
+                            data.m_units = historyObject["units"].toString();
+
+                        if(historyObject.contains("init_tracker"))
+                            data.m_initTracker = historyObject["init_tracker"].toBool();
+
+                        if(historyObject.contains("exclude_paused"))
+                            data.m_excludePaused = historyObject["exclude_paused"].toBool();
+
+                        if(historyObject.contains("report_total"))
+                            data.m_reportTotal = historyObject["report_total"].toBool();
+
+                        if(historyObject.contains("report_maximum"))
+                            data.m_reportMaximum = historyObject["report_maximum"].toBool();
+
+                        if(historyObject.contains("precision"))
+                            data.m_precision = historyObject["precision"].toInt();
+
+                        if(historyObject.contains("parameter"))
+                            data.m_parameter = historyObject["parameter"].toString();
+
+                        if(data.isValid())
+                            sensor->addHistory(data);
+                    }
+                }
+            }
+
+            if(!m_system->m_sensors.contains(key))
+                m_system->addSensor(sensor);
+        }
+    }
+}
+
+void QKlipperConsole::machineSensorParser(QKlipperMessage *message)
+{
+    if(message->response().isObject() && message->response().toObject().contains("id"))
+    {
+        QJsonObject rootObject;
+        QJsonObject sensorsObject;
+        QJsonObject sensorObject = message->response().toObject();
+
+        sensorsObject[sensorObject["id"].toString()] = sensorObject;
+        rootObject["sensors"] = sensorsObject;
+
+        message->setResponse(rootObject);
+        machineSensorListParser(message);
+    }
+}
+
+void QKlipperConsole::machineSensorMeasurementParser(QKlipperMessage *message)
+{
+    QJsonObject sensorsObject;
+    sensorsObject["sensors"] = message->response();
+    message->setResponse(sensorsObject);
+
+    machineSensorListParser(message);
 }
 
 void QKlipperConsole::printerInfoParser(QKlipperMessage *message)
 {
-    QString state = message->response()["state"].toString();
-
     if(message->response().toObject().contains(QString("state")))
     {
+        QString state = message->response()["state"].toString();
+
         if(state == QString("ready"))
             m_printer->setStatus(QKlipperPrinter::Ready);
         else if(state == QString("error"))
@@ -3106,6 +3881,17 @@ void QKlipperConsole::printerObjectsQueryParser(QKlipperMessage *message)
 
 void QKlipperConsole::printerSubscribeParser(QKlipperMessage *message)
 {
+    if(message->response().toObject().contains("params"))
+    {
+        QJsonArray paramsArray = message->response()["params"].toArray();
+
+        for(const QJsonValue &value : paramsArray)
+        {
+            message->setResponse(value);
+            printerSubscribeParser(message);
+        }
+    }
+
     if(message->response().toObject().count() == 2)
         message->setResponse(message->response().toObject()["status"]);
 
@@ -3166,16 +3952,16 @@ void QKlipperConsole::printerSubscribeParser(QKlipperMessage *message)
                 QJsonArray meshMinArray = bedMeshObject["mesh_min"].toArray();
                 QJsonArray probeCountArray = bedMeshObject["probe_count"].toArray();
 
-                QKlipperPrintBedMesh::Limit minimum, maximum, probeCount;
+                QVector2D minimum, maximum, probeCount;
 
-                maximum.x = meshMaxArray[0].toDouble();
-                maximum.y = meshMaxArray[1].toDouble();
+                maximum.setX(meshMaxArray[0].toDouble());
+                maximum.setY(meshMaxArray[1].toDouble());
 
-                minimum.x = meshMinArray[0].toDouble();
-                minimum.y = meshMinArray[1].toDouble();
+                minimum.setX(meshMinArray[0].toDouble());
+                minimum.setY(meshMinArray[1].toDouble());
 
-                probeCount.x = probeCountArray[0].toDouble();
-                probeCount.y = probeCountArray[1].toDouble();
+                probeCount.setX(probeCountArray[0].toDouble());
+                probeCount.setY(probeCountArray[1].toDouble());
 
                 bedMesh->setProbeCount(probeCount);
                 bedMesh->setMaximum(maximum);
@@ -3611,6 +4397,7 @@ void QKlipperConsole::printerSubscribeParser(QKlipperMessage *message)
                         if(!m_printer->fans().contains(key))
                         {
                             fan = new QKlipperFan(m_printer);
+                            fan->setNameData(key);
                             newFan = true;
                         }
                         else
@@ -4000,7 +4787,7 @@ void QKlipperConsole::printerSubscribeParser(QKlipperMessage *message)
 
         foreach (QString key, keys)
         {
-            QJsonObject commandObject = commandsObject[key].toObject();
+            QJsonValue commandObject = commandsObject[key];
 
             QKlipperGCodeMacro macro;
             macro.macro = key.toUpper();
@@ -4104,15 +4891,15 @@ void QKlipperConsole::printerSubscribeParser(QKlipperMessage *message)
         QJsonArray meshMaxArray = bedMeshObject["mesh_max"].toArray();
         QJsonArray meshMinArray = bedMeshObject["mesh_min"].toArray();
 
-        QKlipperPrintBedMesh::Limit maximum, minimum;
+        QVector2D maximum, minimum;
 
-        maximum.x = meshMaxArray[0].toDouble();
-        maximum.y = meshMaxArray[1].toDouble();
+        maximum.setX(meshMaxArray[0].toDouble());
+        maximum.setY(meshMaxArray[1].toDouble());
 
         bedMesh->setMaximum(maximum);
 
-        minimum.x = meshMinArray[0].toDouble();
-        minimum.y = meshMinArray[1].toDouble();
+        minimum.setX(meshMinArray[0].toDouble());
+        minimum.setY(meshMinArray[1].toDouble());
 
         bedMesh->setMinimum(minimum);
 
@@ -4120,7 +4907,6 @@ void QKlipperConsole::printerSubscribeParser(QKlipperMessage *message)
         QJsonArray probedArray = bedMeshObject["probed_matrix"].toArray();
 
         QList<QList<qreal>> probed(probedArray.count());
-        bool hasResult = false;
 
         for(int i = 0; i < probedArray.count(); i++)
         {
@@ -4128,11 +4914,7 @@ void QKlipperConsole::printerSubscribeParser(QKlipperMessage *message)
             probed[i].resize(probedEntriesArray.count());
 
             for(int e = 0; e < probedEntriesArray.count(); e++)
-            {
                 probed[i][e] = probedEntriesArray[e].toDouble();
-
-                hasResult = true;
-            }
         }
 
         bedMesh->setProbed(probed);
@@ -4148,11 +4930,7 @@ void QKlipperConsole::printerSubscribeParser(QKlipperMessage *message)
             matrix[i].resize(matrixEntriesArray.count());
 
             for(int e = 0; e < matrixEntriesArray.count(); e++)
-            {
                 matrix[i][e] = matrixEntriesArray[e].toDouble();
-
-                hasResult = true;
-            }
         }
 
         bedMesh->setMatrix(matrix);
@@ -4167,7 +4945,6 @@ void QKlipperConsole::printerSubscribeParser(QKlipperMessage *message)
             profiles += profilesArray[i].toString();
 
         bedMesh->setProfiles(profiles);
-        m_printer->bed()->setHasBedMeshResult(hasResult);
     }
 
     //Parse stepper motor activity
@@ -4260,7 +5037,7 @@ void QKlipperConsole::printerSubscribeParser(QKlipperMessage *message)
             virtualSDCard->setIsActive(virtualSDObject["is_active"].toBool());
 
         if(virtualSDObject.contains("progress"))
-            virtualSDCard->setProgress(virtualSDObject["progress"].toDouble());
+            virtualSDCard->setValue(virtualSDObject["progress"].toDouble());
     }
 
     //Parse declared fan objects
@@ -4279,6 +5056,7 @@ void QKlipperConsole::printerSubscribeParser(QKlipperMessage *message)
                 if(!m_printer->fans().contains(key))
                 {
                     fan = new QKlipperFan(m_printer);
+                    fan->setNameData(key);
                     newFan = true;
                 }
                 else
@@ -4308,6 +5086,7 @@ void QKlipperConsole::printerSubscribeParser(QKlipperMessage *message)
                 if(!m_printer->fans().contains(key))
                 {
                     fan = new QKlipperFan(m_printer);
+                    fan->setNameData(key);
                     newFan = true;
                 }
                 else
@@ -4488,12 +5267,12 @@ void QKlipperConsole::serverInfoParser(QKlipperMessage *message)
 
 void QKlipperConsole::serverConfigParser(QKlipperMessage *message)
 {
-
+    Q_UNUSED(message);
 }
 
 void QKlipperConsole::serverFileRootsParser(QKlipperMessage *message)
 {
-    foreach(QJsonValueConstRef reference, message->response().toArray())
+    for(QJsonValueConstRef reference : message->response().toArray())
     {
         if(reference.isObject())
         {
@@ -4509,9 +5288,13 @@ void QKlipperConsole::serverFileRootsParser(QKlipperMessage *message)
                     m_server->setConfigLocation(referenceObject["path"].toString());
                 }
                 else if(referenceObject["name"] == QString("config_examples"))
-                    ;
+                {
+
+                }
                 else if(referenceObject["name"] == QString("docs"))
-                    ;
+                {
+
+                }
             }
         }
     }
@@ -4657,17 +5440,17 @@ void QKlipperConsole::serverFilesMetadataParser(QKlipperMessage *message)
 
 void QKlipperConsole::serverFilesDeleteParser(QKlipperMessage *message)
 {
-
+    Q_UNUSED(message);
 }
 
 void QKlipperConsole::serverFilesMoveParser(QKlipperMessage *message)
 {
-
+    Q_UNUSED(message);
 }
 
 void QKlipperConsole::serverFilesCopyParser(QKlipperMessage *message)
 {
-
+    Q_UNUSED(message);
 }
 
 void QKlipperConsole::serverFilesListParser(QKlipperMessage *message)
@@ -4679,7 +5462,7 @@ void QKlipperConsole::serverFilesListParser(QKlipperMessage *message)
 
     if(message->response().toObject().contains(QString("disk_usage")))
     {
-        QJsonObject driveUsage = message->response()["disk_usage"].toObject();
+        QJsonObject driveUsage = message->response().toObject()["disk_usage"].toObject();
         m_system->setDriveUsage(driveUsage["used"].toInteger());
         m_system->setDriveCapacity(driveUsage["total"].toInteger());
         m_system->setDriveFree(driveUsage["free"].toInteger());
@@ -4697,7 +5480,7 @@ void QKlipperConsole::serverFilesListParser(QKlipperMessage *message)
     if(directory.startsWith(root))
         directory.remove(0, root.length());
 
-    foreach(QJsonValueConstRef directoryRef, directories)
+    for(QJsonValueConstRef directoryRef : directories)
     {
         if(directoryRef.isObject())
         {
@@ -4721,7 +5504,7 @@ void QKlipperConsole::serverFilesListParser(QKlipperMessage *message)
         }
     }
 
-    foreach(QJsonValueConstRef fileRef, files)
+    for(QJsonValueConstRef fileRef : files)
     {
         if(fileRef.isObject())
         {
@@ -4755,12 +5538,12 @@ void QKlipperConsole::serverFilesListParser(QKlipperMessage *message)
 
 void QKlipperConsole::serverDirectoryPostParser(QKlipperMessage *message)
 {
-
+    Q_UNUSED(message);
 }
 
 void QKlipperConsole::serverDirectoryDeleteParser(QKlipperMessage *message)
 {
-
+    Q_UNUSED(message);
 }
 
 void QKlipperConsole::serverWebcamListParser(QKlipperMessage *message)
@@ -4999,9 +5782,7 @@ void QKlipperConsole::serverJobQueueAddParser(QKlipperMessage *message)
 void QKlipperConsole::serverJobQueueDeleteParser(QKlipperMessage *message)
 {
     QJsonArray jobArray = message->response()["queued_jobs"].toArray();
-
     QKlipperJobQueue *queue = m_server->jobQueue();
-
     QStringList keys;
 
     foreach(QKlipperPrintJob *job, m_server->jobQueue()->queue())

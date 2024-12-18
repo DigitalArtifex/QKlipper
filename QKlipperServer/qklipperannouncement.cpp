@@ -1,40 +1,10 @@
 #include "qklipperannouncement.h"
 
-QKlipperAnnouncement::QKlipperAnnouncement()
-    : QVariant{}
-{
 
-}
 
-QKlipperAnnouncement::QKlipperAnnouncement(const QKlipperAnnouncement &value)
-{
-    m_entryId = value.entryId();
-    m_date = value.date();
-    m_dateDismissed = value.dateDismissed();
-    m_isDismissed = value.isDismissed();
-    m_description = value.description();
-    m_feed = value.feed();
-    m_priority = value.priority();
-    m_source = value.source();
-    m_title = value.title();
-    m_url = value.url();
-}
 
-QKlipperAnnouncement &QKlipperAnnouncement::operator=(const QKlipperAnnouncement &value)
-{
-    m_entryId = value.entryId();
-    m_date = value.date();
-    m_dateDismissed = value.dateDismissed();
-    m_isDismissed = value.isDismissed();
-    m_description = value.description();
-    m_feed = value.feed();
-    m_priority = value.priority();
-    m_source = value.source();
-    m_title = value.title();
-    m_url = value.url();
 
-    return *this;
-}
+
 
 QString QKlipperAnnouncement::entryId() const
 {

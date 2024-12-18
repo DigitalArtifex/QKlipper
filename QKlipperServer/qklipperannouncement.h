@@ -24,34 +24,45 @@
 class QKlipperSystem;
 class QKlipperConsole;
 
-class QKlipperAnnouncement : public QVariant
+class QKlipperAnnouncement
 {
     friend QKlipperSystem;
     friend QKlipperConsole;
 public:
-    QKlipperAnnouncement();
-    QKlipperAnnouncement(const QKlipperAnnouncement &value);
-    QKlipperAnnouncement &operator=(const QKlipperAnnouncement &value);
-
-    bool operator==(const QKlipperAnnouncement &value)
+    QKlipperAnnouncement() = default;
+    QKlipperAnnouncement(const QKlipperAnnouncement &value)
     {
-        if(m_isDismissed != value.m_isDismissed ||
-           m_dateDismissed != value.m_dateDismissed ||
-            m_dateDismissedWake != value.m_dateDismissedWake ||
-            m_date != value.m_date ||
-            m_description != value.m_description ||
-            m_entryId != value.m_entryId ||
-            m_feed != value.m_feed ||
-            m_priority != value.m_priority ||
-            m_source != value.m_source ||
-            m_title != value.m_title ||
-            m_url != value.m_url )
-            return false;
-
-        return true;
+        m_entryId = value.entryId();
+        m_date = value.date();
+        m_dateDismissed = value.dateDismissed();
+        m_isDismissed = value.isDismissed();
+        m_description = value.description();
+        m_feed = value.feed();
+        m_priority = value.priority();
+        m_source = value.source();
+        m_title = value.title();
+        m_url = value.url();
     }
 
-    bool operator!=(const QKlipperAnnouncement &value)
+    ~QKlipperAnnouncement() = default;
+
+    QKlipperAnnouncement &operator=(const QKlipperAnnouncement &value)
+    {
+        m_entryId = value.entryId();
+        m_date = value.date();
+        m_dateDismissed = value.dateDismissed();
+        m_isDismissed = value.isDismissed();
+        m_description = value.description();
+        m_feed = value.feed();
+        m_priority = value.priority();
+        m_source = value.source();
+        m_title = value.title();
+        m_url = value.url();
+
+        return *this;
+    }
+
+    bool operator==(const QKlipperAnnouncement &value) const
     {
         if(m_isDismissed == value.m_isDismissed &&
             m_dateDismissed == value.m_dateDismissed &&
@@ -64,10 +75,12 @@ public:
             m_source == value.m_source &&
             m_title == value.m_title &&
             m_url == value.m_url )
-            return false;
+            return true;
 
-        return true;
+        return false;
     }
+
+    bool operator!=(const QKlipperAnnouncement &value) const { return !(*this == value); }
 
     QString entryId() const;
 

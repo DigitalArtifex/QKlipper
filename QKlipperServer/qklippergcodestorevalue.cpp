@@ -1,22 +1,34 @@
 #include "qklippergcodestorevalue.h"
 
-bool QKlipperGCodeStoreValue::operator==(const QKlipperGCodeStoreValue &value)
+QKlipperGCodeStoreValue::QKlipperGCodeStoreValue(const QKlipperGCodeStoreValue &value)
 {
-    if(m_gcodeType != value.m_gcodeType) return false;
-    if(m_time != value.m_time) return false;
-    if(m_message != value.m_message) return false;
-
-    return true;
+    m_gcodeType = value.m_gcodeType;
+    m_message = value.m_message;
+    m_time = value.m_time;
 }
 
-bool QKlipperGCodeStoreValue::operator!=(const QKlipperGCodeStoreValue &value)
+QKlipperGCodeStoreValue &QKlipperGCodeStoreValue::operator=(const QKlipperGCodeStoreValue &value)
+{
+    m_gcodeType = value.m_gcodeType;
+    m_message = value.m_message;
+    m_time = value.m_time;
+
+    return *this;
+}
+
+bool QKlipperGCodeStoreValue::operator==(const QKlipperGCodeStoreValue &value) const
 {
     if(m_gcodeType == value.m_gcodeType &&
         m_time == value.m_time &&
         m_message == value.m_message)
-        return false;
+        return true;
 
-    return true;
+    return false;
+}
+
+bool QKlipperGCodeStoreValue::operator!=(const QKlipperGCodeStoreValue &value) const
+{
+    return !(*this == value);
 }
 
 QString QKlipperGCodeStoreValue::message() const

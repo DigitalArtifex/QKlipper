@@ -131,6 +131,8 @@ public slots:
     void resetConnectionType();
 
     void setUserList(const QList<QKlipperUser> &userList);
+    void addUser(const QKlipperUser &user);
+    void deleteUser(const QKlipperUser &user);
 
     void setAccessDetails(QKlipperAccessDetails &accessDetails);
 
@@ -218,8 +220,10 @@ signals:
 
     void portChanged();
 
+    void stateChanged();
+
 private:
-    QKlipperClientIdentifier                         m_clientIdentifier;
+    QKlipperClientIdentifier                          m_clientIdentifier;
 
     ConnectionType                                    m_connectionType;
 
