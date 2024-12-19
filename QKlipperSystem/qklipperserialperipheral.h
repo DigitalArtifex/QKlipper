@@ -55,7 +55,7 @@ public:
 
         return *this;
     }
-    bool operator==(const QKlipperSerialPeripheral &value)
+    bool operator==(const QKlipperSerialPeripheral &value) const
     {
         if(m_type != value.m_type) return false;
         if(m_path != value.m_path) return false;
@@ -67,7 +67,7 @@ public:
 
         return true;
     }
-    bool operator!=(const QKlipperSerialPeripheral &value) { return !(*this == value); }
+    bool operator!=(const QKlipperSerialPeripheral &value) const { return !(*this == value); }
 
     QString type() const { return m_type; }
 

@@ -43,7 +43,7 @@ class QKlipperCanBusInterface
             return *this;
         }
 
-        bool operator==(const QKlipperCanBusInterface &interface)
+        bool operator==(const QKlipperCanBusInterface &interface) const
         {
             if(m_uuid != interface.m_uuid) return false;
             if(m_application != interface.m_application) return false;
@@ -51,7 +51,7 @@ class QKlipperCanBusInterface
             return true;
         }
 
-        bool operator!=(const QKlipperCanBusInterface &interface)
+        bool operator!=(const QKlipperCanBusInterface &interface) const
         {
             if(m_uuid == interface.m_uuid) return false;
             if(m_application == interface.m_application) return false;

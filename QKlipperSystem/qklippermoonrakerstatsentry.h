@@ -47,7 +47,7 @@ public:
 
         return *this;
     }
-    bool operator==(const QKlipperMoonrakerStatsEntry &value)
+    bool operator==(const QKlipperMoonrakerStatsEntry &value) const
     {
         if(m_time != value.m_time) return false;
         if(m_cpuUsage != value.m_cpuUsage) return false;
@@ -55,7 +55,7 @@ public:
 
         return true;
     }
-    bool operator!=(const QKlipperMoonrakerStatsEntry &value)
+    bool operator!=(const QKlipperMoonrakerStatsEntry &value) const
     {
         if(m_time == value.m_time &&
             m_cpuUsage == value.m_cpuUsage &&
