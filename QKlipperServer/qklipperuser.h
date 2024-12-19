@@ -34,21 +34,39 @@ public:
     ~QKlipperUser() = default;
     QKlipperUser(const QKlipperUser &user);
 
-    bool operator==(const QKlipperUser &user) const;
-    bool operator!=(const QKlipperUser &user) const;
-    QKlipperUser &operator=(const QKlipperUser &user);
+    bool operator==(const QKlipperUser &user) const
+    {
+        if(m_username != user.m_username)
+            return false;
+        if(m_createdOn != user.m_createdOn)
+            return false;
+        if(m_source != user.m_source)
+            return false;
 
-    QString username() const;
+        return true;
+    }
+    bool operator!=(const QKlipperUser &user) const { return !(*this == user); }
 
-    QString source() const;
+    QKlipperUser &operator=(const QKlipperUser &user)
+    {
+        m_username = user.m_username;
+        m_createdOn = user.m_createdOn;
+        m_source = user.m_source;
 
-    qreal createdOn() const;
+        return (*this);
+    }
 
-    void setUsername(const QString &username);
+    QString username() const { return m_username; }
 
-    void setSource(const QString &source);
+    QString source() const { return m_source; }
 
-    void setCreatedOn(qreal createdOn);
+    qreal createdOn() const { return m_createdOn; }
+
+    void setUsername(const QString &username) { m_username = username; }
+
+    void setSource(const QString &source) { m_source = source; }
+
+    void setCreatedOn(qreal createdOn) { m_createdOn = createdOn; }
 
 private:
     QString m_username;

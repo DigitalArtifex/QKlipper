@@ -2379,39 +2379,29 @@ void QKlipperConsole::parseNotification(QKlipperMessage *message)
         }
 
     }
+
     else if(message->method() == QString("notify_update_response"))
     {
         if(message->response().isObject())
         {
-            bool isUpdating = false;
-
             QJsonObject object = message->response().toObject();
             QString application = object["application"].toString();
             QString message = object["message"].toString();
             bool complete = object["complete"].toBool();
 
-            if(m_system->updateManager()->packages().contains(application))
-            {
-                m_system->updateManager()->packages().value(application)->setStateMessage(message);
-
-                if(complete && m_system->updateManager()->packages().value(application)->updating())
-                    m_system->updateManager()->packages().value(application)->setUpdatingFinished(true);
-            }
-
             if(complete)
+            {
                 m_system->updateManager()->setCurrentStateMessage(QString("Updating %1 Complete. %2").arg(application, message));
+                m_system->setState(QKlipperSystem::Idle);
+            }
             else
             {
-                isUpdating = true;
+                m_system->setState(QKlipperSystem::Updating);
                 m_system->updateManager()->setCurrentStateMessage(QString("Updating %1: %2").arg(application, message));
             }
-
-            if(isUpdating)
-                m_system->setState(QKlipperSystem::Updating);
-            else
-                m_system->setState(QKlipperSystem::Idle);
         }
     }
+
     //emitted when a package has completed auto-scan for update
     else if(message->method() == QString("notify_update_refreshed"))
     {
@@ -3392,7 +3382,7 @@ void QKlipperConsole::machineUpdateStatusParser(QKlipperMessage *message)
     //Grab the version info
     QJsonObject versionObject = message->response()["version_info"].toObject();
     QStringList keys = versionObject.keys();
-    QMap<QString, QKlipperUpdatePackage*> packages = m_system->updateManager()->packages();
+    QMap<QString, QKlipperUpdatePackage> packages;
 
     QStringList systemPackages = m_system->updateManager()->systemPackages();
 
@@ -3423,40 +3413,33 @@ void QKlipperConsole::machineUpdateStatusParser(QKlipperMessage *message)
             QJsonArray warningArray = packageObject["warnings"].toArray();
             QJsonArray anomaliesArray = packageObject["anomalies"].toArray();
 
-            bool newPackage = !m_system->updateManager()->packages().contains(key);
-
             //Package information
-            QKlipperUpdatePackage *packageState;
-
-            if(newPackage)
-                packageState = new QKlipperUpdatePackage(m_system->updateManager());
-            else
-                packageState = m_system->updateManager()->packages().value(key);
+            QKlipperUpdatePackage packageState;
 
             //Strings
-            packageState->setChannel(packageObject["channel"].toString());
-            packageState->setConfiguredType(packageObject["configured_type"].toString());
-            packageState->setDetectedType(packageObject["detected_type"].toString());
-            packageState->setRemoteAlias(packageObject["remote_alias"].toString());
-            packageState->setBranch(packageObject["branch"].toString());
-            packageState->setOwner(packageObject["owner"].toString());
-            packageState->setRepoName(packageObject["repo_name"].toString());
-            packageState->setVersion(packageObject["version"].toString());
-            packageState->setRemoteVersion(packageObject["remote_version"].toString());
-            packageState->setRollbackVersion(packageObject["rollback_version"].toString());
-            packageState->setCurrentHash(packageObject["current_hash"].toString());
-            packageState->setRemoteHash(packageObject["remote_hash"].toString());
-            packageState->setFullVersionString(packageObject["full_version_string"].toString());
-            packageState->setRecoveryUrl(packageObject["recovery_url"].toString());
-            packageState->setRemoteUrl(packageObject["remote_url"].toString());
+            packageState.setChannel(packageObject["channel"].toString());
+            packageState.setConfiguredType(packageObject["configured_type"].toString());
+            packageState.setDetectedType(packageObject["detected_type"].toString());
+            packageState.setRemoteAlias(packageObject["remote_alias"].toString());
+            packageState.setBranch(packageObject["branch"].toString());
+            packageState.setOwner(packageObject["owner"].toString());
+            packageState.setRepoName(packageObject["repo_name"].toString());
+            packageState.setVersion(packageObject["version"].toString());
+            packageState.setRemoteVersion(packageObject["remote_version"].toString());
+            packageState.setRollbackVersion(packageObject["rollback_version"].toString());
+            packageState.setCurrentHash(packageObject["current_hash"].toString());
+            packageState.setRemoteHash(packageObject["remote_hash"].toString());
+            packageState.setFullVersionString(packageObject["full_version_string"].toString());
+            packageState.setRecoveryUrl(packageObject["recovery_url"].toString());
+            packageState.setRemoteUrl(packageObject["remote_url"].toString());
 
             //Bools
-            packageState->setDebugEnabled(packageObject["debug_enabled"].toBool());
-            packageState->setIsValid(packageObject["is_valid"].toBool());
-            packageState->setCorrupt(packageObject["corrupt"].toBool());
-            packageState->setIsDirty(packageObject["is_dirty"].toBool());
-            packageState->setDetached(packageObject["detached"].toBool());
-            packageState->setPristine(packageObject["pristine"].toBool());
+            packageState.setDebugEnabled(packageObject["debug_enabled"].toBool());
+            packageState.setIsValid(packageObject["is_valid"].toBool());
+            packageState.setCorrupt(packageObject["corrupt"].toBool());
+            packageState.setIsDirty(packageObject["is_dirty"].toBool());
+            packageState.setDetached(packageObject["detached"].toBool());
+            packageState.setPristine(packageObject["pristine"].toBool());
 
             //Tags
             QStringList tags;
@@ -3464,7 +3447,7 @@ void QKlipperConsole::machineUpdateStatusParser(QKlipperMessage *message)
             for(int i = 0; i < tagsArray.count(); i++)
                 tags += tagsArray[i].toString();
 
-            packageState->setInfoTags(tags);
+            packageState.setInfoTags(tags);
 
             //Git messages
             QStringList gitMessages;
@@ -3472,7 +3455,7 @@ void QKlipperConsole::machineUpdateStatusParser(QKlipperMessage *message)
             for(int i = 0; i < gitArray.count(); i++)
                 gitMessages += gitArray[i].toString();
 
-            packageState->setGitMessages(gitMessages);
+            packageState.setGitMessages(gitMessages);
 
             //Warning messages
             QStringList warnings;
@@ -3480,7 +3463,7 @@ void QKlipperConsole::machineUpdateStatusParser(QKlipperMessage *message)
             for(int i = 0; i < warningArray.count(); i++)
                 warnings += warningArray[i].toString();
 
-            packageState->setWarnings(warnings);
+            packageState.setWarnings(warnings);
 
             //Anomalies messages
             QStringList anomalies;
@@ -3488,7 +3471,7 @@ void QKlipperConsole::machineUpdateStatusParser(QKlipperMessage *message)
             for(int i = 0; i < anomaliesArray.count(); i++)
                 anomalies += anomaliesArray[i].toString();
 
-            packageState->setAnomalies(anomalies);
+            packageState.setAnomalies(anomalies);
 
             QList<QKlipperUpdateCommit> commits;
 
@@ -3508,41 +3491,24 @@ void QKlipperConsole::machineUpdateStatusParser(QKlipperMessage *message)
                 commits.append(commit);
             }
 
-            packageState->setCommitsBehind(commits);
+            packageState.setCommitsBehind(commits);
 
             //Add to packages map
-            if(newPackage)
-                m_system->updateManager()->setPackage(key, packageState);
+            packages.insert(key, packageState);
         }
     }
 
+    updateState->setPackages(packages);
     updateState->setSystemPackages(systemPackages);
 }
 
 void QKlipperConsole::machinePowerDeviceListParser(QKlipperMessage *message)
 {
-    // {
-    //     "devices": [
-    //         {
-    //             "device": "green_led",
-    //             "status": "off",
-    //             "locked_while_printing": true,
-    //             "type": "gpio"
-    //         },
-    //         {
-    //             "device": "printer",
-    //             "status": "off",
-    //             "locked_while_printing": false,
-    //             "type": "tplink_smartplug"
-    //         }
-    //     ]
-    // }
-
     if(message->response().isObject() && message->response().toObject().contains("devices"))
     {
         QJsonArray deviceArray = message->response().toObject().value("devices").toArray();
 
-        for(QJsonValue value : deviceArray)
+        for(const QJsonValue &value : deviceArray)
         {
             if(value.isObject())
             {
@@ -3577,24 +3543,7 @@ void QKlipperConsole::machinePowerDeviceListParser(QKlipperMessage *message)
 
 void QKlipperConsole::machinePowerDeviceParser(QKlipperMessage *message)
 {
-    // {
-    //     "green_led": "off"
-    // }
-
-    // if(message->response().isObject())
-    // {
-    //     QJsonObject deviceObject = message->response().toObject();
-    //     QStringList keys = deviceObject.keys();
-
-    //     for(QString &key : keys)
-    //     {
-    //         if(m_powerDevices.contains(key))
-    //         {
-    //             bool isOn = (deviceObject[key].toString() == "on");
-    //             m_powerDevices[key]->setIsOn(isOn);
-    //         }
-    //     }
-    // }
+    Q_UNUSED(message)
 }
 
 void QKlipperConsole::machineLedStripListParser(QKlipperMessage *message)
@@ -4009,7 +3958,7 @@ void QKlipperConsole::printerSubscribeParser(QKlipperMessage *message)
             if(settingsObject.contains(QString("safe_z_home")))
             {
                 QJsonObject safeZObject = settingsObject["safe_z_home"].toObject();
-                QKlipperSafeZHome *zHome = m_printer->safeZHome();
+                QKlipperSafeZHome zHome = m_printer->safeZHome();
 
                 if(safeZObject.contains(QString("home_xy_position")))
                 {
@@ -4017,16 +3966,16 @@ void QKlipperConsole::printerSubscribeParser(QKlipperMessage *message)
 
                     if(homePositionArray.count() >= 2)
                     {
-                        zHome->setHomeXPosition(homePositionArray[0].toDouble());
-                        zHome->setHomeYPosition(homePositionArray[1].toDouble());
+                        zHome.setHomeXPosition(homePositionArray[0].toDouble());
+                        zHome.setHomeYPosition(homePositionArray[1].toDouble());
                     }
                 }
 
-                zHome->setMoveToPrevious(safeZObject["move_to_previous"].toBool());
+                zHome.setMoveToPrevious(safeZObject["move_to_previous"].toBool());
 
-                zHome->setSpeed(safeZObject["speed"].toDouble());
-                zHome->setZHopSpeed(safeZObject["z_hop"].toDouble());
-                zHome->setZHop(safeZObject["z_hop_speed"].toDouble());
+                zHome.setSpeed(safeZObject["speed"].toDouble());
+                zHome.setZHopSpeed(safeZObject["z_hop"].toDouble());
+                zHome.setZHop(safeZObject["z_hop_speed"].toDouble());
             }
 
             //Parse adjustment screw settings

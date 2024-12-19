@@ -68,4 +68,5 @@ class QKlipperClientIdentifier
         QString url;
 };
 
+Q_DECLARE_METATYPE(QKlipperClientIdentifier)
 #endif // QKLIPPERCLIENTIDENTIFIER_H

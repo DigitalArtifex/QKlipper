@@ -32,24 +32,47 @@ public:
     };
 
     QKlipperGCodeStoreValue() = default;
-    QKlipperGCodeStoreValue(const QKlipperGCodeStoreValue &value);
     ~QKlipperGCodeStoreValue() = default;
 
-    QKlipperGCodeStoreValue &operator=(const QKlipperGCodeStoreValue &value);
-    bool operator==(const QKlipperGCodeStoreValue &value) const;
-    bool operator!=(const QKlipperGCodeStoreValue &value) const;
+    QKlipperGCodeStoreValue(const QKlipperGCodeStoreValue &value)
+    {
+        m_gcodeType = value.m_gcodeType;
+        m_message = value.m_message;
+        m_time = value.m_time;
+    }
 
-    QString message() const;
+    QKlipperGCodeStoreValue &operator=(const QKlipperGCodeStoreValue &value)
+    {
+        m_gcodeType = value.m_gcodeType;
+        m_message = value.m_message;
+        m_time = value.m_time;
 
-    GCodeType gcodeType() const;
+        return *this;
+    }
 
-    qreal time() const;
+    bool operator==(const QKlipperGCodeStoreValue &value) const
+    {
+        if(m_gcodeType == value.m_gcodeType &&
+            m_time == value.m_time &&
+            m_message == value.m_message)
+            return true;
 
-    void setMessage(const QString &message);
+        return false;
+    }
 
-    void setGcodeType(GCodeType gcodeType);
+    bool operator!=(const QKlipperGCodeStoreValue &value) const { return !(*this == value); }
 
-    void setTime(qreal time);
+    QString message() const { return m_message; }
+
+    GCodeType gcodeType() const { return m_gcodeType; }
+
+    qreal time() const { return m_time; }
+
+    void setMessage(const QString &message) { m_message = message; }
+
+    void setGcodeType(GCodeType gcodeType) { m_gcodeType = gcodeType; }
+
+    void setTime(qreal time) { m_time = time; }
 
 private:
 

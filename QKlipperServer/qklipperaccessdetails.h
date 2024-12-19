@@ -95,4 +95,5 @@ private:
     QKlipperUser m_user;
 };
 
+Q_DECLARE_METATYPE(QKlipperAccessDetails)
 #endif // QKLIPPERACCESSDETAILS_H

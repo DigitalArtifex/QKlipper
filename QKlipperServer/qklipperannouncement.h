@@ -82,40 +82,40 @@ public:
 
     bool operator!=(const QKlipperAnnouncement &value) const { return !(*this == value); }
 
-    QString entryId() const;
+    QString entryId() const { return m_entryId; }
 
-    QString url() const;
+    QString url() const { return m_url; }
 
-    QString title() const;
+    QString title() const { return m_title; }
 
-    QString description() const;
+    QString description() const { return m_description; }
 
-    QString priority() const;
+    QString priority() const { return m_priority; }
 
-    QString feed() const;
+    QString feed() const { return m_feed; }
 
-    QString source() const;
+    QString source() const { return m_source; }
 
-    qreal date() const;
+    qreal date() const { return m_date; }
 
-    qreal dateDismissed() const;
+    qreal dateDismissed() const { return m_dateDismissed; }
 
-    qreal dateDismissedWake() const;
+    qreal dateDismissedWake() const { return m_dateDismissedWake; }
 
-    bool isDismissed() const;
+    bool isDismissed() const { return m_isDismissed; }
 
 private:
-    void setEntryId(const QString &entryId);
-    void setUrl(const QString &url);
-    void setTitle(const QString &title);
-    void setDescription(const QString &description);
-    void setPriority(const QString &priority);
-    void setFeed(const QString &feed);
-    void setSource(const QString &source);
-    void setDate(qreal date);
-    void setDateDismissed(qreal dateDismissed);
-    void setDateDismissedWake(qreal dateDismissedWake);
-    void setIsDismissed(bool isDismissed);
+    void setEntryId(const QString &entryId) { m_entryId = entryId; }
+    void setUrl(const QString &url) { m_url = url; }
+    void setTitle(const QString &title) { m_title = title; }
+    void setDescription(const QString &description) { m_description = description; }
+    void setPriority(const QString &priority) { m_priority = priority; }
+    void setFeed(const QString &feed) { m_feed = feed; }
+    void setSource(const QString &source) { m_source = source; }
+    void setDate(qreal date) { m_date = date; }
+    void setDateDismissed(qreal dateDismissed) { m_dateDismissed = dateDismissed; }
+    void setDateDismissedWake(qreal dateDismissedWake) { m_dateDismissedWake = dateDismissedWake; }
+    void setIsDismissed(bool isDismissed) { m_isDismissed = isDismissed; }
 
     QString m_entryId;
     QString m_url;
@@ -132,6 +132,7 @@ private:
     bool m_isDismissed = false;
 };
 
+Q_DECLARE_METATYPE(QKlipperAnnouncement)
 typedef QList<QKlipperAnnouncement> QKlipperAnnouncementList;
 
 #endif // QKLIPPERANNOUNCEMENT_H
