@@ -22,7 +22,7 @@ Qt based Klipper/Moonraker library (ALPHA - convenience methods still being port
     
     //address and port for non-rpc calls
     instance->setPort(7125);
-    instance->setAddress("localhost"); //do not include http
+    instance->setAddress("http://localhost");
     
     //instance location is required for local connections
     instance->setInstanceLocation("/home/parametheus/printer_data");
@@ -39,19 +39,20 @@ Local connections require `setInstanceLoction` to be called with the fully quali
     
     //address and port for klipper instance
     instance->setPort(7125);
-    instance->setAddress("artifex.local"); //do not include http
+    instance->setAddress("http://artifex"); //it is best to use the hostname, IP or full domain name. Avoid using .local
     
     instance->connect();
 ```
 
 
-Once `init` has been called, the QKlipperInstance will create the **QKlipperServer**, **QKlipperPrinter**, **QKlipperConsole** and **QKlipperSystem** and if auto connect is set to true, the QKlipperConole will begin the startup sequence.
+Once `QKlipperInstance->connect()` has been called the QKlipperConole will attempt to connect to the sockets and begin the startup sequence.
 
 ##
 
 ## Usage
 In order to interface with the Klipper instance we need to make sure the console has connected and syncronized. The easiest way to do this is to connect to
-the **QKlipperConsole::connectionStateChanged()** signal and check for the *Syncronized* state and that it's not still connecting.
+the **QKlipperInstance::connected()** signal. If you want, you can instead connect to the **QKlipperConsole::connectionStateChanged()** to react to the individual
+states of the connection process.
 ```
 class MyClass : QObject
 {
@@ -74,11 +75,7 @@ class MyClass : QObject
             instance->setInstanceLocation("/home/parametheus/printer_data");
             
             //connect to the signal
-            QObject::connect(instance->console(), 
-                            SIGNAL(connectionStateChanged()), 
-                            this, 
-                            SLOT(onConsoleConnectionStateChanged())
-                            );
+            connect(instance, SIGNAL(connected), this, SLOT(onInstanceConnected()));
             
             //set the printer object
             printer = instance->printer();
@@ -88,15 +85,12 @@ class MyClass : QObject
         }
     
     protected slots:
-        void onConsoleConnectionStateChanged()
+        void onInstanceConnected()
         {
-            if(console->hasConnectionState(QKlipperConsole::Syncronized) && !console->isConnecting())
-            {
-                //console is ready
-                printer->toolhead()->home(); //homes the toolhead
-                printer->toolhead()->setPosition(100, 50, 50); //sets absolute position
-                printer->bed()->setTargetTemperature(60); //sets the target temp (C)
-            }
+            //console is ready
+            printer->toolhead()->home(); //homes the toolhead
+            printer->toolhead()->setPosition(100, 50, 50); //sets absolute position
+            printer->bed()->setTargetTemperature(60); //sets the target temp (C)
         }
 };
 ```
