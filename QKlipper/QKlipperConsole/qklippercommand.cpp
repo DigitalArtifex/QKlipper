@@ -50,7 +50,7 @@ void QKlipperCommand::initialize()
     {
         m_isInitializing = true;
 
-        QFile commandsFile(QString(":/data/klipper_commands.json"));
+        QFile commandsFile(QString(":/qrc/data/klipper_commands.json"));
 
         if(!commandsFile.open(QFile::ReadOnly))
         {

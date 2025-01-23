@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/qrc">
+        <file>data/klipper_commands.json</file>
+    </qresource>
+</RCC>

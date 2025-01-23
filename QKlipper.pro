@@ -1,10 +1,16 @@
 QT += core network websockets quick
 
-NAME = Klipper
+NAME = QKlipper
 CONFIG += c++17 metatypes shared create_prl
-TARGET      = $$qtLibraryTarget(QKlipper)
+TARGET      = $$qtLibraryTarget(qklipper)
 TEMPLATE = lib
 DEFINES += DALIB
+VERSION = 1.0.1
+
+unix {
+    LIBEXTENSION = .so
+    STATICLIBEXTENSION = .a
+}
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -249,6 +255,10 @@ prl.files = $$OUT_PWD/lib$$TARGET$$PRLEXTENSION
 prl.path = $$[QT_HOST_LIBS]/
 INSTALLS += prl
 
+staticlib.files = $$OUT_PWD/lib$$TARGET$$STATICLIBEXTENSION
+staticlib.path = $$[QT_HOST_LIBS]/
+INSTALLS += staticlib
+
 target.path = $$[QT_HOST_LIBS]/
 INSTALLS += target
 
@@ -256,3 +266,6 @@ INSTALLS += target
 # *-g++* {
 #     QMAKE_CXXFLAGS += -fpermissive
 # }
+
+RESOURCES += \
+    data.qrc
