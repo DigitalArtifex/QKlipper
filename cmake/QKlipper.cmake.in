@@ -1,0 +1,8 @@
+set(QKlipper_INCLUDE_DIRS ${CMAKE_PREFIX_PATH}/include/QKlipper)
+
+if(QKlipper_STATIC)
+    set(QKlipper_LIBRARIES ${CMAKE_PREFIX_PATH}/lib/libQ${QT_VERSION_MAJOR}KlipperStatic.a)
+else()
+    set(QKlipper_LIBRARIES ${CMAKE_PREFIX_PATH}/lib/libQ${QT_VERSION_MAJOR}Klipper.so)
+endif()
+

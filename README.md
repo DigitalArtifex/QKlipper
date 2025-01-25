@@ -4,16 +4,54 @@ Qt based Klipper/Moonraker library (ALPHA - convenience methods still being port
 
 
 ## Setup
-- Add QKlipper files to your Qt project
-- Add Qt dependencies
+### Installation
+In order to use the library, you must download, compile and install it.
+
+### Downlaod
+
 ```
-    QT += core network websockets
+    git clone https://github.com/DigitalArtifex/QKlipper.git
+    cd QKlipper
 ```
-- Include QKlipper
+
+### Build
+You can configure and build the project by either cloning and opening the QKlipper repo in QtCreator, or use the `qt-cmake` tool provided by the target kit. In this example we are targeting the Qt 6.8.1 kit for GCC64, which has been installed to `/opt/Qt`. To keep the source directory clean, we first create our build directory and execute `qt-cmake` from there.
+
 ```
-    #include "QKlipper/qklipper.h"
+    mkdir -p build/release
+    cd build/release
+    /opt/Qt/6.8.1/gcc_64/bin/qt-cmake -S $PWD/../../ -B $PWD
 ```
-##
+
+Due to a bug in the cmake file, the first call to `qt-cmake -S $PWD/../../ -B $PWD` fails but subsequent attempts work fine, so just run it again.
+
+```
+    cmake --build $PWD
+```
+
+### Install
+```
+    sudo cmake --install $PWD
+```
+
+## Usage
+
+### Qt Project File
+```
+    LIBS += -L$$[QT_HOST_LIBS] -lQt$$[QT_MAJOR_VERSION]
+```
+
+### CMake Project File
+```
+    find_package(QKlipper 1.0.1 REQUIRED)
+
+    target_link_libraries(MyProject
+        PRIVATE
+            ${QKlipper_LIBRARIES}
+    )
+
+```
+
 ### Local connections
 ```
     //Creating a local instance
@@ -30,7 +68,7 @@ Qt based Klipper/Moonraker library (ALPHA - convenience methods still being port
     instance->connect();
 ```
 Local connections require `setInstanceLoction` to be called with the fully qualified path of the klipper installation.
-##
+
 ### Remote connections
 ```
     //Creating a remote instance
@@ -44,10 +82,8 @@ Local connections require `setInstanceLoction` to be called with the fully quali
     instance->connect();
 ```
 
-
 Once `QKlipperInstance->connect()` has been called the QKlipperConole will attempt to connect to the sockets and begin the startup sequence.
 
-##
 
 ## Usage
 In order to interface with the Klipper instance we need to make sure the console has connected and syncronized. The easiest way to do this is to connect to
