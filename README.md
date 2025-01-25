@@ -7,7 +7,7 @@ Qt based Klipper/Moonraker library (ALPHA - convenience methods still being port
 ### Installation
 In order to use the library, you must download, compile and install it.
 
-### Downlaod
+### Download
 
 ```
     git clone https://github.com/DigitalArtifex/QKlipper.git
