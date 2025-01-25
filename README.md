@@ -4,17 +4,12 @@ Qt based Klipper/Moonraker library (ALPHA - convenience methods still being port
 
 
 ## Setup
-### Installation
-In order to use the library, you must download, compile and install it.
-
-### Download
 
 ```
     git clone https://github.com/DigitalArtifex/QKlipper.git
     cd QKlipper
 ```
 
-### Build
 You can configure and build the project by either cloning and opening the QKlipper repo in QtCreator, or use the `qt-cmake` tool provided by the target kit. In this example we are targeting the Qt 6.8.1 kit for GCC64, which has been installed to `/opt/Qt`. To keep the source directory clean, we first create our build directory and execute `qt-cmake` from there.
 
 ```
@@ -27,10 +22,6 @@ Due to a bug in the cmake file, the first call to `qt-cmake -S $PWD/../../ -B $P
 
 ```
     cmake --build $PWD
-```
-
-### Install
-```
     sudo cmake --install $PWD
 ```
 
