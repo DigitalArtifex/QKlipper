@@ -24,8 +24,8 @@ else()
     endif()
 endif()
 
-if("${INSTALL_PREFIX}" MATCHES "lib/cmake")
-    string(REPLACE "lib/cmake" "" INSTALL_PREFIX "${INSTALL_PREFIX}")
+if("${INSTALL_PREFIX}" MATCHES "/lib/cmake^")
+    string(REPLACE "/lib/cmake^" "" INSTALL_PREFIX "${INSTALL_PREFIX}")
     set(INSTALL_LIB_PATH "${INSTALL_PREFIX}/lib")
     set(INSTALL_INCLUDE_PATH "${INSTALL_PREFIX}/include")
 else()
@@ -49,6 +49,7 @@ file(GLOB_RECURSE SOURCES src/*.cpp)
 file(GLOB_RECURSE HEADERS include/QKlipper/*.h)
 
 if(BUILD_SHARED_LIBS)
+    list(APPEND TARGETS "QKlipper")
     add_library(QKlipper SHARED)
 
     target_link_libraries(QKlipper PRIVATE
@@ -62,20 +63,17 @@ if(BUILD_SHARED_LIBS)
 
     target_include_directories(QKlipper PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-    target_sources(QKlipper PRIVATE ${SOURCES})
-    target_sources(QKlipper PRIVATE ${RESOURCES})
-    target_sources(QKlipper PRIVATE ${HEADERS})
-
-    set_target_properties(QKlipper PROPERTIES
-        VERSION ${CMAKE_PROJECT_VERSION}
-        SOVERSION ${CMAKE_PROJECT_VERSION_MAJOR}
-        LIBRARY_OUTPUT_NAME ${INSTALLED_NAME}
+    target_sources(QKlipper
+        PRIVATE ${SOURCES}
+        PRIVATE ${RESOURCES}
+        PRIVATE ${HEADERS}
     )
 
     install(TARGETS QKlipper DESTINATION "${INSTALL_LIB_PATH}")
 endif()
 
 if(BUILD_STATIC_LIBS)
+    list(APPEND TARGETS "QKlipperStatic")
     add_library(QKlipperStatic STATIC)
 
     target_link_libraries(QKlipperStatic PRIVATE
@@ -93,14 +91,40 @@ if(BUILD_STATIC_LIBS)
     target_sources(QKlipperStatic PRIVATE ${RESOURCES})
     target_sources(QKlipperStatic PRIVATE ${HEADERS})
 
-    set_target_properties(QKlipperStatic PROPERTIES
-        VERSION ${CMAKE_PROJECT_VERSION}
-        SOVERSION ${CMAKE_PROJECT_VERSION_MAJOR}
-        OUTPUT_NAME ${INSTALLED_NAME}
-    )
+    # set_target_properties(QKlipperStatic PROPERTIES
+    #     VERSION ${CMAKE_PROJECT_VERSION}
+    #     SOVERSION ${CMAKE_PROJECT_VERSION_MAJOR}
+    #     OUTPUT_NAME ${INSTALLED_NAME}
+    # )
+
+    # # If MSVC is being used, and ASAN is enabled, we need to set the debugger environment
+    # # so that it behaves well with MSVC's debugger, and we can run the target from visual studio
+    # if(MSVC)
+    #   get_all_installable_targets(all_targets)
+    #   message("all_targets=${all_targets}")
+    #   set_target_properties(QKlipperStatic PROPERTIES VS_DEBUGGER_ENVIRONMENT "PATH=$(VC_ExecutablePath_x64);%PATH%")
+    # endif()
 
     install(TARGETS QKlipperStatic DESTINATION "${INSTALL_LIB_PATH}")
 endif()
+
+# Iterate over all targets in the project
+get_property(TARGETS DIRECTORY PROPERTY BUILDSYSTEM_TARGETS)
+foreach(TARGET ${TARGETS})
+    # Set the version of the library
+    set_target_properties(QKlipper PROPERTIES
+        VERSION ${CMAKE_PROJECT_VERSION}
+        SOVERSION ${CMAKE_PROJECT_VERSION_MAJOR}
+        LIBRARY_OUTPUT_NAME ${INSTALLED_NAME}
+    )
+
+    # If MSVC is being used, and ASAN is enabled, we need to set the debugger environment
+    # so that it behaves well with MSVC's debugger, and we can run the target from visual studio
+    if(MSVC)
+        message("MSVC Debug: ${TARGET}")
+        set_target_properties(${TARGET} PROPERTIES VS_DEBUGGER_ENVIRONMENT "PATH=$(VC_ExecutablePath_x64);%PATH%")
+    endif()
+endforeach()
 
 write_basic_package_version_file(
     ${CMAKE_CURRENT_BINARY_DIR}/cmake/QKlipperConfigVersion.cmake
