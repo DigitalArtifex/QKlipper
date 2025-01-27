@@ -16,11 +16,6 @@ You can configure and build the project by either cloning and opening the QKlipp
     mkdir -p build/release
     cd build/release
     /opt/Qt/6.8.1/gcc_64/bin/qt-cmake -S $PWD/../../ -B $PWD
-```
-
-Due to a bug in the cmake file, the first call to `qt-cmake -S $PWD/../../ -B $PWD` fails but subsequent attempts work fine, so just run it again.
-
-```
     cmake --build $PWD
     sudo cmake --install $PWD
 ```

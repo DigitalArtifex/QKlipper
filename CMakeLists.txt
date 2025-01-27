@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 
+include(CMakePackageConfigHelpers)
+
 #set(PROJECT-NAME_VERSION)
 project(QKlipper LANGUAGES CXX VERSION 1.0.2)
 
@@ -15,11 +17,21 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 if(USE_SYSTEM_PATH)
     set(INSTALL_PREFIX "/usr")
 else()
-    set(INSTALL_PREFIX ${CMAKE_PREFIX_PATH})
+    if("${CMAKE_PREFIX_PATH}" MATCHES ";|:")
+        list(GET CMAKE_PREFIX_PATH 0 INSTALL_PREFIX)
+    else()
+        set(INSTALL_PREFIX, "${CMAKE_PREFIX_PATH}")
+    endif()
 endif()
 
-set(INSTALL_LIB_PATH "${INSTALL_PREFIX}/lib")
-set(INSTALL_INCLUDE_PATH "${INSTALL_PREFIX}/include")
+if("${INSTALL_PREFIX}" MATCHES "lib/cmake")
+    string(REPLACE "lib/cmake" "" INSTALL_PREFIX "${INSTALL_PREFIX}")
+    set(INSTALL_LIB_PATH "${INSTALL_PREFIX}/lib")
+    set(INSTALL_INCLUDE_PATH "${INSTALL_PREFIX}/include")
+else()
+    set(INSTALL_LIB_PATH "${INSTALL_PREFIX}/lib")
+    set(INSTALL_INCLUDE_PATH "${INSTALL_PREFIX}/include")
+endif()
 
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Gui)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Gui Network Quick)
@@ -90,8 +102,6 @@ if(BUILD_STATIC_LIBS)
     install(TARGETS QKlipperStatic DESTINATION "${INSTALL_LIB_PATH}")
 endif()
 
-include(CMakePackageConfigHelpers)
-
 write_basic_package_version_file(
     ${CMAKE_CURRENT_BINARY_DIR}/cmake/QKlipperConfigVersion.cmake
     COMPATIBILITY AnyNewerVersion
@@ -105,7 +115,7 @@ install(FILES
 configure_package_config_file(
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/QKlipper.cmake.in"
     "${CMAKE_CURRENT_BINARY_DIR}/cmake/QKlipperConfig.cmake"
-    INSTALL_DESTINATION "${INSTALL_LIB_PATH}/cmake/QKlipper"
+    INSTALL_DESTINATION "${INSTALL_INCLUDE_PATH}/lib/cmake/QKlipper"
 )
 
 configure_file(
@@ -151,3 +161,5 @@ else()
 endif()
 
 message(STATUS "Install Prefix: ${INSTALL_PREFIX}")
+message(STATUS "Library Install Prefix: ${INSTALL_LIB_PATH}")
+message(STATUS "Header Install Prefix: ${INSTALL_INCLUDE_PATH}")
