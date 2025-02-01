@@ -150,9 +150,13 @@ public:
 
     bool hasChamber() const;
 
+    qreal minimumCruiseRatio() const;
+
 public slots:
 
     void setHasChamber(bool hasChamber);
+
+    void setMinimumCruiseRatio(qreal minimumCruiseRatio);
 
 private slots:
 
@@ -282,6 +286,8 @@ signals:
 
     void hasChamberChanged();
 
+    void minimumCruiseRatioChanged();
+
 private:
     QTimer *m_fakePrintTimer = nullptr;
     QKlipperToolHead                                *m_toolhead = nullptr;
@@ -305,6 +311,7 @@ private:
     qreal                                            m_maxZVelocity = 0;
     qreal                                            m_squareCornerVelocity = 0;
     qreal                                            m_printTime = 0;
+    qreal                                            m_minimumCruiseRatio = 0;
 
     QTimer                                          *m_connectionTimer = nullptr;
 
@@ -334,6 +341,8 @@ private:
 
     QKlipperSafeZHome                                m_safeZHome;
     bool                                             m_hasChamber = false;
+    Q_PROPERTY(qreal minimumCruiseRatio READ minimumCruiseRatio WRITE setMinimumCruiseRatio NOTIFY
+                   minimumCruiseRatioChanged FINAL)
 };
 
 #endif // QKLIPPERPRINTER_H
