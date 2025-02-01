@@ -24,8 +24,8 @@ else()
     endif()
 endif()
 
-if("${INSTALL_PREFIX}" MATCHES "/lib/cmake^")
-    string(REPLACE "/lib/cmake^" "" INSTALL_PREFIX "${INSTALL_PREFIX}")
+if("${INSTALL_PREFIX}" MATCHES "/lib/cmake")
+    string(REPLACE "/lib/cmake" "" INSTALL_PREFIX "${INSTALL_PREFIX}")
     set(INSTALL_LIB_PATH "${INSTALL_PREFIX}/lib")
     set(INSTALL_INCLUDE_PATH "${INSTALL_PREFIX}/include")
 else()
@@ -90,20 +90,6 @@ if(BUILD_STATIC_LIBS)
     target_sources(QKlipperStatic PRIVATE ${SOURCES})
     target_sources(QKlipperStatic PRIVATE ${RESOURCES})
     target_sources(QKlipperStatic PRIVATE ${HEADERS})
-
-    # set_target_properties(QKlipperStatic PROPERTIES
-    #     VERSION ${CMAKE_PROJECT_VERSION}
-    #     SOVERSION ${CMAKE_PROJECT_VERSION_MAJOR}
-    #     OUTPUT_NAME ${INSTALLED_NAME}
-    # )
-
-    # # If MSVC is being used, and ASAN is enabled, we need to set the debugger environment
-    # # so that it behaves well with MSVC's debugger, and we can run the target from visual studio
-    # if(MSVC)
-    #   get_all_installable_targets(all_targets)
-    #   message("all_targets=${all_targets}")
-    #   set_target_properties(QKlipperStatic PROPERTIES VS_DEBUGGER_ENVIRONMENT "PATH=$(VC_ExecutablePath_x64);%PATH%")
-    # endif()
 
     install(TARGETS QKlipperStatic DESTINATION "${INSTALL_LIB_PATH}")
 endif()
