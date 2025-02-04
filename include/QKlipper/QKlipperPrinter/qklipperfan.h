@@ -50,6 +50,14 @@ public:
         On = 1 /*!!< Fan is on */
     };
 
+    struct Tachometer
+    {
+        QString pin;
+        qreal pollInterval = 0;
+        qint8 pulsesPerRotation = 0;
+        bool enabled = false;
+    };
+
     /*!
      * Constructor
      *
@@ -85,12 +93,23 @@ public:
      */
     bool isControllable() const;
 
-    /*!
-     * Current console object
-     *
-     * \returns The current console object
-     */
-    QKlipperConsole *console() const;
+    QString pin() const;
+
+    QString enablePin() const;
+
+    qreal maxPower() const;
+
+    qreal shutdownSpeed() const;
+
+    qreal cycleTime() const;
+
+    qreal kickStartTime() const;
+
+    qreal offBelow() const;
+
+    bool hardwarePin() const;
+
+    Tachometer tachometer() const;
 
 public slots:
     /*!
@@ -100,6 +119,7 @@ public slots:
      */
     void setSpeed(qreal speed);
 
+    void setTachometer(const Tachometer &tachometer);
 
 private slots:
     /*!
@@ -158,17 +178,27 @@ private slots:
      */
     void resetIsControllable();
 
-    /*!
-     * Sets the console object of the fan. This is used to send commands
-     * for the fan to klipper
-     *
-     * \param console Console of the current object
-     */
-    void setConsole(QKlipperConsole *console);
+    void setPin(const QString &pin);
+
+    void setEnablePin(const QString &enablePin);
+
+    void setMaxPower(qreal maxPower);
+
+    void setShutdownSpeed(qreal shutdownSpeed);
+
+    void setCycleTime(qreal cycleTime);
+
+    void setKickStartTime(qreal kickStartTime);
+
+    void setOffBelow(qreal offBelow);
+
+    void setHardwarePin(bool hardwarePin);
 
 signals:
 
-    //Signal fired when setNameData has been called with new data
+    /*!
+     * Signal fired when setNameData has been called with new data
+     */
     void nameChanged();
 
     //Signal fired when setSpeedData has been called with new data
@@ -180,18 +210,60 @@ signals:
     //Signal fired when setIsControllableData has been called with new data
     void isControllableChanged();
 
+    void pinChanged();
+
+    void enablePinChanged();
+
+    void maxPowerChanged();
+
+    void shutdownSpeedChanged();
+
+    void cycleTimeChanged();
+
+    void kickStartTimeChanged();
+
+    void offBelowChanged();
+
+    void hardwarePinChanged();
+
+    void tachometerChanged();
+
 private:
     QString m_name;
+    QString m_pin;
+    QString m_enablePin;
+
     qreal m_speed = 0;
     qreal m_rpm = 0;
+    qreal m_maxPower = 0;
+    qreal m_shutdownSpeed = 0;
+    qreal m_cycleTime = 0;
+    qreal m_kickStartTime = 0;
+    qreal m_offBelow = 0;
+
     bool m_isControllable = 0;
+    bool m_hardwarePin = false;
 
     QKlipperConsole *m_console = nullptr;
+
+    Tachometer m_tachometer;
 
     Q_PROPERTY(QString name READ name RESET resetName NOTIFY nameChanged FINAL)
     Q_PROPERTY(qreal speed READ speed WRITE setSpeed RESET resetSpeed NOTIFY speedChanged FINAL)
     Q_PROPERTY(qreal rpm READ rpm RESET resetRpm NOTIFY rpmChanged FINAL)
     Q_PROPERTY(bool isControllable READ isControllable RESET resetIsControllable NOTIFY isControllableChanged FINAL)
+    Q_PROPERTY(QString pin READ pin WRITE setPin NOTIFY pinChanged FINAL)
+    Q_PROPERTY(QString enablePin READ enablePin WRITE setEnablePin NOTIFY enablePinChanged FINAL)
+    Q_PROPERTY(qreal maxPower READ maxPower WRITE setMaxPower NOTIFY maxPowerChanged FINAL)
+    Q_PROPERTY(qreal shutdownSpeed READ shutdownSpeed WRITE setShutdownSpeed NOTIFY
+                   shutdownSpeedChanged FINAL)
+    Q_PROPERTY(qreal cycleTime READ cycleTime WRITE setCycleTime NOTIFY cycleTimeChanged FINAL)
+    Q_PROPERTY(qreal kickStartTime READ kickStartTime WRITE setKickStartTime NOTIFY
+                   kickStartTimeChanged FINAL)
+    Q_PROPERTY(qreal offBelow READ offBelow WRITE setOffBelow NOTIFY offBelowChanged FINAL)
+    Q_PROPERTY(bool hardwarePin READ hardwarePin WRITE setHardwarePin NOTIFY hardwarePinChanged FINAL)
+    Q_PROPERTY(
+        Tachometer tachometer READ tachometer WRITE setTachometer NOTIFY tachometerChanged FINAL)
 };
 
 #endif // QKLIPPERFAN_H

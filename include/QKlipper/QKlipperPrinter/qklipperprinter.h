@@ -30,6 +30,9 @@
 #include "qklippertoolhead.h"
 #include "qklipperchamber.h"
 #include "qklipperfan.h"
+#include "qklippercontrollerfan.h"
+#include "qklipperheaterfan.h"
+#include "qklippertemperaturefan.h"
 #include "qklipperprintbed.h"
 #include "qklippersteppermotor.h"
 
@@ -41,6 +44,7 @@
 #include "qklipperextruder.h"
 
 #include "qklippergcodemove.h"
+#include "qklipperheater.h"
 
 class QKlipperConsole;
 
@@ -152,6 +156,9 @@ public:
 
     qreal minimumCruiseRatio() const;
 
+    QMap<QString, QKlipperHeater *> heaters() const;
+    QKlipperHeater *heater(const QString &name);
+
 public slots:
 
     void setHasChamber(bool hasChamber);
@@ -222,6 +229,9 @@ private slots:
 
     void setEndstopStatus(const QKlipperEndstopStatus &endstopStatus);
 
+    void setHeaters(const QMap<QString, QKlipperHeater *> &heaters);
+    void addHeater(QKlipperHeater *heater);
+
     void fakePrintTimeout();
 
 signals:
@@ -288,6 +298,8 @@ signals:
 
     void minimumCruiseRatioChanged();
 
+    void heatersChanged();
+
 private:
     QTimer *m_fakePrintTimer = nullptr;
     QKlipperToolHead                                *m_toolhead = nullptr;
@@ -337,12 +349,16 @@ private:
 
     QKlipperProbeData                                m_probeData;
 
-    QMap<QString,QKlipperFan*>                       m_fans;
+    QMap<QString, QKlipperFan*>                      m_fans;
+    QMap<QString, QKlipperHeater*>                   m_heaters;
 
     QKlipperSafeZHome                                m_safeZHome;
     bool                                             m_hasChamber = false;
+
     Q_PROPERTY(qreal minimumCruiseRatio READ minimumCruiseRatio WRITE setMinimumCruiseRatio NOTIFY
                    minimumCruiseRatioChanged FINAL)
+    Q_PROPERTY(QMap<QString, QKlipperHeater *> heaters READ heaters WRITE setHeaters NOTIFY
+                   heatersChanged FINAL)
 };
 
 #endif // QKLIPPERPRINTER_H

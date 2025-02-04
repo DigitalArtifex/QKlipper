@@ -5,7 +5,15 @@
 QKlipperFan::QKlipperFan(QObject *parent)
     : QObject{parent}
 {
+    QKlipperPrinter *printer = qobject_cast<QKlipperPrinter*>(parent);
 
+    if(printer)
+    {
+        QKlipperConsole *console = qobject_cast<QKlipperConsole*>(parent);
+
+        if(console)
+            m_console = console;
+    }
 }
 
 QString QKlipperFan::name() const
@@ -82,14 +90,119 @@ void QKlipperFan::resetIsControllable()
     setIsControllable({}); // TODO: Adapt to use your actual default value
 }
 
-QKlipperConsole *QKlipperFan::console() const
+bool QKlipperFan::hardwarePin() const
 {
-    return m_console;
+    return m_hardwarePin;
 }
 
-void QKlipperFan::setConsole(QKlipperConsole *console)
+void QKlipperFan::setHardwarePin(bool hardwarePin)
 {
-    m_console = console;
+    if (m_hardwarePin == hardwarePin)
+        return;
+    m_hardwarePin = hardwarePin;
+    emit hardwarePinChanged();
+}
+
+QKlipperFan::Tachometer QKlipperFan::tachometer() const
+{
+    return m_tachometer;
+}
+
+void QKlipperFan::setTachometer(const Tachometer &tachometer)
+{
+    m_tachometer = tachometer;
+    emit tachometerChanged();
+}
+
+qreal QKlipperFan::offBelow() const
+{
+    return m_offBelow;
+}
+
+void QKlipperFan::setOffBelow(qreal offBelow)
+{
+    if (qFuzzyCompare(m_offBelow, offBelow))
+        return;
+    m_offBelow = offBelow;
+    emit offBelowChanged();
+}
+
+qreal QKlipperFan::kickStartTime() const
+{
+    return m_kickStartTime;
+}
+
+void QKlipperFan::setKickStartTime(qreal kickStartTime)
+{
+    if (qFuzzyCompare(m_kickStartTime, kickStartTime))
+        return;
+    m_kickStartTime = kickStartTime;
+    emit kickStartTimeChanged();
+}
+
+qreal QKlipperFan::cycleTime() const
+{
+    return m_cycleTime;
+}
+
+void QKlipperFan::setCycleTime(qreal cycleTime)
+{
+    if (qFuzzyCompare(m_cycleTime, cycleTime))
+        return;
+    m_cycleTime = cycleTime;
+    emit cycleTimeChanged();
+}
+
+qreal QKlipperFan::shutdownSpeed() const
+{
+    return m_shutdownSpeed;
+}
+
+void QKlipperFan::setShutdownSpeed(qreal shutdownSpeed)
+{
+    if (qFuzzyCompare(m_shutdownSpeed, shutdownSpeed))
+        return;
+    m_shutdownSpeed = shutdownSpeed;
+    emit shutdownSpeedChanged();
+}
+
+qreal QKlipperFan::maxPower() const
+{
+    return m_maxPower;
+}
+
+void QKlipperFan::setMaxPower(qreal maxPower)
+{
+    if (qFuzzyCompare(m_maxPower, maxPower))
+        return;
+    m_maxPower = maxPower;
+    emit maxPowerChanged();
+}
+
+QString QKlipperFan::enablePin() const
+{
+    return m_enablePin;
+}
+
+void QKlipperFan::setEnablePin(const QString &enablePin)
+{
+    if (m_enablePin == enablePin)
+        return;
+    m_enablePin = enablePin;
+    emit enablePinChanged();
+}
+
+QString QKlipperFan::pin() const
+{
+    return m_pin;
+}
+
+void QKlipperFan::setPin(const QString &pin)
+{
+    if (m_pin == pin)
+        return;
+    m_pin = pin;
+    emit pinChanged();
 }
 
 void QKlipperFan::setNameData(const QString &name)

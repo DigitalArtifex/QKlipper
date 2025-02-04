@@ -2,7 +2,7 @@
 #include <QKlipper/QKlipperConsole/qklipperconsole.h>
 
 QKlipperExtruder::QKlipperExtruder(QObject *parent)
-    : QObject{parent}
+    : QKlipperHeater{parent}
 {
     m_fan = new QKlipperFan(this);
 }
@@ -79,50 +79,6 @@ void QKlipperExtruder::setMicrosteps(qint32 microsteps)
     emit microstepsChanged();
 }
 
-qreal QKlipperExtruder::currentTemp() const
-{
-    return m_currentTemp;
-}
-
-void QKlipperExtruder::setCurrentTemp(qreal currentTemp)
-{
-    if (qFuzzyCompare(m_currentTemp, currentTemp))
-        return;
-    m_currentTemp = currentTemp;
-    emit currentTempChanged();
-}
-
-qreal QKlipperExtruder::targetTemp() const
-{
-    return m_targetTemp;
-}
-
-void QKlipperExtruder::setTargetTemp(qreal targetTemp)
-{
-    //construct the gcode
-    QString gcode("M104 T");
-    gcode += QString::number(m_extruderNumber);
-    gcode += QString(" S") + QString::number(targetTemp);
-
-    //send the gcode
-    m_console->printerGcodeScript(gcode);
-}
-
-qreal QKlipperExtruder::smoothTime() const
-{
-    return m_smoothTime;
-}
-
-void QKlipperExtruder::setSmoothTime(qreal smoothTime)
-{
-    //set to relative movement
-    QString gcode("SET_PRESSURE_ADVANCE EXTRUDER=");
-    gcode += m_name + QString(" ADVANCE=") + QString::number(m_pressureAdvance);
-    gcode += QString(" SMOOTH_TIME=") + QString::number(smoothTime);
-
-    m_console->printerGcodeScript(gcode);
-}
-
 qreal QKlipperExtruder::pressureAdvance() const
 {
     return m_pressureAdvance;
@@ -133,7 +89,7 @@ void QKlipperExtruder::setPressureAdvance(qreal pressureAdvance)
     //set to relative movement
     QString gcode("SET_PRESSURE_ADVANCE EXTRUDER=");
     gcode += m_name + QString(" ADVANCE=") + QString::number(pressureAdvance);
-    gcode += QString(" SMOOTH_TIME=") + QString::number(m_smoothTime);
+    gcode += QString(" SMOOTH_TIME=") + QString::number(m_pressureAdvanceSmoothTime);
 
     m_console->printerGcodeScript(gcode);
 }
@@ -199,19 +155,6 @@ void QKlipperExtruder::retract(qreal amount, qreal speed)
     extrude(amount * -1, speed);
 }
 
-void QKlipperExtruder::calibratePid(qreal target)
-{
-    emit pidCalibrating();
-
-    //set to relative movement
-    QString gcode = QString("PID_CALIBRATE HEATER=%1 TARGET=%2").arg(m_name, QString::number(target));
-
-    //run calibration
-    m_console->printerGcodeScript(gcode);
-
-    emit pidCalibratingFinished();
-}
-
 void QKlipperExtruder::setExtrusionFactorData(qreal extrusionFactor)
 {
     if (qFuzzyCompare(m_extrusionFactor, extrusionFactor))
@@ -247,45 +190,6 @@ void QKlipperExtruder::setNozzleDiameter(qreal nozzleDiameter)
     emit nozzleDiameterChanged();
 }
 
-qreal QKlipperExtruder::power() const
-{
-    return m_power;
-}
-
-void QKlipperExtruder::setPower(qreal power)
-{
-    if (qFuzzyCompare(m_power, power))
-        return;
-    m_power = power;
-    emit powerChanged();
-}
-
-qreal QKlipperExtruder::watts() const
-{
-    return m_watts;
-}
-
-void QKlipperExtruder::setWatts(qreal watts)
-{
-    if (qFuzzyCompare(m_watts, watts))
-        return;
-    m_watts = watts;
-    emit wattsChanged();
-}
-
-qreal QKlipperExtruder::maxWatts() const
-{
-    return m_maxWatts;
-}
-
-void QKlipperExtruder::setMaxWatts(qreal maxWatts)
-{
-    if (qFuzzyCompare(m_maxWatts, maxWatts))
-        return;
-    m_maxWatts = maxWatts;
-    emit maxWattsChanged();
-}
-
 qreal QKlipperExtruder::inlineResistor() const
 {
     return m_inlineResistor;
@@ -312,19 +216,6 @@ void QKlipperExtruder::setPullupResistor(qreal pullupResistor)
     emit pullupResistorChanged();
 }
 
-qreal QKlipperExtruder::pwmCycle() const
-{
-    return m_pwmCycle;
-}
-
-void QKlipperExtruder::setPwmCycle(qreal pwmCycle)
-{
-    if (qFuzzyCompare(m_pwmCycle, pwmCycle))
-        return;
-    m_pwmCycle = pwmCycle;
-    emit pwmCycleChanged();
-}
-
 qreal QKlipperExtruder::rotationDistance() const
 {
     return m_rotationDistance;
@@ -349,45 +240,6 @@ void QKlipperExtruder::setInstantCornerVelocity(qreal instantCornerVelocity)
         return;
     m_instantCornerVelocity = instantCornerVelocity;
     emit instantCornerVelocityChanged();
-}
-
-qreal QKlipperExtruder::pidKD() const
-{
-    return m_pidKD;
-}
-
-void QKlipperExtruder::setPidKD(qreal pidKD)
-{
-    if (qFuzzyCompare(m_pidKD, pidKD))
-        return;
-    m_pidKD = pidKD;
-    emit pidKDChanged();
-}
-
-qreal QKlipperExtruder::pidKI() const
-{
-    return m_pidKI;
-}
-
-void QKlipperExtruder::setPidKI(qreal pidKI)
-{
-    if (qFuzzyCompare(m_pidKI, pidKI))
-        return;
-    m_pidKI = pidKI;
-    emit pidKIChanged();
-}
-
-qreal QKlipperExtruder::pidKP() const
-{
-    return m_pidKP;
-}
-
-void QKlipperExtruder::setPidKP(qreal pidKP)
-{
-    if (qFuzzyCompare(m_pidKP, pidKP))
-        return;
-    m_pidKP = pidKP;
-    emit pidKPChanged();
 }
 
 qreal QKlipperExtruder::maxExtrudeCrossSection() const
@@ -442,32 +294,6 @@ void QKlipperExtruder::setMaxExtrudeOnlyVelocity(qreal maxExtrudeOnlyVelocity)
     emit maxExtrudeOnlyVelocityChanged();
 }
 
-qreal QKlipperExtruder::maxTemp() const
-{
-    return m_maxTemp;
-}
-
-void QKlipperExtruder::setMaxTemp(qreal maxTemp)
-{
-    if (qFuzzyCompare(m_maxTemp, maxTemp))
-        return;
-    m_maxTemp = maxTemp;
-    emit maxTempChanged();
-}
-
-qreal QKlipperExtruder::maxPower() const
-{
-    return m_maxPower;
-}
-
-void QKlipperExtruder::setMaxPower(qreal maxPower)
-{
-    if (qFuzzyCompare(m_maxPower, maxPower))
-        return;
-    m_maxPower = maxPower;
-    emit maxPowerChanged();
-}
-
 qreal QKlipperExtruder::minExtrudeTemp() const
 {
     return m_minExtrudeTemp;
@@ -479,19 +305,6 @@ void QKlipperExtruder::setMinExtrudeTemp(qreal minExtrudeTemp)
         return;
     m_minExtrudeTemp = minExtrudeTemp;
     emit minExtrudeTempChanged();
-}
-
-qreal QKlipperExtruder::minTemp() const
-{
-    return m_minTemp;
-}
-
-void QKlipperExtruder::setMinTemp(qreal minTemp)
-{
-    if (qFuzzyCompare(m_minTemp, minTemp))
-        return;
-    m_minTemp = minTemp;
-    emit minTempChanged();
 }
 
 bool QKlipperExtruder::canExtrude() const
@@ -520,19 +333,6 @@ void QKlipperExtruder::setName(const QString &name)
     emit nameChanged();
 }
 
-QString QKlipperExtruder::control() const
-{
-    return m_control;
-}
-
-void QKlipperExtruder::setControl(const QString &control)
-{
-    if (m_control == control)
-        return;
-    m_control = control;
-    emit controlChanged();
-}
-
 QString QKlipperExtruder::dirPin() const
 {
     return m_dirPin;
@@ -557,45 +357,6 @@ void QKlipperExtruder::setEnablePin(const QString &enablePin)
         return;
     m_enablePin = enablePin;
     emit enablePinChanged();
-}
-
-QString QKlipperExtruder::heaterPin() const
-{
-    return m_heaterPin;
-}
-
-void QKlipperExtruder::setHeaterPin(const QString &heaterPin)
-{
-    if (m_heaterPin == heaterPin)
-        return;
-    m_heaterPin = heaterPin;
-    emit heaterPinChanged();
-}
-
-QString QKlipperExtruder::sensorPin() const
-{
-    return m_sensorPin;
-}
-
-void QKlipperExtruder::setSensorPin(const QString &sensorPin)
-{
-    if (m_sensorPin == sensorPin)
-        return;
-    m_sensorPin = sensorPin;
-    emit sensorPinChanged();
-}
-
-QString QKlipperExtruder::sensorType() const
-{
-    return m_sensorType;
-}
-
-void QKlipperExtruder::setSensorType(const QString &sensorType)
-{
-    if (m_sensorType == sensorType)
-        return;
-    m_sensorType = sensorType;
-    emit sensorTypeChanged();
 }
 
 QString QKlipperExtruder::stepPin() const
@@ -654,15 +415,6 @@ void QKlipperExtruder::setPressureAdvanceSmoothTimeData(qreal pressureAdvanceSmo
     emit pressureAdvanceSmoothTimeChanged();
 }
 
-void QKlipperExtruder::setTargetTempData(qreal targetTemp)
-{
-    if (qFuzzyCompare(m_targetTemp, targetTemp))
-        return;
-
-    m_targetTemp = targetTemp;
-    emit targetTempChanged();
-}
-
 QKlipperConsole *QKlipperExtruder::console() const
 {
     return m_console;
@@ -687,14 +439,6 @@ void QKlipperExtruder::setOffsetData(const QKlipperPosition &offset)
         return;
     m_offset = offset;
     emit offsetChanged();
-}
-
-void QKlipperExtruder::setSmoothTimeData(qreal smoothTime)
-{
-    if (qFuzzyCompare(m_smoothTime, smoothTime))
-        return;
-    m_smoothTime = smoothTime;
-    emit smoothTimeChanged();
 }
 
 void QKlipperExtruder::setPressureAdvanceData(qreal pressureAdvance)

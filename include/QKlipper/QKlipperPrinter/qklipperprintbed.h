@@ -25,6 +25,7 @@
 
 #include "qklipperprintbedmesh.h"
 #include "qklipperadjustmentscrew.h"
+#include "qklipperheater.h"
 
 class QKlipperPrinter;
 class QKlipperConsole;
@@ -41,11 +42,12 @@ class QKlipperConsole;
   Prior to connecting, it is required to pass instance references to QKlipperPrinter, QKlipperSystem
   and QKlipperServer that have been setup and configured.
 */
-class DA_EXPORT QKlipperPrintBed : public QObject
+class DA_EXPORT QKlipperPrintBed : public QKlipperHeater
 {
     Q_OBJECT
     friend QKlipperConsole;
     friend QKlipperPrinter;
+
 public:
     enum Type
     {
@@ -64,36 +66,6 @@ public:
      * Destructor
      */
     ~QKlipperPrintBed();
-
-    qreal currentTemp() const;
-
-    qreal targetTemp() const;
-
-    qreal power() const;
-
-    qreal watts() const;
-
-    qreal maxWatts() const;
-
-    qreal inlineResistor() const;
-
-    qreal maxPower() const;
-
-    qreal maxTemp() const;
-
-    qreal minTemp() const;
-
-    qreal pidKD() const;
-
-    qreal pidKI() const;
-
-    qreal pidKP() const;
-
-    qreal pullupResistor() const;
-
-    qreal pwmCycleTime() const;
-
-    qreal smoothTime() const;
 
     QDateTime startTime() const;
 
@@ -116,19 +88,7 @@ public:
 
     bool tiltAdjustError() const;
 
-    QKlipperPrinter *printer() const;
-
-    QKlipperConsole *console() const;
-
-    QString control() const;
-
-    QString sensorPin() const;
-
     Type type() const;
-
-    QString heaterPin() const;
-
-    QString sensorType() const;
 
 public slots:
     /*!
@@ -137,13 +97,6 @@ public slots:
      * \param targetTemp The value (in Celsius) to set (0-maxTemp)
      */
     void setTargetTemp(qreal targetTemp);
-
-    /*!
-     * Sends a gcode script to calibrate the extruder at the target temperature.
-     *
-     * \param target The temperature to use in the PID calibration
-     */
-    void calibratePid(qreal target);
 
     /*!
      * Sends a gcode script to probe the bed corners to determine adjustment values
@@ -155,37 +108,7 @@ public slots:
      */
     void calibrateBedMesh();
 
-    void setMaxWatts(qreal maxWatts);
-
 private slots:
-    void setCurrentTemp(qreal currentTemp);
-
-    void setTargetTempData(qreal targetTemp);
-
-    void setPower(qreal power);
-
-    void setWatts(qreal watts);
-
-    void setInlineResistor(qreal inlineResistor);
-
-    void setMaxPower(qreal maxPower);
-
-    void setMaxTemp(qreal maxTemp);
-
-    void setMinTemp(qreal minTemp);
-
-    void setPidKD(qreal pidKD);
-
-    void setPidKI(qreal pidKI);
-
-    void setPidKP(qreal pidKP);
-
-    void setPullupResistor(qreal pullupResistor);
-
-    void setPwmCycleTime(qreal pwmCycleTime);
-
-    void setSmoothTime(qreal smoothTime);
-
     void setStartTime(const QDateTime &startTime);
 
     void setBedMesh(QKlipperPrintBedMesh *bedMesh);
@@ -207,37 +130,9 @@ private slots:
 
     void setTiltAdjustError(bool tiltAdjustError);
 
-    void setPrinter(QKlipperPrinter *printer);
-
-    void setConsole(QKlipperConsole *console);
-
-    void setControl(const QString &control);
-
-    void setSensorPin(const QString &sensorPin);
-
     void setType(Type type);
 
-    void setHeaterPin(const QString &heaterPin);
-
-    void setSensorType(const QString &sensorType);
-
 signals:
-
-    void currentTempChanged();
-    void targetTempChanged();
-    void powerChanged();
-    void wattsChanged();
-    void maxWattsChanged();
-    void inlineResistorChanged();
-    void maxPowerChanged();
-    void maxTempChanged();
-    void minTempChanged();
-    void pidKDChanged();
-    void pidKIChanged();
-    void pidKPChanged();
-    void pullupResistorChanged();
-    void pwmCycleTimeChanged();
-    void smoothTimeChanged();
     void startTimeChanged();
     void bedMeshChanged();
     void adjustmentScrewsChanged();
@@ -247,41 +142,14 @@ signals:
     void adjustmentScrewsCalibratingChanged();
     void bedMeshCalibratingChanged();
     void adjustmentScrewsMaxDeviationChanged();
-    void tiltAdjustErrorChanged();
-    void printerChanged();
-    void consoleChanged();
-    void controlChanged();
-    void sensorPinChanged();
     void typeChanged();
-
-    void heaterPinChanged();
-
-    void sensorTypeChanged();
-
     void adjustmentScrewsCalibrating();
     void adjustmentScrewsCalibratingFinished();
     void bedMeshCalibrating();
     void bedMeshCalibratingFinished();
-    void pidCalibrating();
-    void pidCalibratingFinished();
+    void tiltAdjustErrorChanged();
 
 private:
-    qreal m_currentTemp = 0;
-    qreal m_targetTemp = 0;
-    qreal m_power = 0;
-    qreal m_watts = 0;
-    qreal m_maxWatts = 0;
-    qreal m_inlineResistor = 0;
-    qreal m_maxPower = 0;
-    qreal m_maxTemp= 0;
-    qreal m_minTemp = 0;
-    qreal m_pidKD = 0;
-    qreal m_pidKI = 0;
-    qreal m_pidKP = 0;
-    qreal m_pullupResistor = 0;
-    qreal m_pwmCycleTime = 0;
-    qreal m_smoothTime = 0;
-
     QDateTime m_startTime;
 
     QKlipperPrintBedMesh *m_bedMesh;
@@ -295,14 +163,6 @@ private:
     qreal                                    m_adjustmentScrewsMaxDeviation = 0;
 
     bool                                     m_tiltAdjustError = false;
-
-    QKlipperPrinter                         *m_printer = nullptr;
-    QKlipperConsole                         *m_console = nullptr;
-
-    QString                                  m_control;
-    QString                                  m_heaterPin;
-    QString                                  m_sensorPin;
-    QString                                  m_sensorType;
 
     Type                                     m_type = NonHeated;
 };

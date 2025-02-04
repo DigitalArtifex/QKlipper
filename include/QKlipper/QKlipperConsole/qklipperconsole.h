@@ -941,6 +941,12 @@ private slots:
     void serverJobQueueAddParser(QKlipperMessage *message);
     void serverJobQueueDeleteParser(QKlipperMessage *message);
 
+    bool parseFanSettings(QKlipperFan *fan, QJsonObject settings);
+    bool parseFanStatus(QKlipperFan *fan, QJsonObject status);
+
+    bool parseHeaterSettings(QKlipperHeater *heater, QJsonObject settings);
+    bool parseHeaterStatus(QKlipperHeater *heater, QJsonObject settings);
+
     void setConnectionState(ConnectionState connectionState);
     void resetConnectionState();
 

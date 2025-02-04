@@ -315,16 +315,7 @@ void QKlipperPrinter::setConsole(QKlipperConsole *console)
     if (m_console == console)
         return;
 
-    m_bed->setConsole(console);
     m_toolhead->setConsole(console);
-
-    QMapIterator<QString, QKlipperFan*> iterator(m_fans);
-
-    while(iterator.hasNext())
-    {
-        iterator.next();
-        iterator.value()->setConsole(console);
-    }
 
     m_console = console;
 }
@@ -589,6 +580,37 @@ void QKlipperPrinter::fakePrintTimeout()
     setStatus(Printing);
 }
 
+QMap<QString, QKlipperHeater *> QKlipperPrinter::heaters() const
+{
+    return m_heaters;
+}
+
+QKlipperHeater *QKlipperPrinter::heater(const QString &name)
+{
+    if(m_heaters.contains(name))
+        return m_heaters[name];
+
+    return nullptr;
+}
+
+void QKlipperPrinter::setHeaters(const QMap<QString, QKlipperHeater *> &heaters)
+{
+    if (m_heaters == heaters)
+        return;
+
+    m_heaters = heaters;
+    emit heatersChanged();
+}
+
+void QKlipperPrinter::addHeater(QKlipperHeater *heater)
+{
+    if(m_heaters.contains(heater->name()))
+        return;
+
+    m_heaters.insert(heater->name(), heater);
+    emit heatersChanged();
+}
+
 qreal QKlipperPrinter::minimumCruiseRatio() const
 {
     return m_minimumCruiseRatio;
@@ -598,6 +620,7 @@ void QKlipperPrinter::setMinimumCruiseRatio(qreal minimumCruiseRatio)
 {
     if (qFuzzyCompare(m_minimumCruiseRatio, minimumCruiseRatio))
         return;
+
     m_minimumCruiseRatio = minimumCruiseRatio;
     emit minimumCruiseRatioChanged();
 }
