@@ -3998,570 +3998,7 @@ void QKlipperConsole::printerSubscribeParser(QKlipperMessage *message)
     if(message->response().toObject().contains(QString("configfile")))
     {
         QJsonObject configFileObject = message->response()["configfile"].toObject();
-
-        //Most of the config file is useless at the beta stage
-        //    a lot of these will be blank
-        if(configFileObject.contains(QString("config")))
-        {
-            QJsonObject configObject = configFileObject["config"].toObject();
-        }
-        if(configFileObject.contains(QString("settings")))
-        {
-            QJsonObject settingsObject = configFileObject["settings"].toObject();
-
-            if(settingsObject.contains(QString("bed_mesh")))
-            {
-                QJsonObject bedMeshObject = settingsObject["bed_mesh"].toObject();
-
-                QKlipperPrintBedMesh *bedMesh = m_printer->bed()->bedMesh();
-
-                if(bedMeshObject.contains("adaptive_margin"))
-                    bedMesh->setAdaptiveMargin(bedMeshObject["adaptive_margin"].toDouble());
-
-                if(bedMeshObject.contains("algorithm"))
-                    bedMesh->setAlgorithm(bedMeshObject["algorithm"].toString());
-
-                if(bedMeshObject.contains("bicubic_tension"))
-                    bedMesh->setTension(bedMeshObject["bicubic_tension"].toDouble());
-
-                if(bedMeshObject.contains("fade_end"))
-                    bedMesh->setFadeEnd(bedMeshObject["fade_end"].toDouble());
-
-                if(bedMeshObject.contains("fade_start"))
-                    bedMesh->setFadeStart(bedMeshObject["fade_start"].toDouble());
-
-                if(bedMeshObject.contains("fade_target"))
-                    bedMesh->setFadeTarget(bedMeshObject["fade_target"].toDouble());
-
-                if(bedMeshObject.contains("horizontal_move_z"))
-                    bedMesh->setHorizontalMoveZ(bedMeshObject["horizontal_move_z"].toDouble());
-
-                if(bedMeshObject.contains("move_check_distance"))
-                    bedMesh->setMoveCheckDistance(bedMeshObject["move_check_distance"].toDouble());
-
-                if(bedMeshObject.contains("speed"))
-                    bedMesh->setSpeed(bedMeshObject["speed"].toDouble());
-
-                if(bedMeshObject.contains("split_delta_z"))
-                    bedMesh->setSplitDeltaZ(bedMeshObject["split_delta_z"].toDouble());
-
-                //Parse limits
-                QJsonArray meshMaxArray = bedMeshObject["mesh_max"].toArray();
-                QJsonArray meshMinArray = bedMeshObject["mesh_min"].toArray();
-                QJsonArray probeCountArray = bedMeshObject["probe_count"].toArray();
-
-                QVector2D minimum, maximum, probeCount;
-
-                maximum.setX(meshMaxArray[0].toDouble());
-                maximum.setY(meshMaxArray[1].toDouble());
-
-                minimum.setX(meshMinArray[0].toDouble());
-                minimum.setY(meshMinArray[1].toDouble());
-
-                probeCount.setX(probeCountArray[0].toDouble());
-                probeCount.setY(probeCountArray[1].toDouble());
-
-                bedMesh->setProbeCount(probeCount);
-                bedMesh->setMaximum(maximum);
-                bedMesh->setMinimum(minimum);
-            }
-
-            //Parse printer settings
-            if(settingsObject.contains(QString("printer")))
-            {
-                QJsonObject printerObject = settingsObject["printer"].toObject();
-
-                if(printerObject.contains("kinematics"))
-                    m_printer->setKinematics(printerObject["kinematics"].toString());
-
-                if(printerObject.contains("max_accel"))
-                    m_printer->setMaxAcceleration(printerObject["max_accel"].toDouble());
-
-                if(printerObject.contains("max_velocity"))
-                    m_printer->setMaxVelocity(printerObject["max_velocity"].toDouble());
-
-                if(printerObject.contains("max_z_accel"))
-                    m_printer->setMaxZAcceleration(printerObject["max_z_accel"].toDouble());
-
-                if(printerObject.contains("max_z_velocity"))
-                    m_printer->setMaxZVelocity(printerObject["max_z_velocity"].toDouble());
-
-                if(printerObject.contains("square_corner_velocity"))
-                    m_printer->setSquareCornerVelocity(printerObject["square_corner_velocity"].toDouble());
-
-                if(printerObject.contains("minimum_cruise_ratio"))
-                    m_printer->setMinimumCruiseRatio(printerObject["minimum_cruise_ratio"].toDouble());
-            }
-
-            //Parse MCU settings
-            if(settingsObject.contains(QString("mcu")))
-            {
-                QJsonObject mcuObject = settingsObject["mcu"].toObject();
-                QKlipperMCU *mcu = m_printer->mcu();
-
-                if(mcuObject.contains("baud"))
-                    mcu->setBaudRate(mcuObject["baud"].toInt());
-
-                if(mcuObject.contains("max_stepper_error"))
-                    mcu->setMaxStepperError(mcuObject["max_stepper_error"].toDouble());
-            }
-
-            //Parse Safe Z Home settings
-            if(settingsObject.contains(QString("safe_z_home")))
-            {
-                QJsonObject safeZObject = settingsObject["safe_z_home"].toObject();
-                QKlipperSafeZHome zHome = m_printer->safeZHome();
-
-                if(safeZObject.contains(QString("home_xy_position")))
-                {
-                    QJsonArray homePositionArray = safeZObject["home_xy_position"].toArray();
-
-                    if(homePositionArray.count() >= 2)
-                    {
-                        zHome.setHomeXPosition(homePositionArray[0].toDouble());
-                        zHome.setHomeYPosition(homePositionArray[1].toDouble());
-                    }
-                }
-
-                zHome.setMoveToPrevious(safeZObject["move_to_previous"].toBool());
-
-                zHome.setSpeed(safeZObject["speed"].toDouble());
-                zHome.setZHopSpeed(safeZObject["z_hop"].toDouble());
-                zHome.setZHop(safeZObject["z_hop_speed"].toDouble());
-            }
-
-            //Parse adjustment screw settings
-            if(settingsObject.contains(QString("screws_tilt_adjust")))
-            {
-                QJsonObject screwsTiltObject = settingsObject["screws_tilt_adjust"].toObject();
-
-                QString thread = screwsTiltObject["screw_thread"].toString();
-                qreal speed = screwsTiltObject["speed"].toDouble();
-
-                for(int i = 1; ; i++)
-                {
-                    QString screwString = QString("screw") + QString::number(i);
-                    QString screwNameString = screwString + QString("_name");
-
-                    if(!screwsTiltObject.contains(screwString))
-                        break;
-
-                    QJsonArray screwArray = screwsTiltObject[screwString].toArray();
-
-                    QKlipperAdjustmentScrew *adjustmentScrew = m_printer->bed()->adjustmentScrew(screwString);
-
-                    bool newScrew = false;
-
-                    if(!adjustmentScrew)
-                    {
-                        newScrew = true;
-                        adjustmentScrew = new QKlipperAdjustmentScrew(m_printer->bed());
-                    }
-
-
-                    adjustmentScrew->setName(screwsTiltObject[screwNameString].toString());
-
-                    qreal tilt0 = screwArray[0].toDouble();
-                    qreal tilt1 = screwArray[1].toDouble();
-
-                    adjustmentScrew->setTiltAdjust(QPair<qreal,qreal>(tilt0, tilt1));
-                    adjustmentScrew->setSpeed(speed);
-                    adjustmentScrew->setThread(thread);
-
-                    if(newScrew)
-                        m_printer->bed()->setAdjustmentScrew(screwString, adjustmentScrew);
-                }
-            }
-
-            if(settingsObject.contains(QString("heater_bed")))
-            {
-                QJsonObject settings = settingsObject[QString("heater_bed")].toObject();
-
-                parseHeaterSettings(m_printer->bed(), settings);
-                m_printer->bed()->setType(QKlipperPrintBed::Heated);
-            }
-
-            //Parse extruders settings
-            for(int index = 0; true; index++)
-            {
-                QString extruderName = QString("extruder") + ((index > 0) ? QString::number(index) : QString(""));
-
-                if(!settingsObject.contains(extruderName))
-                    break;
-
-                bool newExtruder = false;
-                QKlipperExtruder *extruder;
-
-                if(m_printer->extruder(extruderName))
-                    extruder = m_printer->extruder(extruderName);
-                else
-                {
-                    extruder = new QKlipperExtruder(m_printer);
-                    newExtruder = true;
-                }
-
-                extruder->setWatts(m_printer->powerProfile()[extruderName]);
-                extruder->setName(extruderName);
-
-                QJsonObject extruderObject = settingsObject[extruderName].toObject();
-                parseHeaterSettings(extruder, extruderObject);
-
-                if(extruderObject.contains("dir_pin"))
-                {
-                    QString pin = extruderObject["dir_pin"].toString();
-                    extruder->setDirPin(pin);
-                }
-
-                if(extruderObject.contains("enable_pin"))
-                {
-                    QString pin = extruderObject["enable_pin"].toString();
-                    extruder->setEnablePin(pin);
-                }
-
-                if(extruderObject.contains("filament_diameter"))
-                {
-                    qreal diameter = extruderObject["filament_diameter"].toDouble();
-                    extruder->setFilamentDiameter(diameter);
-                }
-
-                if(extruderObject.contains("full_steps_per_rotation"))
-                {
-                    qint32 steps = extruderObject["full_steps_per_rotation"].toInt();
-                    extruder->setFullStepsPerRotation(steps);
-                }
-
-                if(extruderObject.contains("gear_ratio"))
-                {
-                    QJsonArray ratioArray = extruderObject["gear_ratio"].toArray();
-
-                    if(ratioArray.count() >= 2)
-                    {
-                        QKlipperGearRatio ratio
-                        (
-                            ratioArray[0].toInt(),
-                            ratioArray[1].toInt()
-                        );
-
-                        extruder->setGearRatio(ratio);
-                    }
-                }
-
-                if(extruderObject.contains("inline_resistor"))
-                {
-                    qreal resistor = extruderObject["inline_resistor"].toDouble();
-                    extruder->setInlineResistor(resistor);
-                }
-
-                if(extruderObject.contains("instantaneous_corner_velocity"))
-                {
-                    qreal velocity = extruderObject["instantaneous_corner_velocity"].toDouble();
-                    extruder->setInstantCornerVelocity(velocity);
-                }
-
-                if(extruderObject.contains("max_extrude_cross_section"))
-                {
-                    qreal velocity = extruderObject["max_extrude_cross_section"].toDouble();
-                    extruder->setMaxExtrudeCrossSection(velocity);
-                }
-
-                if(extruderObject.contains("max_extrude_only_accel"))
-                {
-                    qreal acceleration = extruderObject["max_extrude_only_accel"].toDouble();
-                    extruder->setMaxExtrudeOnlyAcceleration(acceleration);
-                }
-
-                if(extruderObject.contains("max_extrude_only_distance"))
-                {
-                    qreal distance = extruderObject["max_extrude_only_distance"].toDouble();
-                    extruder->setMaxExtrudeOnlyDistance(distance);
-                }
-
-                if(extruderObject.contains("max_extrude_only_velocity"))
-                {
-                    qreal velocity = extruderObject["max_extrude_only_velocity"].toDouble();
-                    extruder->setMaxExtrudeOnlyVelocity(velocity);
-                }
-
-                if(extruderObject.contains("microsteps"))
-                {
-                    qint32 microsteps = extruderObject["microsteps"].toInt();
-                    extruder->setMicrosteps(microsteps);
-                }
-
-                if(extruderObject.contains("nozzle_diameter"))
-                {
-                    qreal diameter = extruderObject["nozzle_diameter"].toDouble();
-                    extruder->setNozzleDiameter(diameter);
-                }
-
-                if(extruderObject.contains("pressure_advance"))
-                {
-                    qreal advance = extruderObject["pressure_advance"].toDouble();
-                    extruder->setPressureAdvanceData(advance);
-                }
-
-                if(extruderObject.contains("pressure_advance_smooth_time"))
-                {
-                    qreal smoothing = extruderObject["pressure_advance_smooth_time"].toDouble();
-                    extruder->setPressureAdvanceSmoothTimeData(smoothing);
-                }
-
-                if(extruderObject.contains("pullup_resistor"))
-                {
-                    qreal resistor = extruderObject["pullup_resistor"].toDouble();
-                    extruder->setPullupResistor(resistor);
-                }
-
-                if(extruderObject.contains("rotation_distance"))
-                {
-                    qreal distance = extruderObject["rotation_distance"].toDouble();
-                    extruder->setRotationDistance(distance);
-                }
-
-                if(extruderObject.contains("step_pin"))
-                {
-                    QString pin = extruderObject["step_pin"].toString();
-                    extruder->setStepPin(pin);
-                }
-
-                if(newExtruder)
-                    m_printer->setExtruder(extruderName, extruder);
-            }
-
-            //Parse parts fan settings
-            if(message->response().toObject().contains("fan"))
-            {
-                QJsonObject settings = message->response()["fan"].toObject();
-                parseFanSettings(m_printer->toolhead()->partsFan(), settings);
-
-                m_printer->toolhead()->partsFan()->setIsControllable(true);
-            }
-
-            //Parse declared fan settings
-            foreach(QString key, m_server->availableObjects())
-            {
-                //Check for heater_fan objects
-                if(key.startsWith(QString("heater_fan")))
-                {
-                    if(settingsObject.contains(key))
-                    {
-                        bool newFan = false;
-                        QKlipperHeaterFan *fan = qobject_cast<QKlipperHeaterFan*>(m_printer->fan(key));
-
-                        if(!fan)
-                        {
-                            fan = new QKlipperHeaterFan(m_printer);
-                            fan->setNameData(key);
-                            newFan = true;
-                        }
-
-                        QJsonObject settings = settingsObject[key].toObject();
-                        parseFanSettings(fan, settings);
-
-                        if(settings.contains(QString("heater")))
-                        {
-                            QJsonArray heatersArray = settings["heater"].toArray();
-                            QStringList heaters;
-
-                            for(int i = 0; i < heatersArray.count(); i++)
-                            {
-                                QString heater = heatersArray[i].toString();
-                                heaters += heater;
-
-                                if(heater.toLower().startsWith("extruder"))
-                                {
-                                    QKlipperExtruder *extruder = m_printer->extruder(heater);
-
-                                    if(extruder)
-                                        extruder->setFan(m_printer->fan(key));
-                                }
-                            }
-
-                            fan->setHeater(heaters.join(','));
-                        }
-
-                        if(settings.contains("fan_speed"))
-                            fan->setFanSpeed(settings["fan_speed"].toDouble());
-
-                        if(settings.contains("heater_temp"))
-                            fan->setHeaterTemperature(settings["heater_temp"].toDouble());
-
-                        if(newFan)
-                            m_printer->setFan(key, fan);
-                    }
-                }
-
-                //Check for controller_fan objects
-                else if(key.startsWith(QString("controller_fan")))
-                {
-                    QJsonObject settings = message->response()[key].toObject();
-
-                    QKlipperControllerFan *fan = qobject_cast<QKlipperControllerFan*>(m_printer->fan(key));
-                    bool newFan = false;
-
-                    if(!fan)
-                    {
-                        newFan = true;
-                        fan = new QKlipperControllerFan(m_printer);
-                        fan->setNameData(key);
-                    }
-
-                    parseFanSettings(fan, settings);
-
-                    if(settings.contains(QString("heater")))
-                    {
-                        QJsonArray heatersArray = settings["heater"].toArray();
-                        QStringList heaters;
-
-                        for(int i = 0; i < heatersArray.count(); i++)
-                        {
-                            QString heater = heatersArray[i].toString();
-                            heaters += heater;
-
-                            if(heater.toLower().startsWith("extruder"))
-                            {
-                                QKlipperExtruder *extruder = m_printer->extruder(heater);
-
-                                if(extruder)
-                                    extruder->setFan(m_printer->fan(key));
-                            }
-                        }
-
-                        fan->setHeater(heaters.join(','));
-                    }
-
-                    if(settings.contains(QString("stepper")))
-                    {
-                        QJsonArray steppersArray = settings["stepper"].toArray();
-                        QStringList steppers;
-
-                        for(int i = 0; i < steppersArray.count(); i++)
-                        {
-                            steppers += steppersArray[i].toString();
-                        }
-
-                        fan->setStepper(steppers.join(','));
-                    }
-
-                    if(settings.contains("fan_speed"))
-                        fan->setFanSpeed(settings["fan_speed"].toDouble());
-
-                    if(settings.contains("idle_timeout"))
-                        fan->setIdleTimeout(settings["idle_timeout"].toDouble());
-
-                    if(settings.contains("idle_speed"))
-                        fan->setIdleSpeed(settings["idle_speed"].toDouble());
-
-                    if(newFan)
-                        m_printer->setFan(fan->name(), fan);
-                }
-
-                //Check for fan_generic objects
-                else if(key.startsWith(QString("fan_generic")))
-                {
-                    QJsonObject settings = message->response()[key].toObject();
-
-                    QKlipperFan *fan = m_printer->fan(key);
-                    bool newFan = false;
-
-                    if(!fan)
-                    {
-                        newFan = true;
-                        fan = new QKlipperFan(m_printer);
-                        fan->setNameData(key);
-                        fan->setIsControllable(true);
-                    }
-
-                    parseFanSettings(fan, settings);
-
-                    if(newFan)
-                        m_printer->setFan(fan->name(), fan);
-                }
-
-                else if(key.startsWith(QString("temperature_fan")))
-                {
-                    QJsonObject settings = message->response()[key].toObject();
-
-                    QKlipperTemperatureFan *fan = qobject_cast<QKlipperTemperatureFan*>(m_printer->fan(key));
-                    bool newFan = false;
-
-                    if(!fan)
-                    {
-                        newFan = true;
-                        fan = new QKlipperTemperatureFan(m_printer);
-                        fan->setNameData(key);
-                    }
-
-                    parseFanSettings(fan, settings);
-
-                    if(settings.contains(QString("enable_pin")))
-                        fan->setEnablePin(settings["enable_pin"].toString());
-
-                    if(settings.contains(QString("sensor_type")))
-                        fan->setSensorType(settings["sensor_type"].toString());
-
-                    if(settings.contains(QString("sensor_pin")))
-                        fan->setSensorPin(settings["sensor_pin"].toString());
-
-                    if(settings.contains(QString("gcode_id")))
-                        fan->setGcodeId(settings["gcode_id"].toString());
-
-                    if(settings.contains(QString("max_delta")))
-                        fan->setMaxDelta(settings["max_delta"].toDouble());
-
-                    if(settings.contains(QString("min_temp")))
-                        fan->setMinTemperature(settings["min_temp"].toDouble());
-
-                    if(settings.contains(QString("max_temp")))
-                        fan->setMaxTemperature(settings["max_temp"].toDouble());
-
-                    if(settings.contains(QString("pid_Kp")))
-                        fan->setPidKp(settings["pid_Kp"].toDouble());
-
-                    if(settings.contains(QString("pid_Ki")))
-                        fan->setPidKi(settings["pid_Ki"].toDouble());
-
-                    if(settings.contains(QString("pid_Kd")))
-                        fan->setPidKd(settings["pid_Kd"].toDouble());
-
-                    if(settings.contains(QString("pid_deriv_time")))
-                        fan->setPidDerivationTime(settings["pid_deriv_time"].toDouble());
-
-                    if(settings.contains(QString("target_temp")))
-                        fan->setTargetTemperature(settings["target_temp"].toDouble());
-
-                    if(settings.contains(QString("max_speed")))
-                        fan->setMaxSpeed(settings["max_speed"].toDouble());
-
-                    if(settings.contains(QString("min_speed")))
-                        fan->setMinSpeed(settings["min_speed"].toDouble());
-
-                    if(newFan)
-                        m_printer->setFan(fan->name(), fan);
-                }
-
-                //Check for heater_generic objects
-                else if(key.startsWith(QString("heater_generic")))
-                {
-                    QJsonObject settings = settingsObject[key].toObject();
-
-                    bool newHeater = false;
-                    QKlipperHeater *heater = m_printer->heater(key);
-
-                    if(!heater)
-                    {
-                        newHeater = true;
-                        heater = new QKlipperHeater(m_printer);
-                        heater->setName(key);
-                    }
-
-                    parseHeaterSettings(heater, settings);
-
-                    if(newHeater)
-                        m_printer->addHeater(heater);
-                }
-            }
-        }
+        parsePrinterConfig(configFileObject);
     }
 
     //Parse extruders
@@ -6039,6 +5476,578 @@ bool QKlipperConsole::parseHeaterStatus(QKlipperHeater *heater, QJsonObject sett
 
     if(settings.contains("power"))
         heater->setPower(settings["power"].toDouble());
+
+    return true;
+}
+
+bool QKlipperConsole::parsePrinterConfig(QJsonObject config)
+{
+    //Most of the config file is useless at the beta stage
+    //    a lot of these will be blank
+    if(config.contains(QString("config")))
+    {
+        QJsonObject configObject = config["config"].toObject();
+    }
+    if(config.contains(QString("settings")))
+    {
+        QJsonObject settingsObject = config["settings"].toObject();
+
+        if(settingsObject.contains(QString("bed_mesh")))
+        {
+            QJsonObject bedMeshObject = settingsObject["bed_mesh"].toObject();
+
+            QKlipperPrintBedMesh *bedMesh = m_printer->bed()->bedMesh();
+
+            if(bedMeshObject.contains("adaptive_margin"))
+                bedMesh->setAdaptiveMargin(bedMeshObject["adaptive_margin"].toDouble());
+
+            if(bedMeshObject.contains("algorithm"))
+                bedMesh->setAlgorithm(bedMeshObject["algorithm"].toString());
+
+            if(bedMeshObject.contains("bicubic_tension"))
+                bedMesh->setTension(bedMeshObject["bicubic_tension"].toDouble());
+
+            if(bedMeshObject.contains("fade_end"))
+                bedMesh->setFadeEnd(bedMeshObject["fade_end"].toDouble());
+
+            if(bedMeshObject.contains("fade_start"))
+                bedMesh->setFadeStart(bedMeshObject["fade_start"].toDouble());
+
+            if(bedMeshObject.contains("fade_target"))
+                bedMesh->setFadeTarget(bedMeshObject["fade_target"].toDouble());
+
+            if(bedMeshObject.contains("horizontal_move_z"))
+                bedMesh->setHorizontalMoveZ(bedMeshObject["horizontal_move_z"].toDouble());
+
+            if(bedMeshObject.contains("move_check_distance"))
+                bedMesh->setMoveCheckDistance(bedMeshObject["move_check_distance"].toDouble());
+
+            if(bedMeshObject.contains("speed"))
+                bedMesh->setSpeed(bedMeshObject["speed"].toDouble());
+
+            if(bedMeshObject.contains("split_delta_z"))
+                bedMesh->setSplitDeltaZ(bedMeshObject["split_delta_z"].toDouble());
+
+            //Parse limits
+            QJsonArray meshMaxArray = bedMeshObject["mesh_max"].toArray();
+            QJsonArray meshMinArray = bedMeshObject["mesh_min"].toArray();
+            QJsonArray probeCountArray = bedMeshObject["probe_count"].toArray();
+
+            QVector2D minimum, maximum, probeCount;
+
+            maximum.setX(meshMaxArray[0].toDouble());
+            maximum.setY(meshMaxArray[1].toDouble());
+
+            minimum.setX(meshMinArray[0].toDouble());
+            minimum.setY(meshMinArray[1].toDouble());
+
+            probeCount.setX(probeCountArray[0].toDouble());
+            probeCount.setY(probeCountArray[1].toDouble());
+
+            bedMesh->setProbeCount(probeCount);
+            bedMesh->setMaximum(maximum);
+            bedMesh->setMinimum(minimum);
+        }
+
+        //Parse printer settings
+        if(settingsObject.contains(QString("printer")))
+        {
+            QJsonObject printerObject = settingsObject["printer"].toObject();
+
+            if(printerObject.contains("kinematics"))
+                m_printer->setKinematics(printerObject["kinematics"].toString());
+
+            if(printerObject.contains("max_accel"))
+                m_printer->setMaxAcceleration(printerObject["max_accel"].toDouble());
+
+            if(printerObject.contains("max_velocity"))
+                m_printer->setMaxVelocity(printerObject["max_velocity"].toDouble());
+
+            if(printerObject.contains("max_z_accel"))
+                m_printer->setMaxZAcceleration(printerObject["max_z_accel"].toDouble());
+
+            if(printerObject.contains("max_z_velocity"))
+                m_printer->setMaxZVelocity(printerObject["max_z_velocity"].toDouble());
+
+            if(printerObject.contains("square_corner_velocity"))
+                m_printer->setSquareCornerVelocity(printerObject["square_corner_velocity"].toDouble());
+
+            if(printerObject.contains("minimum_cruise_ratio"))
+                m_printer->setMinimumCruiseRatio(printerObject["minimum_cruise_ratio"].toDouble());
+        }
+
+        //Parse MCU settings
+        if(settingsObject.contains(QString("mcu")))
+        {
+            QJsonObject mcuObject = settingsObject["mcu"].toObject();
+            QKlipperMCU *mcu = m_printer->mcu();
+
+            if(mcuObject.contains("serial"))
+                mcu->setSerial(mcuObject["serial"].toString());
+
+            if(mcuObject.contains("baud"))
+                mcu->setBaudRate(mcuObject["baud"].toInt());
+
+            if(mcuObject.contains("max_stepper_error"))
+                mcu->setMaxStepperError(mcuObject["max_stepper_error"].toDouble());
+        }
+
+        //Parse Safe Z Home settings
+        if(settingsObject.contains(QString("safe_z_home")))
+        {
+            QJsonObject safeZObject = settingsObject["safe_z_home"].toObject();
+            QKlipperSafeZHome zHome = m_printer->safeZHome();
+
+            if(safeZObject.contains(QString("home_xy_position")))
+            {
+                QJsonArray homePositionArray = safeZObject["home_xy_position"].toArray();
+
+                if(homePositionArray.count() >= 2)
+                {
+                    zHome.setHomeXPosition(homePositionArray[0].toDouble());
+                    zHome.setHomeYPosition(homePositionArray[1].toDouble());
+                }
+            }
+
+            zHome.setMoveToPrevious(safeZObject["move_to_previous"].toBool());
+
+            zHome.setSpeed(safeZObject["speed"].toDouble());
+            zHome.setZHopSpeed(safeZObject["z_hop"].toDouble());
+            zHome.setZHop(safeZObject["z_hop_speed"].toDouble());
+        }
+
+        //Parse adjustment screw settings
+        if(settingsObject.contains(QString("screws_tilt_adjust")))
+        {
+            QJsonObject screwsTiltObject = settingsObject["screws_tilt_adjust"].toObject();
+
+            QString thread = screwsTiltObject["screw_thread"].toString();
+            qreal speed = screwsTiltObject["speed"].toDouble();
+
+            for(int i = 1; ; i++)
+            {
+                QString screwString = QString("screw") + QString::number(i);
+                QString screwNameString = screwString + QString("_name");
+
+                if(!screwsTiltObject.contains(screwString))
+                    break;
+
+                QJsonArray screwArray = screwsTiltObject[screwString].toArray();
+
+                QKlipperAdjustmentScrew *adjustmentScrew = m_printer->bed()->adjustmentScrew(screwString);
+
+                bool newScrew = false;
+
+                if(!adjustmentScrew)
+                {
+                    newScrew = true;
+                    adjustmentScrew = new QKlipperAdjustmentScrew(m_printer->bed());
+                }
+
+
+                adjustmentScrew->setName(screwsTiltObject[screwNameString].toString());
+
+                qreal tilt0 = screwArray[0].toDouble();
+                qreal tilt1 = screwArray[1].toDouble();
+
+                adjustmentScrew->setTiltAdjust(QPair<qreal,qreal>(tilt0, tilt1));
+                adjustmentScrew->setSpeed(speed);
+                adjustmentScrew->setThread(thread);
+
+                if(newScrew)
+                    m_printer->bed()->setAdjustmentScrew(screwString, adjustmentScrew);
+            }
+        }
+
+        if(settingsObject.contains(QString("heater_bed")))
+        {
+            QJsonObject settings = settingsObject[QString("heater_bed")].toObject();
+
+            parseHeaterSettings(m_printer->bed(), settings);
+            m_printer->bed()->setType(QKlipperPrintBed::Heated);
+        }
+
+        //Parse extruders settings
+        for(int index = 0; true; index++)
+        {
+            QString extruderName = QString("extruder") + ((index > 0) ? QString::number(index) : QString(""));
+
+            if(!settingsObject.contains(extruderName))
+                break;
+
+            bool newExtruder = false;
+            QKlipperExtruder *extruder;
+
+            if(m_printer->extruder(extruderName))
+                extruder = m_printer->extruder(extruderName);
+            else
+            {
+                extruder = new QKlipperExtruder(m_printer);
+                newExtruder = true;
+            }
+
+            extruder->setWatts(m_printer->powerProfile()[extruderName]);
+            extruder->setName(extruderName);
+
+            QJsonObject extruderObject = settingsObject[extruderName].toObject();
+            parseHeaterSettings(extruder, extruderObject);
+
+            if(extruderObject.contains("dir_pin"))
+            {
+                QString pin = extruderObject["dir_pin"].toString();
+                extruder->setDirPin(pin);
+            }
+
+            if(extruderObject.contains("enable_pin"))
+            {
+                QString pin = extruderObject["enable_pin"].toString();
+                extruder->setEnablePin(pin);
+            }
+
+            if(extruderObject.contains("filament_diameter"))
+            {
+                qreal diameter = extruderObject["filament_diameter"].toDouble();
+                extruder->setFilamentDiameter(diameter);
+            }
+
+            if(extruderObject.contains("full_steps_per_rotation"))
+            {
+                qint32 steps = extruderObject["full_steps_per_rotation"].toInt();
+                extruder->setFullStepsPerRotation(steps);
+            }
+
+            if(extruderObject.contains("gear_ratio"))
+            {
+                QJsonArray ratioArray = extruderObject["gear_ratio"].toArray();
+
+                if(ratioArray.count() >= 2)
+                {
+                    QKlipperGearRatio ratio
+                        (
+                            ratioArray[0].toInt(),
+                            ratioArray[1].toInt()
+                            );
+
+                    extruder->setGearRatio(ratio);
+                }
+            }
+
+            if(extruderObject.contains("inline_resistor"))
+            {
+                qreal resistor = extruderObject["inline_resistor"].toDouble();
+                extruder->setInlineResistor(resistor);
+            }
+
+            if(extruderObject.contains("instantaneous_corner_velocity"))
+            {
+                qreal velocity = extruderObject["instantaneous_corner_velocity"].toDouble();
+                extruder->setInstantCornerVelocity(velocity);
+            }
+
+            if(extruderObject.contains("max_extrude_cross_section"))
+            {
+                qreal velocity = extruderObject["max_extrude_cross_section"].toDouble();
+                extruder->setMaxExtrudeCrossSection(velocity);
+            }
+
+            if(extruderObject.contains("max_extrude_only_accel"))
+            {
+                qreal acceleration = extruderObject["max_extrude_only_accel"].toDouble();
+                extruder->setMaxExtrudeOnlyAcceleration(acceleration);
+            }
+
+            if(extruderObject.contains("max_extrude_only_distance"))
+            {
+                qreal distance = extruderObject["max_extrude_only_distance"].toDouble();
+                extruder->setMaxExtrudeOnlyDistance(distance);
+            }
+
+            if(extruderObject.contains("max_extrude_only_velocity"))
+            {
+                qreal velocity = extruderObject["max_extrude_only_velocity"].toDouble();
+                extruder->setMaxExtrudeOnlyVelocity(velocity);
+            }
+
+            if(extruderObject.contains("microsteps"))
+            {
+                qint32 microsteps = extruderObject["microsteps"].toInt();
+                extruder->setMicrosteps(microsteps);
+            }
+
+            if(extruderObject.contains("nozzle_diameter"))
+            {
+                qreal diameter = extruderObject["nozzle_diameter"].toDouble();
+                extruder->setNozzleDiameter(diameter);
+            }
+
+            if(extruderObject.contains("pressure_advance"))
+            {
+                qreal advance = extruderObject["pressure_advance"].toDouble();
+                extruder->setPressureAdvanceData(advance);
+            }
+
+            if(extruderObject.contains("pressure_advance_smooth_time"))
+            {
+                qreal smoothing = extruderObject["pressure_advance_smooth_time"].toDouble();
+                extruder->setPressureAdvanceSmoothTimeData(smoothing);
+            }
+
+            if(extruderObject.contains("pullup_resistor"))
+            {
+                qreal resistor = extruderObject["pullup_resistor"].toDouble();
+                extruder->setPullupResistor(resistor);
+            }
+
+            if(extruderObject.contains("rotation_distance"))
+            {
+                qreal distance = extruderObject["rotation_distance"].toDouble();
+                extruder->setRotationDistance(distance);
+            }
+
+            if(extruderObject.contains("step_pin"))
+            {
+                QString pin = extruderObject["step_pin"].toString();
+                extruder->setStepPin(pin);
+            }
+
+            if(newExtruder)
+                m_printer->setExtruder(extruderName, extruder);
+        }
+
+        //Parse parts fan settings
+        if(settingsObject.contains("fan"))
+        {
+            QJsonObject settings = settingsObject["fan"].toObject();
+            parseFanSettings(m_printer->toolhead()->partsFan(), settings);
+
+            m_printer->toolhead()->partsFan()->setIsControllable(true);
+        }
+
+        //Parse declared fan settings
+        foreach(QString key, m_server->availableObjects())
+        {
+            //Check for heater_fan objects
+            if(key.startsWith(QString("heater_fan")))
+            {
+                if(settingsObject.contains(key))
+                {
+                    bool newFan = false;
+                    QKlipperHeaterFan *fan = qobject_cast<QKlipperHeaterFan*>(m_printer->fan(key));
+
+                    if(!fan)
+                    {
+                        fan = new QKlipperHeaterFan(m_printer);
+                        fan->setNameData(key);
+                        newFan = true;
+                    }
+
+                    QJsonObject settings = settingsObject[key].toObject();
+                    parseFanSettings(fan, settings);
+
+                    if(settings.contains(QString("heater")))
+                    {
+                        QJsonArray heatersArray = settings["heater"].toArray();
+                        QStringList heaters;
+
+                        for(int i = 0; i < heatersArray.count(); i++)
+                        {
+                            QString heater = heatersArray[i].toString();
+                            heaters += heater;
+
+                            if(heater.toLower().startsWith("extruder"))
+                            {
+                                QKlipperExtruder *extruder = m_printer->extruder(heater);
+
+                                if(extruder)
+                                    extruder->setFan(m_printer->fan(key));
+                            }
+                        }
+
+                        fan->setHeater(heaters.join(','));
+                    }
+
+                    if(settings.contains("fan_speed"))
+                        fan->setFanSpeed(settings["fan_speed"].toDouble());
+
+                    if(settings.contains("heater_temp"))
+                        fan->setHeaterTemperature(settings["heater_temp"].toDouble());
+
+                    if(newFan)
+                        m_printer->setFan(key, fan);
+                }
+            }
+
+            //Check for controller_fan objects
+            else if(key.startsWith(QString("controller_fan")))
+            {
+                QJsonObject settings = settingsObject[key].toObject();
+
+                QKlipperControllerFan *fan = qobject_cast<QKlipperControllerFan*>(m_printer->fan(key));
+                bool newFan = false;
+
+                if(!fan)
+                {
+                    newFan = true;
+                    fan = new QKlipperControllerFan(m_printer);
+                    fan->setNameData(key);
+                }
+
+                parseFanSettings(fan, settings);
+
+                if(settings.contains(QString("heater")))
+                {
+                    QJsonArray heatersArray = settings["heater"].toArray();
+                    QStringList heaters;
+
+                    for(int i = 0; i < heatersArray.count(); i++)
+                    {
+                        QString heater = heatersArray[i].toString();
+                        heaters += heater;
+
+                        if(heater.toLower().startsWith("extruder"))
+                        {
+                            QKlipperExtruder *extruder = m_printer->extruder(heater);
+
+                            if(extruder)
+                                extruder->setFan(m_printer->fan(key));
+                        }
+                    }
+
+                    fan->setHeater(heaters.join(','));
+                }
+
+                if(settings.contains(QString("stepper")))
+                {
+                    QJsonArray steppersArray = settings["stepper"].toArray();
+                    QStringList steppers;
+
+                    for(int i = 0; i < steppersArray.count(); i++)
+                    {
+                        steppers += steppersArray[i].toString();
+                    }
+
+                    fan->setStepper(steppers.join(','));
+                }
+
+                if(settings.contains("fan_speed"))
+                    fan->setFanSpeed(settings["fan_speed"].toDouble());
+
+                if(settings.contains("idle_timeout"))
+                    fan->setIdleTimeout(settings["idle_timeout"].toDouble());
+
+                if(settings.contains("idle_speed"))
+                    fan->setIdleSpeed(settings["idle_speed"].toDouble());
+
+                if(newFan)
+                    m_printer->setFan(fan->name(), fan);
+            }
+
+            //Check for fan_generic objects
+            else if(key.startsWith(QString("fan_generic")))
+            {
+                QJsonObject settings = settingsObject[key].toObject();
+
+                QKlipperFan *fan = m_printer->fan(key);
+                bool newFan = false;
+
+                if(!fan)
+                {
+                    newFan = true;
+                    fan = new QKlipperFan(m_printer);
+                    fan->setNameData(key);
+                    fan->setIsControllable(true);
+                }
+
+                parseFanSettings(fan, settings);
+
+                if(newFan)
+                    m_printer->setFan(fan->name(), fan);
+            }
+
+            else if(key.startsWith(QString("temperature_fan")))
+            {
+                QJsonObject settings = settingsObject[key].toObject();
+
+                QKlipperTemperatureFan *fan = qobject_cast<QKlipperTemperatureFan*>(m_printer->fan(key));
+                bool newFan = false;
+
+                if(!fan)
+                {
+                    newFan = true;
+                    fan = new QKlipperTemperatureFan(m_printer);
+                    fan->setNameData(key);
+                }
+
+                parseFanSettings(fan, settings);
+
+                if(settings.contains(QString("enable_pin")))
+                    fan->setEnablePin(settings["enable_pin"].toString());
+
+                if(settings.contains(QString("sensor_type")))
+                    fan->setSensorType(settings["sensor_type"].toString());
+
+                if(settings.contains(QString("sensor_pin")))
+                    fan->setSensorPin(settings["sensor_pin"].toString());
+
+                if(settings.contains(QString("gcode_id")))
+                    fan->setGcodeId(settings["gcode_id"].toString());
+
+                if(settings.contains(QString("max_delta")))
+                    fan->setMaxDelta(settings["max_delta"].toDouble());
+
+                if(settings.contains(QString("min_temp")))
+                    fan->setMinTemperature(settings["min_temp"].toDouble());
+
+                if(settings.contains(QString("max_temp")))
+                    fan->setMaxTemperature(settings["max_temp"].toDouble());
+
+                if(settings.contains(QString("pid_Kp")))
+                    fan->setPidKp(settings["pid_Kp"].toDouble());
+
+                if(settings.contains(QString("pid_Ki")))
+                    fan->setPidKi(settings["pid_Ki"].toDouble());
+
+                if(settings.contains(QString("pid_Kd")))
+                    fan->setPidKd(settings["pid_Kd"].toDouble());
+
+                if(settings.contains(QString("pid_deriv_time")))
+                    fan->setPidDerivationTime(settings["pid_deriv_time"].toDouble());
+
+                if(settings.contains(QString("target_temp")))
+                    fan->setTargetTemperature(settings["target_temp"].toDouble());
+
+                if(settings.contains(QString("max_speed")))
+                    fan->setMaxSpeed(settings["max_speed"].toDouble());
+
+                if(settings.contains(QString("min_speed")))
+                    fan->setMinSpeed(settings["min_speed"].toDouble());
+
+                if(newFan)
+                    m_printer->setFan(fan->name(), fan);
+            }
+
+            //Check for heater_generic objects
+            else if(key.startsWith(QString("heater_generic")))
+            {
+                QJsonObject settings = settingsObject[key].toObject();
+
+                bool newHeater = false;
+                QKlipperHeater *heater = m_printer->heater(key);
+
+                if(!heater)
+                {
+                    newHeater = true;
+                    heater = new QKlipperHeater(m_printer);
+                    heater->setName(key);
+                }
+
+                parseHeaterSettings(heater, settings);
+
+                if(newHeater)
+                    m_printer->addHeater(heater);
+            }
+        }
+    }
 
     return true;
 }

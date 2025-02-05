@@ -1,5 +1,11 @@
 #include <QKlipper/QKlipperPrinter/qklippercontrollerfan.h>
 
+QKlipperControllerFan::QKlipperControllerFan(QObject *parent)
+    : QKlipperFan(parent)
+{
+
+}
+
 QString QKlipperControllerFan::stepper() const
 {
     return m_stepper;
@@ -50,4 +56,17 @@ void QKlipperControllerFan::setHeater(const QString &heater)
         return;
     m_heater = heater;
     emit heaterChanged();
+}
+
+qreal QKlipperControllerFan::fanSpeed() const
+{
+    return m_fanSpeed;
+}
+
+void QKlipperControllerFan::setFanSpeed(qreal fanSpeed)
+{
+    if (qFuzzyCompare(m_fanSpeed, fanSpeed))
+        return;
+    m_fanSpeed = fanSpeed;
+    emit fanSpeedChanged();
 }

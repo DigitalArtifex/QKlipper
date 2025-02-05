@@ -21,8 +21,6 @@ class DA_EXPORT QKlipperControllerFan : public QKlipperFan
 public:
     explicit QKlipperControllerFan(QObject *parent);
 
-    qreal fanSpeed() const;
-
     QString stepper() const;
 
     qreal idleTimeout() const;
@@ -31,9 +29,9 @@ public:
 
     QString heater() const;
 
-public slots:
+    qreal fanSpeed() const;
 
-    void setFanSpeed(qreal fanSpeed);
+private slots:
 
     void setStepper(const QString &stepper);
 
@@ -42,6 +40,8 @@ public slots:
     void setIdleSpeed(qreal idleSpeed);
 
     void setHeater(const QString &heater);
+
+    void setFanSpeed(qreal fanSpeed);
 
 signals:
 
@@ -63,11 +63,11 @@ private:
     qreal m_idleTimeout = 0;
     qreal m_idleSpeed = 0;
 
-    Q_PROPERTY(qreal fanSpeed READ fanSpeed WRITE setFanSpeed NOTIFY fanSpeedChanged FINAL)
     Q_PROPERTY(QString stepper READ stepper WRITE setStepper NOTIFY stepperChanged FINAL)
     Q_PROPERTY(qreal idleTimeout READ idleTimeout WRITE setIdleTimeout NOTIFY idleTimeoutChanged FINAL)
     Q_PROPERTY(qreal idleSpeed READ idleSpeed WRITE setIdleSpeed NOTIFY idleSpeedChanged FINAL)
     Q_PROPERTY(QString heater READ heater WRITE setHeater NOTIFY heaterChanged FINAL)
+    Q_PROPERTY(qreal fanSpeed READ fanSpeed WRITE setFanSpeed NOTIFY fanSpeedChanged FINAL)
 };
 
 #endif // QKLIPPERCONTROLLERFAN_H

@@ -190,6 +190,21 @@ bool QKlipperPrintBed::tiltAdjustError() const
     return m_tiltAdjustError;
 }
 
+void QKlipperPrintBed::setTargetTemp(qreal targetTemp)
+{
+    if(!m_console)
+    {
+        qWarning() << "Parental structure incorrect. No console for QKlipperHeater " + name();
+        return;
+    }
+
+    //M140 sets bed temp without waiting
+    QString gcode = QString("M140 S") + QString::number(targetTemp);
+
+    //send the G-Code
+    m_console->printerGcodeScript(gcode);
+}
+
 void QKlipperPrintBed::setTiltAdjustError(bool tiltAdjustError)
 {
     if (m_tiltAdjustError == tiltAdjustError)

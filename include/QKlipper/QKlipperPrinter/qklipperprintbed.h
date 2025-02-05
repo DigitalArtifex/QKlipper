@@ -96,7 +96,7 @@ public slots:
      *
      * \param targetTemp The value (in Celsius) to set (0-maxTemp)
      */
-    void setTargetTemp(qreal targetTemp);
+    virtual void setTargetTemp(qreal targetTemp) override;
 
     /*!
      * Sends a gcode script to probe the bed corners to determine adjustment values

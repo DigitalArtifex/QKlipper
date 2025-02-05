@@ -1,5 +1,11 @@
 #include <QKlipper/QKlipperPrinter/qklipperheaterfan.h>
 
+QKlipperHeaterFan::QKlipperHeaterFan(QObject *parent)
+    : QKlipperFan(parent)
+{
+
+}
+
 QString QKlipperHeaterFan::heater() const
 {
     return m_heater;

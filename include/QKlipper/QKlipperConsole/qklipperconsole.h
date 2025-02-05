@@ -947,6 +947,8 @@ private slots:
     bool parseHeaterSettings(QKlipperHeater *heater, QJsonObject settings);
     bool parseHeaterStatus(QKlipperHeater *heater, QJsonObject settings);
 
+    bool parsePrinterConfig(QJsonObject config);
+
     void setConnectionState(ConnectionState connectionState);
     void resetConnectionState();
 
