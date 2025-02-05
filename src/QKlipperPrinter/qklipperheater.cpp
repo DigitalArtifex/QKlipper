@@ -43,8 +43,10 @@ void QKlipperHeater::setTargetTemp(qreal targetTemp)
         return;
     }
 
+    QString name = m_name.split(' ').last();
+
     //M140 sets bed temp without waiting
-    QString gcode = QString("M140 S") + QString::number(targetTemp);
+    QString gcode = QString("SET_HEATER_TEMPERATURE HEATER=%1 TARGET=%2").arg(name, QString::number(targetTemp));
 
     //send the G-Code
     m_console->printerGcodeScript(gcode);

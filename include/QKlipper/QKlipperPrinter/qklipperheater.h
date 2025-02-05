@@ -64,22 +64,20 @@ public slots:
      *
      * \param targetTemp The value (in Celsius) to set (0-maxTemp)
      */
-    void setTargetTemp(qreal targetTemp);
+    virtual void setTargetTemp(qreal targetTemp);
 
     /*!
      * Sends a gcode script to calibrate the extruder at the target temperature.
      *
      * \param target The temperature to use in the PID calibration
      */
-    void calibratePid(qreal target);
+    virtual void calibratePid(qreal target);
 
     void setMaxWatts(qreal maxWatts);
 
-    void setName(const QString &name);
-
-    void setGcodeId(const QString &gcodeId);
-
 private slots:
+    void setName(const QString &name);
+    void setGcodeId(const QString &gcodeId);
     void setCurrentTemp(qreal currentTemp);
     void setTargetTempData(qreal targetTemp);
     void setPower(qreal power);
@@ -94,13 +92,6 @@ private slots:
     void setPullupResistor(qreal pullupResistor);
     void setPwmCycleTime(qreal pwmCycleTime);
     void setSmoothTime(qreal smoothTime);
-    void setAdjustmentScrewsError(bool adjustmentScrewsError);
-    void setHasAdjustmentScrewResult(bool hasAdjustmentScrewResult);
-    void setHasBedMeshResult(bool hasBedMeshResult);
-    void setAdjustmentScrewsCalibrating(bool adjustmentScrewsCalibrating);
-    void setBedMeshCalibrating(bool bedMeshCalibrating);
-    void setAdjustmentScrewsMaxDeviation(qreal adjustmentScrewsMaxDeviation);
-    void setTiltAdjustError(bool tiltAdjustError);
     void setControl(const QString &control);
     void setSensorPin(const QString &sensorPin);
     void setHeaterPin(const QString &heaterPin);
