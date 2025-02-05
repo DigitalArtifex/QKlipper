@@ -1,5 +1,5 @@
 set(QKlipper_INCLUDE_DIRS ${CMAKE_PREFIX_PATH}/include/QKlipper)
-set(QKlipper_LIBRARIES ${CMAKE_PREFIX_PATH}/lib/libQKlipper.so)
+set(QKlipper_LIBRARIES ${CMAKE_PREFIX_PATH}/lib/libQ${QT_VERSION_MAJOR}Klipper.so)
 
 Name: QKlipper
 Description: Klipper Library for Qt
