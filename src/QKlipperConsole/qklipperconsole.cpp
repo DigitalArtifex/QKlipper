@@ -4322,7 +4322,12 @@ void QKlipperConsole::printerSubscribeParser(QKlipperMessage *message)
         move.absoluteExtrude = gcodeObject["absolute_extrude"].toBool();
         move.extrusionFactor = gcodeObject["extrude_factor"].toDouble();
         move.speed = gcodeObject["speed"].toDouble();
-        move.speedFactor = gcodeObject["speed_factor"].toDouble();
+
+        if(gcodeObject.contains("speed_factor"))
+        {
+            move.speedFactor = gcodeObject["speed_factor"].toDouble();
+            m_printer->setPrintSpeedData(gcodeObject["speed_factor"].toDouble());
+        }
 
         //Set the extrusion factor on the current extruder
         if(m_printer->toolhead()->currentExtruder())

@@ -159,13 +159,18 @@ public:
     QMap<QString, QKlipperHeater *> heaters() const;
     QKlipperHeater *heater(const QString &name);
 
+    qreal printSpeed() const;
+
 public slots:
 
     void setHasChamber(bool hasChamber);
 
     void setMinimumCruiseRatio(qreal minimumCruiseRatio);
 
+    bool setPrintSpeed(qreal printSpeed);
+
 private slots:
+    void setPrintSpeedData(qreal printSpeed);
 
     void setPowerProfile(const QMap<QString, qreal> &powerProfile);
 
@@ -300,6 +305,8 @@ signals:
 
     void heatersChanged();
 
+    void printSpeedChanged();
+
 private:
     QTimer *m_fakePrintTimer = nullptr;
     QKlipperToolHead                                *m_toolhead = nullptr;
@@ -324,6 +331,7 @@ private:
     qreal                                            m_squareCornerVelocity = 0;
     qreal                                            m_printTime = 0;
     qreal                                            m_minimumCruiseRatio = 0;
+    qreal                                            m_printSpeed = 0;
 
     QTimer                                          *m_connectionTimer = nullptr;
 
@@ -355,10 +363,9 @@ private:
     QKlipperSafeZHome                                m_safeZHome;
     bool                                             m_hasChamber = false;
 
-    Q_PROPERTY(qreal minimumCruiseRatio READ minimumCruiseRatio WRITE setMinimumCruiseRatio NOTIFY
-                   minimumCruiseRatioChanged FINAL)
-    Q_PROPERTY(QMap<QString, QKlipperHeater *> heaters READ heaters WRITE setHeaters NOTIFY
-                   heatersChanged FINAL)
+    Q_PROPERTY(qreal minimumCruiseRatio READ minimumCruiseRatio WRITE setMinimumCruiseRatio NOTIFY minimumCruiseRatioChanged FINAL)
+    Q_PROPERTY(QMap<QString, QKlipperHeater *> heaters READ heaters WRITE setHeaters NOTIFY heatersChanged FINAL)
+    Q_PROPERTY(qreal printSpeed READ printSpeed WRITE setPrintSpeed NOTIFY printSpeedChanged FINAL)
 };
 
 #endif // QKLIPPERPRINTER_H

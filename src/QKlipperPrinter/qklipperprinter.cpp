@@ -580,6 +580,37 @@ void QKlipperPrinter::fakePrintTimeout()
     setStatus(Printing);
 }
 
+qreal QKlipperPrinter::printSpeed() const
+{
+    return m_printSpeed;
+}
+
+bool QKlipperPrinter::setPrintSpeed(qreal printSpeed)
+{
+    if (qFuzzyCompare(m_printSpeed, printSpeed))
+        return true;
+
+    QKlipperError *error = new QKlipperError();
+    m_console->printerGcodeScript(QString("M220 %1").arg(printSpeed), error);
+
+    bool success = false;
+
+    if(error->type() == QKlipperError::NoError)
+        success = true;
+
+    delete error;
+    return success;
+}
+
+void QKlipperPrinter::setPrintSpeedData(qreal printSpeed)
+{
+    if (qFuzzyCompare(m_printSpeed, printSpeed))
+        return;
+
+    m_printSpeed = printSpeed;
+    emit printSpeedChanged();
+}
+
 QMap<QString, QKlipperHeater *> QKlipperPrinter::heaters() const
 {
     return m_heaters;
