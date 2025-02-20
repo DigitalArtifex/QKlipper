@@ -34,7 +34,7 @@ else()
 endif()
 
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Gui)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Gui Network Quick)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Gui Network WebSockets Quick)
 
 add_custom_target(Configs SOURCES
     cmake/QKlipper.pc.in
@@ -56,6 +56,7 @@ if(BUILD_SHARED_LIBS)
         Qt${QT_VERSION_MAJOR}::Gui
         Qt${QT_VERSION_MAJOR}::Core
         Qt${QT_VERSION_MAJOR}::Network
+        Qt${QT_VERSION_MAJOR}::WebSockets
         Qt${QT_VERSION_MAJOR}::Quick
     )
 
@@ -80,6 +81,7 @@ if(BUILD_STATIC_LIBS)
         Qt${QT_VERSION_MAJOR}::Gui
         Qt${QT_VERSION_MAJOR}::Core
         Qt${QT_VERSION_MAJOR}::Network
+        Qt${QT_VERSION_MAJOR}::WebSockets
         Qt${QT_VERSION_MAJOR}::Quick
     )
 
@@ -87,9 +89,11 @@ if(BUILD_STATIC_LIBS)
 
     target_include_directories(QKlipperStatic PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-    target_sources(QKlipperStatic PRIVATE ${SOURCES})
-    target_sources(QKlipperStatic PRIVATE ${RESOURCES})
-    target_sources(QKlipperStatic PRIVATE ${HEADERS})
+    target_sources(QKlipper
+        PRIVATE ${SOURCES}
+        PRIVATE ${RESOURCES}
+        PRIVATE ${HEADERS}
+    )
 
     install(TARGETS QKlipperStatic DESTINATION "${INSTALL_LIB_PATH}")
 endif()
@@ -98,7 +102,7 @@ endif()
 get_property(TARGETS DIRECTORY PROPERTY BUILDSYSTEM_TARGETS)
 foreach(TARGET ${TARGETS})
     # Set the version of the library
-    set_target_properties(QKlipper PROPERTIES
+    set_target_properties(${TARGET} PROPERTIES
         VERSION ${CMAKE_PROJECT_VERSION}
         SOVERSION ${CMAKE_PROJECT_VERSION_MAJOR}
         LIBRARY_OUTPUT_NAME ${INSTALLED_NAME}
@@ -125,7 +129,7 @@ install(FILES
 configure_package_config_file(
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/QKlipper.cmake.in"
     "${CMAKE_CURRENT_BINARY_DIR}/cmake/QKlipperConfig.cmake"
-    INSTALL_DESTINATION "${INSTALL_INCLUDE_PATH}/lib/cmake/QKlipper"
+    INSTALL_DESTINATION "${INSTALL_LIB_PATH}/lib/cmake/QKlipper"
 )
 
 configure_file(
