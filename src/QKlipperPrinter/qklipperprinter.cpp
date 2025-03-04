@@ -658,26 +658,17 @@ void QKlipperPrinter::setupPowerProfile()
     {
         if(m_powerProfile.contains(extruder->name()))
             extruder->setMaxWatts(m_powerProfile[extruder->name()]);
+        else
+            m_powerProfile[extruder->name()] = 0.0;
     }
 
     for(QKlipperHeater *heater : m_heaters)
     {
         if(m_powerProfile.contains(heater->name()))
             heater->setMaxWatts(m_powerProfile[heater->name()]);
+        else
+            m_powerProfile[heater->name()] = 0.0;
     }
-}
-
-void QKlipperPrinter::savePowerProfile()
-{
-    m_powerProfile["bed"] = m_bed->maxWatts();
-    m_powerProfile["chamber"] = m_chamber->maxWatts();
-
-    for(QKlipperExtruder *extruder : m_toolhead->extruderMap())
-        m_powerProfile[extruder->name()] = extruder->maxWatts();
-
-
-    for(QKlipperHeater *heater : m_heaters)
-        m_powerProfile[heater->name()] = heater->maxWatts();
 }
 
 qreal QKlipperPrinter::minimumCruiseRatio() const
