@@ -35,6 +35,7 @@ bool QKlipperConsole::connect()
     addConnectionState(Connecting | Startup);
 
     m_printer->setStatus(QKlipperPrinter::Connecting);
+    m_system->setState(QKlipperSystem::Idle);
 
     if(m_server->connectionType() == QKlipperServer::Local)
     {
@@ -2537,26 +2538,34 @@ void QKlipperConsole::parseNotification(QKlipperMessage *message)
     {
         qDebug() << "Update Notify: " << message->response();
 
+        QJsonObject object;
 
-            QJsonObject object = message->response().toObject();
-            QString application = object["application"].toString();
-            QString message = object["message"].toString();
-            bool complete = object["complete"].toBool();
+        if(message->response().toObject().contains("params")
+                && message->response()["params"].toArray().count() > 0)
+        {
+            object = message->response()["params"][0].toObject();
+        }
+        else
+            object = message->response().toObject();
 
-            if(complete)
-            {
-                qDebug() << "Finished Updating" << application;
+        QString application = object["application"].toString();
+        QString message = object["message"].toString();
+        bool complete = object["complete"].toBool();
 
-                m_system->updateManager()->setCurrentStateMessage(QString("Updating %1 Complete. %2").arg(application, message));
-                m_system->setState(QKlipperSystem::Idle);
-            }
-            else
-            {
-                qDebug() << "Updating" << application << message << QString("%1\% Complete");
+        if(complete)
+        {
+            qDebug() << "Finished Updating" << application;
 
-                m_system->setState(QKlipperSystem::Updating);
-                m_system->updateManager()->setCurrentStateMessage(QString("Updating %1: %2").arg(application, message));
-            }
+            m_system->setState(QKlipperSystem::Idle);
+            qDebug() << "Updating" << application << message << QString("%1\% Complete");
+        }
+        else
+        {
+            qDebug() << QString("Updating %1 %2").arg(application, message);
+
+            m_system->setState(QKlipperSystem::Updating);
+            m_system->updateManager()->setCurrentStateMessage(QString("Updating %1: %2").arg(application, message));
+        }
     }
 
     //emitted when a package has completed auto-scan for update
