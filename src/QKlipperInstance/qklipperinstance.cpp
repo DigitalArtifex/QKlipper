@@ -255,7 +255,10 @@ void QKlipperInstance::setProfileColor(const QString &profileColor)
 void QKlipperInstance::onConsoleConnectionStateChanged()
 {
     if(m_console && m_console->isConnected() && m_console->hasConnectionState(QKlipperConsole::Syncronized))
+    {
+        m_printer->setupPowerProfile();
         setIsConnected(true);
+    }
     else
         setIsConnected(false);
 }
