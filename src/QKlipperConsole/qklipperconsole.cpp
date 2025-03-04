@@ -361,7 +361,7 @@ bool QKlipperConsole::machineUpdateFull(QKlipperError *error)
 
     if(error && (error->type() != QKlipperError::NoError || message->response().toString() != "ok"))
     {
-        error->setErrorTitle("Could not cancel print");
+        error->setErrorTitle("Could not update machine");
         processError(error);
 
         return false;
@@ -380,7 +380,7 @@ bool QKlipperConsole::machineUpdateMoonraker(QKlipperError *error)
 
     if(error && (error->type() != QKlipperError::NoError || message->response().toString() != "ok"))
     {
-        error->setErrorTitle("Could not cancel print");
+        error->setErrorTitle("Could not update moonraker");
         processError(error);
 
         return false;
@@ -399,7 +399,7 @@ bool QKlipperConsole::machineUpdateKlipper(QKlipperError *error)
 
     if(error && (error->type() != QKlipperError::NoError || message->response().toString() != "ok"))
     {
-        error->setErrorTitle("Could not cancel print");
+        error->setErrorTitle("Could not update klipper");
         processError(error);
 
         return false;
@@ -419,7 +419,7 @@ bool QKlipperConsole::machineUpdateClient(QString client, QKlipperError *error)
 
     if(error && (error->type() != QKlipperError::NoError || message->response().toString() != "ok"))
     {
-        error->setErrorTitle("Could not cancel print");
+        error->setErrorTitle("Could not update client");
         processError(error);
 
         return false;
@@ -438,7 +438,7 @@ bool QKlipperConsole::machineUpdateSystem(QKlipperError *error)
 
     if(error && (error->type() != QKlipperError::NoError || message->response().toString() != "ok"))
     {
-        error->setErrorTitle("Could not cancel print");
+        error->setErrorTitle("Could not update system");
         processError(error);
 
         return false;
@@ -459,7 +459,7 @@ bool QKlipperConsole::machineUpdateRecover(QString name, bool hardRecover, QKlip
 
     if(error && (error->type() != QKlipperError::NoError || message->response().toString() != "ok"))
     {
-        error->setErrorTitle("Could not cancel print");
+        error->setErrorTitle("Could not recover update");
         processError(error);
 
         return false;
@@ -479,7 +479,7 @@ bool QKlipperConsole::machineUpdateRollback(QString name, QKlipperError *error)
 
     if(error && (error->type() != QKlipperError::NoError || message->response().toString() != "ok"))
     {
-        error->setErrorTitle("Could not cancel print");
+        error->setErrorTitle("Could not rollback update");
         processError(error);
 
         return false;
@@ -1977,15 +1977,19 @@ void QKlipperConsole::setConnectionState(ConnectionState connectionState)
         return;
 
     m_connectionState = connectionState;
-    emit connectionStateChanged();
 
     if(m_connectionState == Idle || m_connectionState == Restarting)
     {
         m_printer->setStatus(QKlipperPrinter::Offline);
         resetConnectionState();
     }
+    else if(hasConnectionState(Error))
+    {
+        m_printer->setStatus(QKlipperPrinter::Error);
+    }
 
     qDebug() << "Connection State: " << m_connectionState;
+    emit connectionStateChanged();
 }
 
 void QKlipperConsole::resetConnectionState()
@@ -2531,8 +2535,9 @@ void QKlipperConsole::parseNotification(QKlipperMessage *message)
 
     else if(message->method() == QString("notify_update_response"))
     {
-        if(message->response().isObject())
-        {
+        qDebug() << "Update Notify: " << message->response();
+
+
             QJsonObject object = message->response().toObject();
             QString application = object["application"].toString();
             QString message = object["message"].toString();
@@ -2540,20 +2545,24 @@ void QKlipperConsole::parseNotification(QKlipperMessage *message)
 
             if(complete)
             {
+                qDebug() << "Finished Updating" << application;
+
                 m_system->updateManager()->setCurrentStateMessage(QString("Updating %1 Complete. %2").arg(application, message));
                 m_system->setState(QKlipperSystem::Idle);
             }
             else
             {
+                qDebug() << "Updating" << application << message << QString("%1\% Complete");
+
                 m_system->setState(QKlipperSystem::Updating);
                 m_system->updateManager()->setCurrentStateMessage(QString("Updating %1: %2").arg(application, message));
             }
-        }
     }
 
     //emitted when a package has completed auto-scan for update
     else if(message->method() == QString("notify_update_refreshed"))
     {
+        qDebug() << "Update Refresh: " << message->response();
         machineUpdateStatusParser(message);
     }
     else if(message->method() == QString("notify_cpu_throttled"))
@@ -3523,6 +3532,8 @@ void QKlipperConsole::machineUpdateStatusParser(QKlipperMessage *message)
 {
     QKlipperUpdateManager *updateState = m_system->updateManager();
 
+    qDebug() << "Update Parser: " << message->response();
+
     updateState->setIsBusy(message->response()["busy"].toBool());
     updateState->setGithubLimitResetTime(message->response()["github_limit_reset_time"].toInt());
     updateState->setGithubRateLimit(message->response()["github_rate_limit"].toInt());
@@ -3890,6 +3901,10 @@ void QKlipperConsole::printerInfoParser(QKlipperMessage *message)
             m_printer->setStatus(QKlipperPrinter::Paused);
         else if(state == QString("cancelled"))
             m_printer->setStatus(QKlipperPrinter::Cancelled);
+        else if(state == QString("shutdown"))
+            m_printer->setStatus(QKlipperPrinter::Error);
+        else
+            m_printer->setStatus(QKlipperPrinter::Error);
     }
 
     if(message->response().toObject().contains(QString("config_file")))
