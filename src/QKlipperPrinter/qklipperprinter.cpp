@@ -62,13 +62,17 @@ QMap<QString, qreal> QKlipperPrinter::powerProfile() const
     return m_powerProfile;
 }
 
+void QKlipperPrinter::addPowerProfileData(const QString &key, qreal value)
+{
+    m_powerProfile[key] = value;
+}
+
 void QKlipperPrinter::setPowerProfile(const QMap<QString, qreal> &powerProfile)
 {
     if (m_powerProfile == powerProfile)
         return;
 
     m_powerProfile = powerProfile;
-    emit powerProfileChanged();
 }
 
 QString QKlipperPrinter::name() const
@@ -93,6 +97,7 @@ void QKlipperPrinter::setId(const QString &id)
 {
     if (m_id == id)
         return;
+
     m_id = id;
     emit idChanged();
 }
@@ -106,6 +111,7 @@ void QKlipperPrinter::setFirmwareVersion(const QString &firmwareVersion)
 {
     if (m_firmwareVersion == firmwareVersion)
         return;
+
     m_firmwareVersion = firmwareVersion;
     emit firmwareVersionChanged();
 }
@@ -119,6 +125,7 @@ void QKlipperPrinter::setStatusMessage(const QString &statusMessage)
 {
     if (m_statusMessage == statusMessage)
         return;
+
     m_statusMessage = statusMessage;
     emit statusMessageChanged();
 }
@@ -640,6 +647,37 @@ void QKlipperPrinter::addHeater(QKlipperHeater *heater)
 
     m_heaters.insert(heater->name(), heater);
     emit heatersChanged();
+}
+
+void QKlipperPrinter::setupPowerProfile()
+{
+    m_bed->setMaxWatts(m_powerProfile["bed"]);
+    m_chamber->setMaxWatts(m_powerProfile["m_chamber"]);
+
+    for(QKlipperExtruder *extruder : m_toolhead->extruderMap())
+    {
+        if(m_powerProfile.contains(extruder->name()))
+            extruder->setMaxWatts(m_powerProfile[extruder->name()]);
+    }
+
+    for(QKlipperHeater *heater : m_heaters)
+    {
+        if(m_powerProfile.contains(heater->name()))
+            heater->setMaxWatts(m_powerProfile[heater->name()]);
+    }
+}
+
+void QKlipperPrinter::savePowerProfile()
+{
+    m_powerProfile["bed"] = m_bed->maxWatts();
+    m_powerProfile["chamber"] = m_chamber->maxWatts();
+
+    for(QKlipperExtruder *extruder : m_toolhead->extruderMap())
+        m_powerProfile[extruder->name()] = extruder->maxWatts();
+
+
+    for(QKlipperHeater *heater : m_heaters)
+        m_powerProfile[heater->name()] = heater->maxWatts();
 }
 
 qreal QKlipperPrinter::minimumCruiseRatio() const

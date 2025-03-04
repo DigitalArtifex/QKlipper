@@ -47,6 +47,7 @@
 #include "qklipperheater.h"
 
 class QKlipperConsole;
+class QKlipperPrinterModifier { };
 
 #include "QKlipper/dalib_global.h"
 
@@ -59,6 +60,8 @@ class DA_EXPORT QKlipperPrinter : public QObject
     Q_OBJECT
 
     friend QKlipperConsole;
+    friend QKlipperPrinterModifier;
+
 public:
 
     enum Status
@@ -82,6 +85,7 @@ public:
     QKlipperChamber *chamber() const;
 
     QMap<QString, qreal> powerProfile() const;
+    void addPowerProfileData(const QString &key, qreal value);
 
     QString name() const;
 
@@ -237,11 +241,12 @@ private slots:
     void setHeaters(const QMap<QString, QKlipperHeater *> &heaters);
     void addHeater(QKlipperHeater *heater);
 
+    void setupPowerProfile();
+    void savePowerProfile();
+
     void fakePrintTimeout();
 
 signals:
-
-    void powerProfileChanged();
 
     void nameChanged();
 
