@@ -85,7 +85,7 @@ public:
         KlipperConnected =     0b00010000, /*!!< Connection to klipper verified */
         Initialized =          0b00100000, /*!!< Connection startup sequence finished */
         Syncronized =          0b00111100, /*!!< Connection to websocket, moonraker and klipper established and startup sequence completed */
-        Restarting =           0b01000000, /*!!< Connection to websocket, moonraker and klipper established and startup sequence completed */
+        Restarting =           0b01000000, /*!!< Connection to websocket restarting */
         Error =                0b10000000  /*!!< Error detected with the connection */
     };
 
@@ -1006,6 +1006,9 @@ private:
 
     QTimer *m_rpcConnectionTimer = nullptr;
     qint16 m_rpcConnectionTimeoutValue = 10000; //in ms
+    qint8 m_rpcConnectionRetryThreshold = 5;
+    qint8 m_rpcConnectionRetryCount = 0;
+    bool m_rpcConnectionRetrying = false;
 
     Q_PROPERTY(ConnectionState connectionState READ connectionState WRITE setConnectionState RESET resetConnectionState NOTIFY connectionStateChanged FINAL)
     Q_PROPERTY(qreal startupSequenceProgress READ startupSequenceProgress WRITE setStartupSequenceProgress RESET resetStartupSequenceProgress NOTIFY startupSequenceProgressChanged FINAL)

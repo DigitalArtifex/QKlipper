@@ -198,11 +198,16 @@ void QKlipperConsole::machineShutdown(QKlipperError *error)
 
     sendWebSocketMessage(message, error);
 
-    if(error && (error->type() != QKlipperError::NoError || message->response().toString() != "ok"))
+    if(error && (error->type() != QKlipperError::NoError))
     {
+        qDebug() << "Error shutting down machine";
+
         error->setErrorTitle("Could not cancel print");
         processError(error);
     }
+
+    disconnect();
+    resetStartupSequence();
 }
 
 void QKlipperConsole::machineReboot(QKlipperError *error)
@@ -213,11 +218,19 @@ void QKlipperConsole::machineReboot(QKlipperError *error)
 
     sendWebSocketMessage(message, error);
 
-    if(error && (error->type() != QKlipperError::NoError || message->response().toString() != "ok"))
+    if(error && (error->type() != QKlipperError::NoError))
     {
+        qDebug() << "Error restarting machine";
+
         error->setErrorTitle("Could not cancel print");
         processError(error);
     }
+
+    stopConnectionTimer();
+    disconnect();
+    resetStartupSequence();
+    setConnectionState(Restarting);
+    startConnectionTimer();
 }
 
 void QKlipperConsole::machineSystemInfo()
@@ -720,8 +733,10 @@ bool QKlipperConsole::restartKlipper(QKlipperError *error)
 
     sendWebSocketMessage(message, error);
 
-    if(error->type() != QKlipperError::NoError || message->response().toString() != "ok")
+    if(error->type() != QKlipperError::NoError)
     {
+        qDebug() << "Error restarting Klipper";
+
         error->setErrorTitle("Could not restart klipper");
         processError(error);
 
@@ -734,9 +749,10 @@ bool QKlipperConsole::restartKlipper(QKlipperError *error)
     if(errorCleanup)
         delete error;
 
+    stopConnectionTimer();
     disconnect();
-    setConnectionState(Restarting);
     resetStartupSequence();
+    setConnectionState(Restarting);
     startConnectionTimer();
 
     return true;
@@ -760,8 +776,10 @@ bool QKlipperConsole::restartFirmware(QKlipperError *error)
 
     sendWebSocketMessage(message, error);
 
-    if(error->type() != QKlipperError::NoError || message->response().toString() != "ok")
+    if(error->type() != QKlipperError::NoError)
     {
+        qDebug() << "Error restarting firmware";
+
         error->setErrorTitle("Could not restart Firmware");
         processError(error);
 
@@ -774,10 +792,11 @@ bool QKlipperConsole::restartFirmware(QKlipperError *error)
     if(errorCleanup)
         delete error;
 
-    setConnectionState(Restarting);
+    stopConnectionTimer();
     disconnect();
     resetStartupSequence();
-    // connect();
+    setConnectionState(Restarting);
+    startConnectionTimer();
 
     return true;
 }
@@ -790,13 +809,19 @@ bool QKlipperConsole::serverRestart(QKlipperError *error)
 
     sendWebSocketMessage(message, error);
 
-    if(error && (error->type() != QKlipperError::NoError || message->response().toString() != "ok"))
+    if(error && (error->type() != QKlipperError::NoError))
     {
         error->setErrorTitle("Could not restart server");
         processError(error);
 
         return false;
     }
+
+    stopConnectionTimer();
+    disconnect();
+    resetStartupSequence();
+    setConnectionState(Restarting);
+    startConnectionTimer();
 
     return true;
 }
@@ -1982,14 +2007,13 @@ void QKlipperConsole::setConnectionState(ConnectionState connectionState)
     if(m_connectionState == Idle || m_connectionState == Restarting)
     {
         m_printer->setStatus(QKlipperPrinter::Offline);
-        resetConnectionState();
+        //resetConnectionState();
     }
     else if(hasConnectionState(Error))
     {
         m_printer->setStatus(QKlipperPrinter::Error);
     }
 
-    qDebug() << "Connection State: " << m_connectionState;
     emit connectionStateChanged();
 }
 
@@ -2135,7 +2159,14 @@ void QKlipperConsole::startConnectionTimer()
 
     if(!m_rpcConnectionTimer->isActive())
     {
-        m_rpcConnectionTimer->setInterval(m_rpcConnectionTimeoutValue);
+        if(m_connectionState == Restarting)
+        {
+            m_rpcConnectionTimer->setInterval(30000);
+            m_rpcConnectionRetrying = true;
+        }
+        else
+            m_rpcConnectionTimer->setInterval(m_rpcConnectionTimeoutValue);
+
         m_rpcConnectionTimer->setSingleShot(true);
         m_rpcConnectionTimer->start();
     }
@@ -2151,10 +2182,38 @@ void QKlipperConsole::stopConnectionTimer()
 
 void QKlipperConsole::onRpcConnectionTimeout()
 {
-    disconnect();
-    resetStartupSequence();
-    setStartupSequenceText("Datastream Interrupted..");
-    connect();
+    if(!m_rpcConnectionRetrying)
+    {
+        disconnect();
+        resetStartupSequence();
+        setStartupSequenceText("Datastream Interrupted..");
+        startConnectionTimer();
+
+        m_rpcConnectionRetrying = true;
+        m_rpcConnectionRetryCount = 0;
+    }
+    else if(m_rpcConnectionRetryCount <= m_rpcConnectionRetryThreshold)
+    {
+        QString text = QString("Connection retry %1 of %2").arg(++m_rpcConnectionRetryCount).arg(m_rpcConnectionRetryThreshold);
+        setStartupSequenceText(text);
+
+        if(!connect())
+        {
+            text = QString("Connection retry %1 of %2 timeout. Retrying in %3 seconds").arg(m_rpcConnectionRetryCount).arg(m_rpcConnectionRetryThreshold).arg(m_rpcConnectionTimeoutValue / 1000);
+            setStartupSequenceText(text);
+            setConnectionState(Connecting);
+            startConnectionTimer();
+        }
+    }
+    else if(m_rpcConnectionRetryCount > m_rpcConnectionRetryThreshold)
+    {
+        stopConnectionTimer();
+        disconnect();
+        resetStartupSequence();
+
+        m_rpcConnectionRetrying = false;
+        m_rpcConnectionRetryCount = 0;
+    }
 }
 
 void QKlipperConsole::processError(QKlipperError *error)
@@ -2531,7 +2590,6 @@ void QKlipperConsole::parseNotification(QKlipperMessage *message)
                 emit gcodeResponse(response);
             }
         }
-
     }
 
     else if(message->method() == QString("notify_update_response"))
