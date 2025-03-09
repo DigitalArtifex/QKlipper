@@ -570,7 +570,30 @@ void QKlipperPrinter::start(QKlipperFile *file)
 
 qreal QKlipperPrinter::watts()
 {
-    return m_toolhead->watts();
+    qreal watts = 0.0;
+
+    for(QKlipperHeater *heater : m_heaters)
+        watts += heater->watts();
+
+    watts += m_toolhead->watts();
+    watts += m_bed->watts();
+
+    return watts;
+}
+
+qreal QKlipperPrinter::maxWatts()
+{
+    qreal watts = 0.0;
+
+    for(QKlipperHeater *heater : m_heaters)
+        watts += heater->maxWatts();
+
+    for(QKlipperExtruder *extruder : m_toolhead->extruderMap())
+        watts += extruder->maxWatts();
+
+    watts += m_bed->maxWatts();
+
+    return watts;
 }
 
 void QKlipperPrinter::setEndstopStatus(const QKlipperEndstopStatus &endstopStatus)
