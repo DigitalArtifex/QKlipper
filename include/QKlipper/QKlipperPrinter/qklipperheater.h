@@ -75,7 +75,7 @@ public slots:
 
     void setMaxWatts(qreal maxWatts);
 
-private slots:
+protected slots:
     void setName(const QString &name);
     void setGcodeId(const QString &gcodeId);
     void setCurrentTemp(qreal currentTemp);

@@ -204,13 +204,6 @@ public:
     bool canExtrude() const;
 
     /*!
-     * Name for the extruder (extruder, extruder1, etc)
-     *
-     * \returns The name of the extruder
-     */
-    QString name() const;
-
-    /*!
      * Direction pin for the extruder, set in the configuration
      *
      * \returns The direction pin label of the extruder
@@ -295,6 +288,13 @@ public slots:
      */
     void retract(qreal amount, qreal speed);
 
+    /*!
+     * Sends a gcode script to set the target temperature
+     *
+     * \param temperature The target temperature
+     */
+    virtual void setTargetTemp(qreal temperature) override;
+
 private slots:
 
     //TODO: rename all functions here to end with Data
@@ -332,8 +332,6 @@ private slots:
     void setMinExtrudeTemp(qreal minExtrudeTemp);
 
     void setCanExtrude(bool canExtrude);
-
-    void setName(const QString &name);
 
     void setDirPin(const QString &dirPin);
 
@@ -390,8 +388,6 @@ signals:
 
     void canExtrudeChanged();
 
-    void nameChanged();
-
     void dirPinChanged();
 
     void enablePinChanged();
@@ -434,7 +430,6 @@ private:
 
     bool m_canExtrude = false;
 
-    QString m_name;
     QString m_dirPin;
     QString m_enablePin;
     QString m_stepPin;

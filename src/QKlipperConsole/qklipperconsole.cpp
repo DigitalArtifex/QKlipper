@@ -5773,7 +5773,6 @@ bool QKlipperConsole::parsePrinterConfig(QJsonObject config)
                 newExtruder = true;
             }
 
-            extruder->setWatts(m_printer->powerProfile()[extruderName]);
             extruder->setName(extruderName);
 
             QJsonObject extruderObject = settingsObject[extruderName].toObject();

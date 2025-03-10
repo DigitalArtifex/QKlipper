@@ -88,7 +88,7 @@ void QKlipperExtruder::setPressureAdvance(qreal pressureAdvance)
 {
     //set to relative movement
     QString gcode("SET_PRESSURE_ADVANCE EXTRUDER=");
-    gcode += m_name + QString(" ADVANCE=") + QString::number(pressureAdvance);
+    gcode += name() + QString(" ADVANCE=") + QString::number(pressureAdvance);
     gcode += QString(" SMOOTH_TIME=") + QString::number(m_pressureAdvanceSmoothTime);
 
     m_console->printerGcodeScript(gcode);
@@ -153,6 +153,12 @@ void QKlipperExtruder::extrude(qreal amount, qreal speed)
 void QKlipperExtruder::retract(qreal amount, qreal speed)
 {
     extrude(amount * -1, speed);
+}
+
+void QKlipperExtruder::setTargetTemp(qreal temperature)
+{
+    QString gcode = QString("M104 T%1 S%2").arg(extruderNumber()).arg(temperature);
+    m_console->printerGcodeScript(gcode);
 }
 
 void QKlipperExtruder::setExtrusionFactorData(qreal extrusionFactor)
@@ -318,19 +324,6 @@ void QKlipperExtruder::setCanExtrude(bool canExtrude)
         return;
     m_canExtrude = canExtrude;
     emit canExtrudeChanged();
-}
-
-QString QKlipperExtruder::name() const
-{
-    return m_name;
-}
-
-void QKlipperExtruder::setName(const QString &name)
-{
-    if (m_name == name)
-        return;
-    m_name = name;
-    emit nameChanged();
 }
 
 QString QKlipperExtruder::dirPin() const

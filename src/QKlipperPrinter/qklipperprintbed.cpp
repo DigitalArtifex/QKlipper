@@ -5,6 +5,7 @@ QKlipperPrintBed::QKlipperPrintBed(QObject *parent)
     : QKlipperHeater{parent}
 {
     m_bedMesh = new QKlipperPrintBedMesh(this);
+    setName("bed");
 }
 
 QKlipperPrintBed::~QKlipperPrintBed()
