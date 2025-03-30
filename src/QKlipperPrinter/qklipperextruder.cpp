@@ -35,6 +35,7 @@ void QKlipperExtruder::setExtruderNumber(qint32 extruderNumber)
 {
     if (m_extruderNumber == extruderNumber)
         return;
+
     m_extruderNumber = extruderNumber;
     emit extruderNumberChanged();
 }
@@ -155,7 +156,7 @@ void QKlipperExtruder::retract(qreal amount, qreal speed)
     extrude(amount * -1, speed);
 }
 
-void QKlipperExtruder::setTargetTemp(qreal temperature)
+void QKlipperExtruder::setTargetTemperature(qreal temperature)
 {
     QString gcode = QString("M104 T%1 S%2").arg(extruderNumber()).arg(temperature);
     m_console->printerGcodeScript(gcode);
@@ -192,6 +193,7 @@ void QKlipperExtruder::setNozzleDiameter(qreal nozzleDiameter)
 {
     if (qFuzzyCompare(m_nozzleDiameter, nozzleDiameter))
         return;
+
     m_nozzleDiameter = nozzleDiameter;
     emit nozzleDiameterChanged();
 }
@@ -371,7 +373,7 @@ QKlipperTemperatureStore QKlipperExtruder::temperatureStore() const
     return m_temperatureStore;
 }
 
-void QKlipperExtruder::setTemperatureStore(const QKlipperTemperatureStore &temperatureStore)
+void QKlipperExtruder::setTargetTemperatureStore(const QKlipperTemperatureStore &temperatureStore)
 {
     bool changed = false;
 
@@ -391,7 +393,7 @@ void QKlipperExtruder::setTemperatureStore(const QKlipperTemperatureStore &tempe
     emit temperatureStoreChanged();
 }
 
-void QKlipperExtruder::setTemperatureStoreValue(const QKlipperTemperatureStoreValue &value)
+void QKlipperExtruder::setTargetTemperatureStoreValue(const QKlipperTemperatureStoreValue &value)
 {
     if(m_temperatureStore.contains(value))
         return;

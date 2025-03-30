@@ -59,43 +59,43 @@ void QKlipperTemperatureFan::setMaxDelta(qreal maxDelta)
     emit maxDeltaChanged();
 }
 
-qreal QKlipperTemperatureFan::minTemperature() const
+qreal QKlipperTemperatureFan::minimumTemperatureerature() const
 {
-    return m_minTemperature;
+    return m_minimumTemperatureerature;
 }
 
-void QKlipperTemperatureFan::setMinTemperature(qreal minTemperature)
+void QKlipperTemperatureFan::setMinTemperature(qreal minimumTemperatureerature)
 {
-    if (qFuzzyCompare(m_minTemperature, minTemperature))
+    if (qFuzzyCompare(m_minimumTemperatureerature, minimumTemperatureerature))
         return;
-    m_minTemperature = minTemperature;
-    emit minTemperatureChanged();
+    m_minimumTemperatureerature = minimumTemperatureerature;
+    emit minimumTemperatureeratureChanged();
 }
 
-qreal QKlipperTemperatureFan::maxTemperature() const
+qreal QKlipperTemperatureFan::maximumTemperatureerature() const
 {
-    return m_maxTemperature;
+    return m_maximumTemperatureerature;
 }
 
-void QKlipperTemperatureFan::setMaxTemperature(qreal maxTemperature)
+void QKlipperTemperatureFan::setMaxTemperature(qreal maximumTemperatureerature)
 {
-    if (qFuzzyCompare(m_maxTemperature, maxTemperature))
+    if (qFuzzyCompare(m_maximumTemperatureerature, maximumTemperatureerature))
         return;
-    m_maxTemperature = maxTemperature;
-    emit maxTemperatureChanged();
+    m_maximumTemperatureerature = maximumTemperatureerature;
+    emit maximumTemperatureeratureChanged();
 }
 
-qreal QKlipperTemperatureFan::targetTemperature() const
+qreal QKlipperTemperatureFan::targetTemperatureerature() const
 {
-    return m_targetTemperature;
+    return m_targetTemperatureerature;
 }
 
-void QKlipperTemperatureFan::setTargetTemperature(qreal targetTemperature)
+void QKlipperTemperatureFan::setTargetTemperatureerature(qreal targetTemperatureerature)
 {
-    if (qFuzzyCompare(m_targetTemperature, targetTemperature))
+    if (qFuzzyCompare(m_targetTemperatureerature, targetTemperatureerature))
         return;
-    m_targetTemperature = targetTemperature;
-    emit targetTemperatureChanged();
+    m_targetTemperatureerature = targetTemperatureerature;
+    emit targetTemperatureeratureChanged();
 }
 
 qreal QKlipperTemperatureFan::pidKp() const

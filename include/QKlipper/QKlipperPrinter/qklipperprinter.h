@@ -155,7 +155,7 @@ public:
     void start(QKlipperFile *file);
 
     qreal watts();
-    qreal maxWatts();
+    qreal maximumWatts();
 
     bool hasChamber() const;
 

@@ -32,11 +32,11 @@ public:
 
     qreal maxDelta() const;
 
-    qreal minTemperature() const;
+    qreal minimumTemperatureerature() const;
 
-    qreal maxTemperature() const;
+    qreal maximumTemperatureerature() const;
 
-    qreal targetTemperature() const;
+    qreal targetTemperatureerature() const;
 
     qreal pidKp() const;
 
@@ -59,11 +59,11 @@ private slots:
 
     void setMaxDelta(qreal maxDelta);
 
-    void setMinTemperature(qreal minTemperature);
+    void setMinTemperature(qreal minimumTemperatureerature);
 
-    void setMaxTemperature(qreal maxTemperature);
+    void setMaxTemperature(qreal maximumTemperatureerature);
 
-    void setTargetTemperature(qreal targetTemperature);
+    void setTargetTemperatureerature(qreal targetTemperatureerature);
 
     void setPidKp(qreal pidKp);
 
@@ -86,11 +86,11 @@ signals:
 
     void maxDeltaChanged();
 
-    void minTemperatureChanged();
+    void minimumTemperatureeratureChanged();
 
-    void maxTemperatureChanged();
+    void maximumTemperatureeratureChanged();
 
-    void targetTemperatureChanged();
+    void targetTemperatureeratureChanged();
 
     void pidKpChanged();
 
@@ -110,9 +110,9 @@ private:
     QString m_gcodeId;
 
     qreal m_maxDelta = 0;
-    qreal m_minTemperature = 0;
-    qreal m_maxTemperature = 0;
-    qreal m_targetTemperature = 0;
+    qreal m_minimumTemperatureerature = 0;
+    qreal m_maximumTemperatureerature = 0;
+    qreal m_targetTemperatureerature = 0;
 
     qreal m_pidKp = 0;
     qreal m_pidKi = 0;
@@ -126,9 +126,9 @@ private:
     Q_PROPERTY(QString sensorType READ sensorType WRITE setSensorType NOTIFY sensorTypeChanged FINAL)
     Q_PROPERTY(QString gcodeId READ gcodeId WRITE setGcodeId NOTIFY gcodeIdChanged FINAL)
     Q_PROPERTY(qreal maxDelta READ maxDelta WRITE setMaxDelta NOTIFY maxDeltaChanged FINAL)
-    Q_PROPERTY(qreal minTemperature READ minTemperature WRITE setMinTemperature NOTIFY minTemperatureChanged FINAL)
-    Q_PROPERTY(qreal maxTemperature READ maxTemperature WRITE setMaxTemperature NOTIFY maxTemperatureChanged FINAL)
-    Q_PROPERTY(qreal targetTemperature READ targetTemperature WRITE setTargetTemperature NOTIFY targetTemperatureChanged FINAL)
+    Q_PROPERTY(qreal minimumTemperatureerature READ minimumTemperatureerature WRITE setMinTemperature NOTIFY minimumTemperatureeratureChanged FINAL)
+    Q_PROPERTY(qreal maximumTemperatureerature READ maximumTemperatureerature WRITE setMaxTemperature NOTIFY maximumTemperatureeratureChanged FINAL)
+    Q_PROPERTY(qreal targetTemperatureerature READ targetTemperatureerature WRITE setTargetTemperatureerature NOTIFY targetTemperatureeratureChanged FINAL)
     Q_PROPERTY(qreal pidKp READ pidKp WRITE setPidKp NOTIFY pidKpChanged FINAL)
     Q_PROPERTY(qreal pidKi READ pidKi WRITE setPidKi NOTIFY pidKiChanged FINAL)
     Q_PROPERTY(qreal pidKd READ pidKd WRITE setPidKd NOTIFY pidKdChanged FINAL)

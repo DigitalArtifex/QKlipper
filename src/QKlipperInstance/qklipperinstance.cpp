@@ -89,6 +89,9 @@ void QKlipperInstance::setId(const QString &id)
     m_id = id;
     emit idChanged();
 
+    if(m_printer)
+        m_printer->setId(id);
+
     setHasUpdate(true);
 }
 

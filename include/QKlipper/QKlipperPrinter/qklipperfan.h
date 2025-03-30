@@ -97,7 +97,7 @@ public:
 
     QString enablePin() const;
 
-    qreal maxPower() const;
+    qreal maximumPower() const;
 
     qreal shutdownSpeed() const;
 
@@ -182,7 +182,7 @@ private slots:
 
     void setEnablePin(const QString &enablePin);
 
-    void setMaxPower(qreal maxPower);
+    void setMaxPower(qreal maximumPower);
 
     void setShutdownSpeed(qreal shutdownSpeed);
 
@@ -214,7 +214,7 @@ signals:
 
     void enablePinChanged();
 
-    void maxPowerChanged();
+    void maximumPowerChanged();
 
     void shutdownSpeedChanged();
 
@@ -235,7 +235,7 @@ private:
 
     qreal m_speed = 0;
     qreal m_rpm = 0;
-    qreal m_maxPower = 0;
+    qreal m_maximumPower = 0;
     qreal m_shutdownSpeed = 0;
     qreal m_cycleTime = 0;
     qreal m_kickStartTime = 0;
@@ -254,16 +254,13 @@ private:
     Q_PROPERTY(bool isControllable READ isControllable RESET resetIsControllable NOTIFY isControllableChanged FINAL)
     Q_PROPERTY(QString pin READ pin WRITE setPin NOTIFY pinChanged FINAL)
     Q_PROPERTY(QString enablePin READ enablePin WRITE setEnablePin NOTIFY enablePinChanged FINAL)
-    Q_PROPERTY(qreal maxPower READ maxPower WRITE setMaxPower NOTIFY maxPowerChanged FINAL)
-    Q_PROPERTY(qreal shutdownSpeed READ shutdownSpeed WRITE setShutdownSpeed NOTIFY
-                   shutdownSpeedChanged FINAL)
+    Q_PROPERTY(qreal maximumPower READ maximumPower WRITE setMaxPower NOTIFY maximumPowerChanged FINAL)
+    Q_PROPERTY(qreal shutdownSpeed READ shutdownSpeed WRITE setShutdownSpeed NOTIFY shutdownSpeedChanged FINAL)
     Q_PROPERTY(qreal cycleTime READ cycleTime WRITE setCycleTime NOTIFY cycleTimeChanged FINAL)
-    Q_PROPERTY(qreal kickStartTime READ kickStartTime WRITE setKickStartTime NOTIFY
-                   kickStartTimeChanged FINAL)
+    Q_PROPERTY(qreal kickStartTime READ kickStartTime WRITE setKickStartTime NOTIFY kickStartTimeChanged FINAL)
     Q_PROPERTY(qreal offBelow READ offBelow WRITE setOffBelow NOTIFY offBelowChanged FINAL)
     Q_PROPERTY(bool hardwarePin READ hardwarePin WRITE setHardwarePin NOTIFY hardwarePinChanged FINAL)
-    Q_PROPERTY(
-        Tachometer tachometer READ tachometer WRITE setTachometer NOTIFY tachometerChanged FINAL)
+    Q_PROPERTY(Tachometer tachometer READ tachometer WRITE setTachometer NOTIFY tachometerChanged FINAL)
 };
 
 #endif // QKLIPPERFAN_H

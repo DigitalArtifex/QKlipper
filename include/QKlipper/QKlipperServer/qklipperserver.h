@@ -225,6 +225,7 @@ private:
 
     QKlipperAccessDetails                             m_accessDetails;
     QList<QKlipperUser>                               m_userList;
+    QKlipperUser                                      m_currentUser;
 
     QKlipperJobQueue                                 *m_jobQueue = nullptr;
 

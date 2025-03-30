@@ -19,10 +19,7 @@ QKlipperServer::~QKlipperServer()
     foreach(QKlipperFile *file, m_fileSystem)
     {
         if(file)
-        {
             file->deleteLater();
-            file = nullptr;
-        }
     }
 }
 
@@ -49,6 +46,7 @@ void QKlipperServer::setKlipperLocation(const QString &klipperLocation)
 {
     if (m_klipperLocation == klipperLocation)
         return;
+
     m_klipperLocation = klipperLocation;
     emit klipperLocationChanged();
 }

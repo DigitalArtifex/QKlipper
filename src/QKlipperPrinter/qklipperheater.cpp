@@ -16,26 +16,26 @@ QKlipperHeater::QKlipperHeater(QObject *parent)
     }
 }
 
-qreal QKlipperHeater::currentTemp() const
+qreal QKlipperHeater::temperature() const
 {
-    return m_currentTemp;
+    return m_temperature;
 }
 
-void QKlipperHeater::setCurrentTemp(qreal currentTemp)
+void QKlipperHeater::setCurrentTemp(qreal temperature)
 {
-    if (qFuzzyCompare(m_currentTemp, currentTemp))
+    if (qFuzzyCompare(m_temperature, temperature))
         return;
 
-    m_currentTemp = currentTemp;
-    emit currentTempChanged();
+    m_temperature = temperature;
+    emit temperatureChanged();
 }
 
-qreal QKlipperHeater::targetTemp() const
+qreal QKlipperHeater::targetTemperature() const
 {
-    return m_targetTemp;
+    return m_targetTemperature;
 }
 
-void QKlipperHeater::setTargetTemp(qreal targetTemp)
+void QKlipperHeater::setTargetTemperature(qreal targetTemperature)
 {
     if(!m_console)
     {
@@ -46,7 +46,7 @@ void QKlipperHeater::setTargetTemp(qreal targetTemp)
     QString name = m_name.split(' ').last();
 
     //M140 sets bed temp without waiting
-    QString gcode = QString("SET_HEATER_TEMPERATURE HEATER=%1 TARGET=%2").arg(name, QString::number(targetTemp));
+    QString gcode = QString("SET_HEATER_TEMPERATURE HEATER=%1 TARGET=%2").arg(name, QString::number(targetTemperature));
 
     //send the G-Code
     m_console->printerGcodeScript(gcode);
@@ -71,13 +71,13 @@ void QKlipperHeater::calibratePid(qreal target)
     emit pidCalibratingFinished();
 }
 
-void QKlipperHeater::setTargetTempData(qreal targetTemp)
+void QKlipperHeater::setTargetTemperatureData(qreal targetTemperature)
 {
-    if (qFuzzyCompare(m_targetTemp, targetTemp))
+    if (qFuzzyCompare(m_targetTemperature, targetTemperature))
         return;
 
-    m_targetTemp = targetTemp;
-    emit targetTempChanged();
+    m_targetTemperature = targetTemperature;
+    emit targetTemperatureChanged();
 }
 
 qreal QKlipperHeater::power() const
@@ -93,7 +93,7 @@ void QKlipperHeater::setPower(qreal power)
     m_power = power;
     emit powerChanged();
 
-    setWatts(power * m_maxWatts);
+    setWatts(power * m_maximumWatts);
 }
 
 qreal QKlipperHeater::watts() const
@@ -110,20 +110,20 @@ void QKlipperHeater::setWatts(qreal watts)
     emit wattsChanged();
 }
 
-qreal QKlipperHeater::maxWatts() const
+qreal QKlipperHeater::maximumWatts() const
 {
-    return m_maxWatts;
+    return m_maximumWatts;
 }
 
-void QKlipperHeater::setMaxWatts(qreal maxWatts)
+void QKlipperHeater::setMaxWatts(qreal maximumWatts)
 {
-    if (qFuzzyCompare(m_maxWatts, maxWatts))
+    if (qFuzzyCompare(m_maximumWatts, maximumWatts))
         return;
 
-    m_maxWatts = maxWatts;
-    emit maxWattsChanged();
+    m_maximumWatts = maximumWatts;
+    emit maximumWattsChanged();
 
-    setWatts(m_power * m_maxWatts);
+    setWatts(m_power * m_maximumWatts);
 }
 
 qreal QKlipperHeater::inlineResistor() const
@@ -140,46 +140,46 @@ void QKlipperHeater::setInlineResistor(qreal inlineResistor)
     emit inlineResistorChanged();
 }
 
-qreal QKlipperHeater::maxPower() const
+qreal QKlipperHeater::maximumPower() const
 {
-    return m_maxPower;
+    return m_maximumPower;
 }
 
-void QKlipperHeater::setMaxPower(qreal maxPower)
+void QKlipperHeater::setMaxPower(qreal maximumPower)
 {
-    if (qFuzzyCompare(m_maxPower, maxPower))
+    if (qFuzzyCompare(m_maximumPower, maximumPower))
         return;
 
-    m_maxPower = maxPower;
-    emit maxPowerChanged();
+    m_maximumPower = maximumPower;
+    emit maximumPowerChanged();
 }
 
-qreal QKlipperHeater::maxTemp() const
+qreal QKlipperHeater::maximumTemperature() const
 {
-    return m_maxTemp;
+    return m_maximumTemperature;
 }
 
-void QKlipperHeater::setMaxTemp(qreal maxTemp)
+void QKlipperHeater::setMaxTemp(qreal maximumTemperature)
 {
-    if (qFuzzyCompare(m_maxTemp, maxTemp))
+    if (qFuzzyCompare(m_maximumTemperature, maximumTemperature))
         return;
 
-    m_maxTemp = maxTemp;
-    emit maxTempChanged();
+    m_maximumTemperature = maximumTemperature;
+    emit maximumTemperatureChanged();
 }
 
-qreal QKlipperHeater::minTemp() const
+qreal QKlipperHeater::minimumTemperature() const
 {
-    return m_minTemp;
+    return m_minimumTemperature;
 }
 
-void QKlipperHeater::setMinTemp(qreal minTemp)
+void QKlipperHeater::setMinTemp(qreal minimumTemperature)
 {
-    if (qFuzzyCompare(m_minTemp, minTemp))
+    if (qFuzzyCompare(m_minimumTemperature, minimumTemperature))
         return;
 
-    m_minTemp = minTemp;
-    emit minTempChanged();
+    m_minimumTemperature = minimumTemperature;
+    emit minimumTemperatureChanged();
 }
 
 qreal QKlipperHeater::pidKD() const

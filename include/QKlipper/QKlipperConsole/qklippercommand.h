@@ -32,6 +32,7 @@ class DA_EXPORT QKlipperCommand
         static bool isKlipperCommand(const QString &command);
 
         QString command() const { return m_command; }
+        QStringList commands() const { return m_commands.keys(); }
         QString help() const { return m_help; }
         QStringList parameters() const { return m_parameters; }
 

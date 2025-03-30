@@ -28,7 +28,7 @@
 
 #include "qklippertemperaturestore.h"
 
-typedef QPair<qint32,qint32> QKlipperGearRatio;
+typedef QPair<qreal,qreal> QKlipperGearRatio;
 
 class QKlipperConsole;
 class QKlipperToolHead;
@@ -293,7 +293,7 @@ public slots:
      *
      * \param temperature The target temperature
      */
-    virtual void setTargetTemp(qreal temperature) override;
+    virtual void setTargetTemperature(qreal temperature) override;
 
 private slots:
 
@@ -339,8 +339,8 @@ private slots:
 
     void setStepPin(const QString &stepPin);
 
-    void setTemperatureStore(const QKlipperTemperatureStore &temperatureStore);
-    void setTemperatureStoreValue(const QKlipperTemperatureStoreValue &value);
+    void setTargetTemperatureStore(const QKlipperTemperatureStore &temperatureStore);
+    void setTargetTemperatureStoreValue(const QKlipperTemperatureStoreValue &value);
 
     void setOffsetData(const QKlipperPosition &offset);
 

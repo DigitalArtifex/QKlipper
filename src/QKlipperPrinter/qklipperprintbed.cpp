@@ -1,11 +1,30 @@
-#include <QKlipper/QKlipperPrinter/qklipperprintbed.h>
 #include <QKlipper/QKlipperConsole/qklipperconsole.h>
+#include <QKlipper/QKlipperPrinter/qklipperprintbed.h>
+#include <QKlipper/QKlipperInstance/qklipperinstance.h>
 
 QKlipperPrintBed::QKlipperPrintBed(QObject *parent)
     : QKlipperHeater{parent}
 {
     m_bedMesh = new QKlipperPrintBedMesh(this);
     setName("bed");
+
+    QKlipperPrinter *printer = qobject_cast<QKlipperPrinter*>(parent);
+
+    if(!printer)
+    {
+        qWarning() << "Parental structure incorrect. No printer for QKlipperPrintBed " + name();
+        return;
+    }
+
+    QKlipperInstance *instance = qobject_cast<QKlipperInstance*>(printer->parent());
+
+    if(!instance)
+    {
+        qWarning() << "Parental structure incorrect. No instance for QKlipperPrintBed " + name();
+        return;
+    }
+
+    m_console = instance->console();
 }
 
 QKlipperPrintBed::~QKlipperPrintBed()
@@ -191,7 +210,7 @@ bool QKlipperPrintBed::tiltAdjustError() const
     return m_tiltAdjustError;
 }
 
-void QKlipperPrintBed::setTargetTemp(qreal targetTemp)
+void QKlipperPrintBed::setTargetTemperature(qreal targetTemperature)
 {
     if(!m_console)
     {
@@ -200,7 +219,7 @@ void QKlipperPrintBed::setTargetTemp(qreal targetTemp)
     }
 
     //M140 sets bed temp without waiting
-    QString gcode = QString("M140 S") + QString::number(targetTemp);
+    QString gcode = QString("M140 S") + QString::number(targetTemperature);
 
     //send the G-Code
     m_console->printerGcodeScript(gcode);
@@ -210,6 +229,7 @@ void QKlipperPrintBed::setTiltAdjustError(bool tiltAdjustError)
 {
     if (m_tiltAdjustError == tiltAdjustError)
         return;
+
     m_tiltAdjustError = tiltAdjustError;
     emit tiltAdjustErrorChanged();
 }

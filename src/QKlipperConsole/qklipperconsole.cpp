@@ -88,7 +88,8 @@ bool QKlipperConsole::connect()
             [&errorOccurred, &loop]() {
                 errorOccurred = true;
                 loop.quit();
-            }
+            },
+            Qt::SingleShotConnection
         );
 
         QObject::connect
@@ -100,7 +101,8 @@ bool QKlipperConsole::connect()
                 errorOccurred = true;
                 socketError = error;
                 loop.quit();
-            }
+            },
+            Qt::SingleShotConnection
         );
 
         QObject::connect(socket, SIGNAL(textMessageReceived(QString)), this, SLOT(rpcUpdateSocketDataReceived(QString)));
@@ -126,7 +128,7 @@ bool QKlipperConsole::connect()
         socket->open(m_server->websocketAddress());
         timeout->start();
         loop.exec();
-
+        timeout->stop();
         timeout->deleteLater();
 
         if(socket->state() != QAbstractSocket::ConnectedState)
@@ -4894,7 +4896,7 @@ void QKlipperConsole::serverTemperatureStoreParser(QKlipperMessage *message)
                 storedValue.target = targetValuesArray[i].toDouble();
                 storedValue.power = powerValuesArray[i].toDouble();
 
-                m_printer->toolhead()->extruder(extruderName)->setTemperatureStoreValue(storedValue);
+                m_printer->toolhead()->extruder(extruderName)->setTargetTemperatureStoreValue(storedValue);
             }
         }
         else
@@ -5559,7 +5561,7 @@ bool QKlipperConsole::parseHeaterStatus(QKlipperHeater *heater, QJsonObject sett
         heater->setCurrentTemp(settings["temperature"].toDouble());
 
     if(settings.contains("target"))
-        heater->setTargetTempData(settings["target"].toDouble());
+        heater->setTargetTemperatureData(settings["target"].toDouble());
 
     if(settings.contains("power"))
         heater->setPower(settings["power"].toDouble());
@@ -5806,13 +5808,17 @@ bool QKlipperConsole::parsePrinterConfig(QJsonObject config)
             {
                 QJsonArray ratioArray = extruderObject["gear_ratio"].toArray();
 
+                //why is klipper sending an array of ratios? bug?
+                if(ratioArray.count() == 1 && ratioArray.first().isArray())
+                    ratioArray = ratioArray.first().toArray();
+
                 if(ratioArray.count() >= 2)
                 {
                     QKlipperGearRatio ratio
-                        (
-                            ratioArray[0].toInt(),
-                            ratioArray[1].toInt()
-                            );
+                    (
+                        ratioArray[0].toDouble(),
+                        ratioArray[1].toDouble()
+                    );
 
                     extruder->setGearRatio(ratio);
                 }
@@ -5862,6 +5868,7 @@ bool QKlipperConsole::parsePrinterConfig(QJsonObject config)
 
             if(extruderObject.contains("nozzle_diameter"))
             {
+
                 qreal diameter = extruderObject["nozzle_diameter"].toDouble();
                 extruder->setNozzleDiameter(diameter);
             }
@@ -6100,7 +6107,7 @@ bool QKlipperConsole::parsePrinterConfig(QJsonObject config)
                     fan->setPidDerivationTime(settings["pid_deriv_time"].toDouble());
 
                 if(settings.contains(QString("target_temp")))
-                    fan->setTargetTemperature(settings["target_temp"].toDouble());
+                    fan->setTargetTemperatureerature(settings["target_temp"].toDouble());
 
                 if(settings.contains(QString("max_speed")))
                     fan->setMaxSpeed(settings["max_speed"].toDouble());

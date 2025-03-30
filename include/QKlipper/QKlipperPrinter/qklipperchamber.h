@@ -29,32 +29,32 @@ class DA_EXPORT QKlipperChamber : public QObject
 public:
     explicit QKlipperChamber(QObject *parent = nullptr);
 
-    qreal currentTemperature() const;
-    qreal targetTemperature() const;
+    qreal temperatureerature() const;
+    qreal targetTemperatureerature() const;
 
-    qreal maxWatts() const;
+    qreal maximumWatts() const;
 
 public slots:
-    void setCurrentTemperature(qreal currentTemperature);
-    void setTargetTemperature(qreal targetTemperature);
+    void setCurrentTemperature(qreal temperatureerature);
+    void setTargetTemperatureerature(qreal targetTemperatureerature);
 
-    void setMaxWatts(qreal maxWatts);
+    void setMaxWatts(qreal maximumWatts);
 
 signals:
-    void currentTemperatureChanged();
-    void targetTemperatureChanged();
+    void temperatureeratureChanged();
+    void targetTemperatureeratureChanged();
 
-    void maxWattsChanged();
+    void maximumWattsChanged();
 
 private:
-    qreal m_currentTemperature = 0.0;
-    qreal m_targetTemperature = 0.0;
-    qreal m_maxWatts = 0.0;
+    qreal m_temperatureerature = 0.0;
+    qreal m_targetTemperatureerature = 0.0;
+    qreal m_maximumWatts = 0.0;
     qreal m_power = 0.0;
 
-    Q_PROPERTY(qreal currentTemperature READ currentTemperature WRITE setCurrentTemperature NOTIFY currentTemperatureChanged FINAL)
-    Q_PROPERTY(qreal targetTemperature READ targetTemperature WRITE setTargetTemperature NOTIFY targetTemperatureChanged FINAL)
-    Q_PROPERTY(qreal maxWatts READ maxWatts WRITE setMaxWatts NOTIFY maxWattsChanged FINAL)
+    Q_PROPERTY(qreal temperatureerature READ temperatureerature WRITE setCurrentTemperature NOTIFY temperatureeratureChanged FINAL)
+    Q_PROPERTY(qreal targetTemperatureerature READ targetTemperatureerature WRITE setTargetTemperatureerature NOTIFY targetTemperatureeratureChanged FINAL)
+    Q_PROPERTY(qreal maximumWatts READ maximumWatts WRITE setMaxWatts NOTIFY maximumWattsChanged FINAL)
 };
 
 #endif // QKLIPPERCHAMBER_H

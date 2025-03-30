@@ -581,17 +581,17 @@ qreal QKlipperPrinter::watts()
     return watts;
 }
 
-qreal QKlipperPrinter::maxWatts()
+qreal QKlipperPrinter::maximumWatts()
 {
     qreal watts = 0.0;
 
     for(QKlipperHeater *heater : m_heaters)
-        watts += heater->maxWatts();
+        watts += heater->maximumWatts();
 
     for(QKlipperExtruder *extruder : m_toolhead->extruderMap())
-        watts += extruder->maxWatts();
+        watts += extruder->maximumWatts();
 
-    watts += m_bed->maxWatts();
+    watts += m_bed->maximumWatts();
 
     return watts;
 }

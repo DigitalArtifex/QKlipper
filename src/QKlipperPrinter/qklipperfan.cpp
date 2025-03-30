@@ -166,17 +166,17 @@ void QKlipperFan::setShutdownSpeed(qreal shutdownSpeed)
     emit shutdownSpeedChanged();
 }
 
-qreal QKlipperFan::maxPower() const
+qreal QKlipperFan::maximumPower() const
 {
-    return m_maxPower;
+    return m_maximumPower;
 }
 
-void QKlipperFan::setMaxPower(qreal maxPower)
+void QKlipperFan::setMaxPower(qreal maximumPower)
 {
-    if (qFuzzyCompare(m_maxPower, maxPower))
+    if (qFuzzyCompare(m_maximumPower, maximumPower))
         return;
-    m_maxPower = maxPower;
-    emit maxPowerChanged();
+    m_maximumPower = maximumPower;
+    emit maximumPowerChanged();
 }
 
 QString QKlipperFan::enablePin() const

@@ -4,41 +4,41 @@ QKlipperChamber::QKlipperChamber(QObject *parent)
     : QObject{parent}
 {}
 
-qreal QKlipperChamber::currentTemperature() const
+qreal QKlipperChamber::temperatureerature() const
 {
-    return m_currentTemperature;
+    return m_temperatureerature;
 }
 
-void QKlipperChamber::setCurrentTemperature(qreal currentTemperature)
+void QKlipperChamber::setCurrentTemperature(qreal temperatureerature)
 {
-    if (qFuzzyCompare(m_currentTemperature, currentTemperature))
+    if (qFuzzyCompare(m_temperatureerature, temperatureerature))
         return;
-    m_currentTemperature = currentTemperature;
-    emit currentTemperatureChanged();
+    m_temperatureerature = temperatureerature;
+    emit temperatureeratureChanged();
 }
 
-qreal QKlipperChamber::targetTemperature() const
+qreal QKlipperChamber::targetTemperatureerature() const
 {
-    return m_targetTemperature;
+    return m_targetTemperatureerature;
 }
 
-void QKlipperChamber::setTargetTemperature(qreal targetTemperature)
+void QKlipperChamber::setTargetTemperatureerature(qreal targetTemperatureerature)
 {
-    if (qFuzzyCompare(m_targetTemperature, targetTemperature))
+    if (qFuzzyCompare(m_targetTemperatureerature, targetTemperatureerature))
         return;
-    m_targetTemperature = targetTemperature;
-    emit targetTemperatureChanged();
+    m_targetTemperatureerature = targetTemperatureerature;
+    emit targetTemperatureeratureChanged();
 }
 
-qreal QKlipperChamber::maxWatts() const
+qreal QKlipperChamber::maximumWatts() const
 {
-    return m_maxWatts;
+    return m_maximumWatts;
 }
 
-void QKlipperChamber::setMaxWatts(qreal maxWatts)
+void QKlipperChamber::setMaxWatts(qreal maximumWatts)
 {
-    if (qFuzzyCompare(m_maxWatts, maxWatts))
+    if (qFuzzyCompare(m_maximumWatts, maximumWatts))
         return;
-    m_maxWatts = maxWatts;
-    emit maxWattsChanged();
+    m_maximumWatts = maximumWatts;
+    emit maximumWattsChanged();
 }

@@ -94,9 +94,9 @@ public slots:
     /*!
      * Sends a gcode script to set the requested temperature
      *
-     * \param targetTemp The value (in Celsius) to set (0-maxTemp)
+     * \param targetTemperature The value (in Celsius) to set (0-maximumTemperature)
      */
-    virtual void setTargetTemp(qreal targetTemp) override;
+    virtual void setTargetTemperature(qreal targetTemperature) override;
 
     /*!
      * Sends a gcode script to probe the bed corners to determine adjustment values
