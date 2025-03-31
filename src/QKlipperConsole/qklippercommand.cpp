@@ -7,8 +7,8 @@ QKlipperCommand::QKlipperCommand(QString command)
 
     if(m_commands.contains(m_command))
     {
-        m_help = m_commands[m_command]->m_help;
-        m_parameters = m_commands[m_command]->m_parameters;
+        m_help = m_commands[m_command].m_help;
+        m_parameters = m_commands[m_command].m_parameters;
     }
 }
 
@@ -78,7 +78,9 @@ void QKlipperCommand::initialize()
         QJsonObject rootObject = document["klipper_commands"].toObject();
         QStringList rootKeys = rootObject.keys();
 
-        foreach(QString key, rootKeys)
+        m_commands.clear();
+
+        for(QString key : rootKeys)
         {
             //Parse through the objects of the section
             QJsonArray array = rootObject[key].toArray();
@@ -89,18 +91,32 @@ void QKlipperCommand::initialize()
                 {
                     QJsonObject commandObject = array[i].toObject();
 
-                    QKlipperCommand *command = new QKlipperCommand();
-                    command->setCommand(commandObject["command"].toString());
-                    command->setHelp(commandObject["help"].toString());
+                    QKlipperCommand command;
+                    command.setCommand(commandObject["command"].toString());
+                    command.setHelp(commandObject["help"].toString());
 
                     QJsonArray parametersArray = commandObject["parameters"].toArray();
 
                     for(int p = 0; p < parametersArray.count(); p++)
-                        command->m_parameters += parametersArray[p].toString();
+                        command.m_parameters += parametersArray[p].toString();
 
-                    m_commands.insert(command->command().toUpper(), command);
+                    m_commands.insert(command.command().toUpper(), command);
                 }
             }
         }
+
+        m_isInitialized = true;
     }
+}
+
+QKlipperCommand QKlipperCommand::command(QString commandName)
+{
+    initialize();
+    return m_commands.value(commandName);
+}
+
+QStringList QKlipperCommand::commands()
+{
+    initialize();
+    return m_commands.keys();
 }

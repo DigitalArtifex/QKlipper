@@ -32,7 +32,8 @@ class DA_EXPORT QKlipperCommand
         static bool isKlipperCommand(const QString &command);
 
         QString command() const { return m_command; }
-        QStringList commands() const { return m_commands.keys(); }
+        static QKlipperCommand command(QString commandName);
+        static QStringList commands();
         QString help() const { return m_help; }
         QStringList parameters() const { return m_parameters; }
 
@@ -43,7 +44,7 @@ class DA_EXPORT QKlipperCommand
     private:
         static void initialize();
 
-        inline static QMap<QString, QKlipperCommand*> m_commands;
+        inline static QMap<QString, QKlipperCommand> m_commands;
         inline static bool m_isInitialized = false;
         inline static bool m_isInitializing = false;
 
